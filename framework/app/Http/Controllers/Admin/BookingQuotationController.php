@@ -327,6 +327,7 @@ class BookingQuotationController extends Controller {
 			BookingIncome::create(['booking_id' => $booking->id, "income_id" => $inc_id]);
 
 			$this->booking_notification($booking->id);
+			// For the test
 			// if (Hyvikk::email_msg('email') == 1) {
 			// 	Mail::to($booking->customer->email)->send(new VehicleBooked($booking));
 			// 	Mail::to($booking->driver->email)->send(new DriverBooked($booking));

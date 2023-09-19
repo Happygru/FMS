@@ -15,6 +15,8 @@ return [
     'details' => 'Detajet',
     // Please change
     'add_booking_service' => 'Add Booking Service',
+    'all_services' => 'All Services',
+    'icon' => 'Icon',
     //////////////////////////////////////////////////////////////////
     'chat' => 'Biseda',
     'pusher_app_id' => 'ID-ja e aplikacionit Pusher',

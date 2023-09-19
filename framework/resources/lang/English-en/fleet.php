@@ -14,6 +14,8 @@ return [
     'driver_commision' => 'Driver Commision',
     'details' => 'Details',
     'add_booking_service' => 'Add Booking Service',
+    'all_services' => 'All Services',
+    'icon' => 'Icon',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

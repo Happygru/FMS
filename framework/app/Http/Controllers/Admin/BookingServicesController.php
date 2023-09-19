@@ -13,7 +13,6 @@ Design and developed by Hyvikk Solutions <https://hyvikk.com/>
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BookingServicesRequest;
 use App\Model\BookingServicesModel;
 
 class BookingServicesController extends Controller {
@@ -27,5 +26,10 @@ class BookingServicesController extends Controller {
 
     public function create() {
         return view('booking_services.create');
+    }
+
+    public function fetch_data() {
+        $bookingServices = BookingServicesModel::all();
+        return response()->json($bookingServices);
     }
 }

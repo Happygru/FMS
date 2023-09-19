@@ -15,6 +15,8 @@ return [
     'details' => 'Des détails',
     // Please change
     'add_booking_service' => 'Add Booking Service',
+    'all_services' => 'All Services',
+    'icon' => 'Icon',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Discuter',
     'pusher_app_id' => 'ID de l\'application Pusher',

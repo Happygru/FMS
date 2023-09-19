@@ -15,6 +15,8 @@ return [
     'details' => 'تفاصيل',
     // Please change
     'add_booking_service' => 'Add Booking Service',
+    'all_services' => 'All Services',
+    'icon' => 'Icon',
     ////////////////////////////////////////////////////////////////
     'chat' => 'محادثة',
     'pusher_app_id' => 'Pusher معرف التطبيق',
