@@ -167,6 +167,6 @@ align-items: center;
                               @endif
                           });
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ Hyvikk::get('map_key') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ Hyvikk::get('traccar_map_key') }}"></script>
 {{-- AIzaSyDWLZZNErpNRPY-cZXlbOklBnpwrVb_PY4 --}}
 @endsection
