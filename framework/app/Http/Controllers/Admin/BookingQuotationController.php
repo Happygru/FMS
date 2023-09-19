@@ -279,7 +279,7 @@ class BookingQuotationController extends Controller {
 	public function add_booking(BookingQuotationRequest $request) {
 		// dd($request->all());
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
-		if ($xx) {
+		if (!$xx) {
 			$id = Bookings::create($request->all())->id;
 
 			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('pickup_addr')]);
@@ -327,10 +327,10 @@ class BookingQuotationController extends Controller {
 			BookingIncome::create(['booking_id' => $booking->id, "income_id" => $inc_id]);
 
 			$this->booking_notification($booking->id);
-			if (Hyvikk::email_msg('email') == 1) {
-				Mail::to($booking->customer->email)->send(new VehicleBooked($booking));
-				Mail::to($booking->driver->email)->send(new DriverBooked($booking));
-			}
+			// if (Hyvikk::email_msg('email') == 1) {
+			// 	Mail::to($booking->customer->email)->send(new VehicleBooked($booking));
+			// 	Mail::to($booking->driver->email)->send(new DriverBooked($booking));
+			// }
 			// browser notification to driver,admin,customer
 			BookingQuotationModel::find($request->id)->delete();
 			return redirect('admin/booking-quotation')->with('msg', 'Booking quotation approved successfully and added to bookings.');
