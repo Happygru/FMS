@@ -29,6 +29,11 @@ return [
 	'newbooking' => 'Rrezervim i Ri',
 	'manage_customers' => 'Menaxho Klientet',
 	'manage_bookings' => 'Menaxho Rezervimet',
+	// Please change
+	"booking_services" => "Booking Services",
+	"all_services" => "All Services",
+	"new_service" => "New Service",
+
 	'reports' => 'Raportet',
 	'deliquentReport' => 'Raportet e Vonuara',
 	'monthlyReport' => 'Raportet Mujore',

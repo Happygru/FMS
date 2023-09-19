@@ -30,6 +30,11 @@ return [
 	'newbooking' => '新預訂',
 	'manage_customers' => '管理客戶',
 	'manage_bookings' => '管理預訂',
+	// Please change
+	"booking_services" => "Booking Services",
+	"all_services" => "All Services",
+	"new_service" => "New Service",
+	
 	'reports' => '報告',
 	'deliquentReport' => '拖欠報告',
 	'monthlyReport' => '每月報告',

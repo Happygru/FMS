@@ -37,6 +37,11 @@ return [
 	'manage_customers' => 'Gérer les clients',
 	'manage_bookings' => 'Gérer les réservations',
 
+	// Please change
+	"booking_services" => "Booking Services",
+	"all_services" => "All Services",
+	"new_service" => "New Service",
+
 	'reports' => 'Rapports',
 
 	'deliquentReport' => 'Rapport délinquant',

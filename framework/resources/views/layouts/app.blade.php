@@ -963,6 +963,43 @@ input:checked + .slider:before {
                 </ul>
               </li>
               @endcanany
+              @if(Request::is('admin/booking-services*'))
+              @php($class="menu-open")
+              @php($active="active")
+
+              @else
+              @php($class="")
+              @php($active="")
+              @endif
+              <li class="nav-item has-treeview {{$class}}">
+               <a href="#" class="nav-link {{$active}}">
+                <i class="nav-icon fa fa-list"></i>
+                <p>
+                  @lang('menu.booking_services')
+                  <i class="right fa fa-angle-left"></i>
+                </p>
+               </a>
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{ route('booking-services.index')}}"
+                    class="nav-link @if(Request::is('admin/booking-services/index')) active @endif">
+                    <i class="fa fa-shopping-bag nav-icon "></i>
+                    <p>
+                      @lang('menu.all_services')
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('booking-services.create')}}"
+                    class="nav-link @if(Request::is('admin/booking-services/create')) active @endif">
+                    <i class="fa fa-plus nav-icon "></i>
+                    <p>
+                      @lang('menu.new_service')
+                    </p>
+                  </a>
+                </li>
+               </ul>
+              </li>
 
               @if(Request::is('admin/reports*'))
               @php($class="menu-open")

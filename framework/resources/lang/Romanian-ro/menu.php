@@ -29,6 +29,11 @@ return [
 	'newbooking' => 'Rezervare nouă',
 	'manage_customers' => 'Gestionați clienții',
 	'manage_bookings' => 'Gestionați rezervările',
+	// Please change
+	"booking_services" => "Booking Services",
+	"all_services" => "All Services",
+	"new_service" => "New Service",
+
 	'reports' => 'Rapoarte',
 	'deliquentReport' => 'Raport delincvent',
 	'monthlyReport' => 'Raport lunar',

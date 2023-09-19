@@ -29,6 +29,11 @@ return [
 	'newbooking' => 'الحجز الجديد',
 	'manage_customers' => 'إدارة العملاء',
 	'manage_bookings' => 'إدارة الحجوزات',
+	// Please change
+	"booking_services" => "Booking Services",
+	"all_services" => "All Services",
+	"new_service" => "New Service",
+
 	'reports' => 'تقارير',
 	'deliquentReport' => 'تقرير جانح',
 	'monthlyReport' => 'التقرير الشهري',

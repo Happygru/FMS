@@ -30,6 +30,11 @@ return [
 	'newbooking' => 'Nuova Commesse',
 	'manage_customers' => 'Gestisci Clienti',
 	'manage_bookings' => 'Gestisci Commesse',
+	// Please change
+	"booking_services" => "Booking Services",
+	"all_services" => "All Services",
+	"new_service" => "New Service",
+
 	'reports' => 'Rapporti',
 	'deliquentReport' => 'Rapporto delinquenziale',
 	'monthlyReport' => 'Rapporto mensile',
