@@ -16,6 +16,9 @@ return [
     'add_booking_service' => 'Add Booking Service',
     'all_services' => 'All Services',
     'icon' => 'Icon',
+    'enter_service_name' => 'Enter Service Name',
+    'service_icon' => 'Service Icon',
+    'enter_service_icon' => 'Select a service icon',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

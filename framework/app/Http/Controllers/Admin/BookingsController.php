@@ -659,10 +659,10 @@ class BookingsController extends Controller {
 
 			// browser notification
 			$this->push_notification($booking->id);
-			if (Hyvikk::email_msg('email') == 1) {
-				Mail::to($mail->customer->email)->send(new VehicleBooked($booking));
-				Mail::to($mail->driver->email)->send(new DriverBooked($booking));
-			}
+			// if (Hyvikk::email_msg('email') == 1) {
+			// 	Mail::to($mail->customer->email)->send(new VehicleBooked($booking));
+			// 	Mail::to($mail->driver->email)->send(new DriverBooked($booking));
+			// }
 			return redirect()->route("bookings.index");
 		} else {
 			return redirect()->route("bookings.create")->withErrors(["error" => "Selected Vehicle is not Available in Given Timeframe"])->withInput();
