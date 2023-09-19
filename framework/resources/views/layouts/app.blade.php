@@ -1715,7 +1715,7 @@ input:checked + .slider:before {
     <footer class="main-footer">
       {!! Hyvikk::get('web_footer') !!}
       <div class="float-right d-none d-sm-inline-block">
-        <b>@lang('fleet.version')</b> 6.4
+        <!-- <b>@lang('fleet.version')</b> 6.4 -->
       </div>
     </footer>
 
