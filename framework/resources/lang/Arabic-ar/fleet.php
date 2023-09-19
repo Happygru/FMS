@@ -13,6 +13,8 @@ return [
     'driver_commision_type' => 'نوع عمولة السائق',
     'driver_commision' => 'عمولة السائق',
     'details' => 'تفاصيل',
+    // Please change
+    'add_booking_service' => 'Add Booking Service',
     ////////////////////////////////////////////////////////////////
     'chat' => 'محادثة',
     'pusher_app_id' => 'Pusher معرف التطبيق',

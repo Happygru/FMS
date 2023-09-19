@@ -982,7 +982,7 @@ input:checked + .slider:before {
                <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{ route('booking-services.index')}}"
-                    class="nav-link @if(Request::is('admin/booking-services/index')) active @endif">
+                    class="nav-link @if(Request::is('admin/booking-services')) active @endif">
                     <i class="fa fa-shopping-bag nav-icon "></i>
                     <p>
                       @lang('menu.all_services')
@@ -1397,7 +1397,7 @@ input:checked + .slider:before {
                   @endcan
                 </ul>
               </li> @endcanany
-              @if(Request::is('admin/testimonials*'))
+              <!-- @if(Request::is('admin/testimonials*'))
               @php($class="menu-open")
               @php($active="active")
 
@@ -1476,7 +1476,7 @@ input:checked + .slider:before {
                   @endcan
                 </ul>
               </li>
-              @endcanany
+              @endcanany -->
 
               @if(Request::is('admin/settings*') || Request::is('admin/roles*') || Request::is('admin/fare-settings') ||
               Request::is('admin/api-settings') || (Request::is('admin/expensecategories*')) ||
@@ -1602,21 +1602,21 @@ input:checked + .slider:before {
                     </a>
                   </li>
 
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     <a href="{{ url('admin/frontend-settings')}}"
                       class="nav-link @if(Request::is('admin/frontend-settings')) active @endif">
                       <i class="fa fa-address-card nav-icon"></i>
                       <p>@lang('fleet.frontend_settings')</p>
                     </a>
-                  </li>
+                  </li> -->
 
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     <a href="{{ url('admin/company-services')}}"
                       class="nav-link @if(Request::is('admin/company-services*')) active @endif">
                       <i class="fa fa-tasks nav-icon"></i>
                       <p>@lang('fleet.companyServices')</p>
                     </a>
-                  </li>
+                  </li> -->
 
                 </ul>
               </li>
@@ -1634,7 +1634,7 @@ input:checked + .slider:before {
               </li> @endif
               <!-- super-admin -->
 
-              @if(Hyvikk::api('api') && Hyvikk::api('driver_review') == 1) <li class="nav-item">
+              <!-- @if(Hyvikk::api('api') && Hyvikk::api('driver_review') == 1) <li class="nav-item">
                 <a href="{{ url('admin/reviews')}}" class="nav-link @if(Request::is('admin/reviews')) active @endif">
                   <i class="nav-icon fa fa-star"></i>
                   <p>
@@ -1657,8 +1657,8 @@ input:checked + .slider:before {
               </li>
               @endif
               @endcan
-              @endif
-              @if(Auth::user()->user_type=="S")
+              @endif -->
+              <!-- @if(Auth::user()->user_type=="S")
               <li class="nav-item">
                 <a href="https://goo.gl/forms/PtzIirmT3ap8m5dY2" target="_blank" class="nav-link">
                   <i class="nav-icon fa fa-comment"></i>
@@ -1668,7 +1668,7 @@ input:checked + .slider:before {
                   </p>
                 </a>
               </li>
-              @endif
+              @endif -->
             </ul>
           </nav>
         </div>

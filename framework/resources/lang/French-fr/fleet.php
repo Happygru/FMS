@@ -13,6 +13,8 @@ return [
     'driver_commision_type' => 'Type de commission du conducteur',
     'driver_commision' => 'Commission des chauffeurs',
     'details' => 'Des détails',
+    // Please change
+    'add_booking_service' => 'Add Booking Service',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Discuter',
     'pusher_app_id' => 'ID de l\'application Pusher',

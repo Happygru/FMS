@@ -13,6 +13,7 @@ return [
     'driver_commision_type' => 'Driver Commision Type',
     'driver_commision' => 'Driver Commision',
     'details' => 'Details',
+    'add_booking_service' => 'Add Booking Service',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

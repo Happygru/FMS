@@ -13,6 +13,8 @@ return [
     'driver_commision_type' => 'Komisioni i Shoferit',
     'driver_commision' => 'Lloji i komisionit të shoferit',
     'details' => 'Detajet',
+    // Please change
+    'add_booking_service' => 'Add Booking Service',
     //////////////////////////////////////////////////////////////////
     'chat' => 'Biseda',
     'pusher_app_id' => 'ID-ja e aplikacionit Pusher',

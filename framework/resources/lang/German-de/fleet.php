@@ -13,6 +13,8 @@ return [
     'driver_commision_type' => 'Fahrerprovisionstyp',
     'driver_commision' => 'Fahrerprovision',
     'details' => 'Einzelheiten',
+    // Please change
+    'add_booking_service' => 'Add Booking Service',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Plaudern',
     'pusher_app_id' => 'Pusher-App-ID',

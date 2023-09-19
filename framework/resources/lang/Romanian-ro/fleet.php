@@ -13,6 +13,8 @@ return [
     'driver_commision_type' => 'Tip comision șofer',
     'driver_commision' => 'Comisia de șoferi',
     'details' => 'Detalii',
+    // Please change
+    'add_booking_service' => 'Add Booking Service',
     ////////////////////////////////////////////////////////////////
     'chat' => 'conversație',
     'pusher_app_id' => 'ID aplicație Pusher',

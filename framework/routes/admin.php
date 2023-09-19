@@ -118,6 +118,8 @@ Route::namespace ('Admin')->group(function () {
         Route::post('delete-vehicle-groups', 'VehicleGroupController@bulk_delete');
         Route::post('delete-vehicle-reviews', 'VehiclesController@bulk_delete_reviews');
 
+        Route::resource('booking-services', 'BookingServicesController');
+
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');
         Route::post('print-income', 'ReportsController@income_print');

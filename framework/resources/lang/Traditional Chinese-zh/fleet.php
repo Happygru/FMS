@@ -13,6 +13,8 @@ return [
     'driver_commision_type' => '司機佣金類型',
     'driver_commision' => '司機佣金',
     'details' => '細節',
+    // Please change
+    'add_booking_service' => 'Add Booking Service',
     ////////////////////////////////////////////////////////////////
     'chat' => '聊天',
     'pusher_app_id' => 'Pusher 應用編號',
