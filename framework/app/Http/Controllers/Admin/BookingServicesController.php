@@ -14,6 +14,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Model\BookingServicesModel;
+use Illuminate\Http\Request;
 
 class BookingServicesController extends Controller {
     public function __construct() {
@@ -30,6 +31,12 @@ class BookingServicesController extends Controller {
 
     public function fetch_data() {
         $bookingServices = BookingServicesModel::all();
+        return response()->json($bookingServices);
+    }
+
+    public function delete_item(Request $request) {
+        $bookingServices = BookingServicesModel::find($request->id);
+        $bookingServices->delete();
         return response()->json($bookingServices);
     }
 }

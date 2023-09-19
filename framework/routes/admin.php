@@ -120,6 +120,7 @@ Route::namespace ('Admin')->group(function () {
 
         Route::resource('booking-services', 'BookingServicesController');
         Route::get('/booking-services-fetch', 'BookingServicesController@fetch_data');
+        Route::post('/booking-services-delete', 'BookingServicesController@delete_item');
 
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');

@@ -5,6 +5,11 @@
 	#booking_services_list {
 		font-weight: bold;
 	}
+
+	#booking_services_list img{
+    width: 100%;
+		max-width: 100%;
+  }
 </style>
 @endsection
 @section("breadcrumb")
@@ -26,8 +31,8 @@
 							<tr>
 								<th style="width: 60px; text-align: center;">No</th>
 								<th style="width: 20%;min-width:100px">@lang('fleet.icon')</th>
-								<th>@lang('fleet.name')</th>
-								<th style="width: 40%;">@lang('fleet.description')</th>
+								<th style="width: 15%;">@lang('fleet.name')</th>
+								<th>@lang('fleet.description')</th>
 								<th style="width: 90px;white-space:nowrap;">@lang('fleet.action')</th>
 							</tr>
 						</thead>
@@ -38,8 +43,8 @@
 							<tr>
                 <th style="width: 60px; text-align: center;"></th>
                 <th style="width: 20%;min-width:100px">@lang('fleet.icon')</th>
-                <th>@lang('fleet.name')</th>
-                <th style="width: 40%;">@lang('fleet.description')</th>
+                <th style="width: 15%;">@lang('fleet.name')</th>
+                <th>@lang('fleet.description')</th>
                 <th style="width: 90px;white-space:nowrap;">@lang('fleet.action')</th>
               </tr>
             </tfoot>
@@ -49,15 +54,58 @@
 		</div>
 	</div>
 </div>
+
+<div id="bulkModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@lang('fleet.delete')</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>@lang('fleet.confirm_delete')</p>
+      </div>
+      <div class="modal-footer">
+        <button id="bulk_action" class="btn btn-danger" onclick="deleteItem()">@lang('fleet.delete')</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('fleet.close')</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section("script")
 <script type="text/javascript">
+	let deleteID;
 	$(document).ready(function() {
-		$.get("{{url('admin/booking-services-fetch')}}", function (res) {
-			for(let i = 0; i < res.length; i++) {
-				$("#booking_services_list tbody").append("<tr><td style='text-align: center'>"+(i+1)+"</td><td><img src='{{asset('uploads/services/')}}/"+res[i].icon+"' style='width: 200px;'></td><td>"+res[i].name+"</td><td>"+res[i].description+"</td><td style='text-align: center'><a class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a> <a class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a></td></tr>");
-			}
-		})
+		getBookingSerivceList();
 	})
+
+	function getBookingSerivceList() {
+		$.get("{{url('admin/booking-services-fetch')}}", function (res) {
+			let str = ""
+			for(let i = 0; i < res.length; i++) {
+				str += "<tr><td style='text-align: center'>"+(i+1)+"</td><td><img src='{{asset('uploads/services/')}}/"+res[i].icon+"'></td><td>"+res[i].name+"</td><td>"+res[i].description+"</td><td style='text-align: center'><a class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a> <a onclick='confirmDelete(" + res[i].id + ")' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a></td></tr>";
+			}
+			$("#booking_services_list tbody").html(str);
+		})
+	}
+
+	function confirmDelete(id) {
+		deleteID = id;
+    $('#bulkModal').modal('show');
+	}
+
+	function deleteItem() {
+		$.post("{{url('admin/booking-services-delete')}}", {id: deleteID}, function (res) {
+			new PNotify({
+				title: 'Success!',
+				text: "@lang('fleet.deleted')",
+				type: 'success'
+			});
+			$('#bulkModal').modal('hide');
+			getBookingSerivceList();
+		})
+	}
 </script>
 @endsection
