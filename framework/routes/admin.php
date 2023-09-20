@@ -119,8 +119,11 @@ Route::namespace ('Admin')->group(function () {
         Route::post('delete-vehicle-reviews', 'VehiclesController@bulk_delete_reviews');
 
         Route::resource('booking-services', 'BookingServicesController');
+        Route::get('booking-services/edit/{id}', 'BookingServicesController@edit');
         Route::get('/booking-services-fetch', 'BookingServicesController@fetch_data');
         Route::post('/booking-services-delete', 'BookingServicesController@delete_item');
+        Route::post('/booking-services-create', 'BookingServicesController@create_item');
+        Route::post('/booking-services-update', 'BookingServicesController@update_item');
 
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');

@@ -85,7 +85,7 @@
 		$.get("{{url('admin/booking-services-fetch')}}", function (res) {
 			let str = ""
 			for(let i = 0; i < res.length; i++) {
-				str += "<tr><td style='text-align: center'>"+(i+1)+"</td><td><img src='{{asset('uploads/services/')}}/"+res[i].icon+"'></td><td>"+res[i].name+"</td><td>"+res[i].description+"</td><td style='text-align: center'><a class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a> <a onclick='confirmDelete(" + res[i].id + ")' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a></td></tr>";
+				str += "<tr><td style='text-align: center'>"+(i+1)+"</td><td><img src='{{asset('uploads/services/')}}/"+res[i].icon+"'></td><td>"+res[i].name+"</td><td>"+res[i].description+"<div><p class='badge bg-success'>" + (res[i].website == 1 ? 'website' : '') + "</p> <p class='badge bg-success'>" + (res[i].backend == 1 ? 'backend' : '') + "</p> <p class='badge bg-success'>" + (res[i].corporate == 1 ? 'corporate' : '') + "</p></div></td><td style='text-align: center'><a class='btn btn-info btn-sm' onclick='editItem(" + res[i].id + ")'><i class='fa fa-edit'></i></a> <a onclick='confirmDelete(" + res[i].id + ")' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a></td></tr>";
 			}
 			$("#booking_services_list tbody").html(str);
 		})
@@ -93,7 +93,11 @@
 
 	function confirmDelete(id) {
 		deleteID = id;
-    $('#bulkModal').modal('show');
+    	$('#bulkModal').modal('show');
+	}
+	
+	function editItem(id) {
+        window.location.href = "{{url('admin/booking-services/edit')}}/"+id;
 	}
 
 	function deleteItem() {
