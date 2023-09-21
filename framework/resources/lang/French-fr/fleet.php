@@ -37,6 +37,8 @@ return [
     'self_drive_rate_per_hour' => 'Self-Drive Rate Per Hour (GH)',
     'driver_allowance' => "Driver's Allowance (GH)",
     'updated_success' => 'Updated Successfully',
+    'hourly_rate' => 'Hourly Rate',
+    'hour_rate' => 'Hour Rate',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Discuter',
     'pusher_app_id' => 'ID de l\'application Pusher',

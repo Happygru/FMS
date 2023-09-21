@@ -4,6 +4,10 @@
 <style>
   .table-label {
     font-size: 15px;
+    margin: 0;
+  }
+  .form-group {
+    margin-bottom: 0px;
   }
   tr > th {
     width: 25%;
@@ -40,19 +44,19 @@
                   <td>{{ $rate_item->name }}</td>
                   <td>
                     <div class="form-group">
-                      <label for="" class="form-label table-label">Hourly Rate</label>
+                      <label for="" class="form-label table-label">@lang('fleet.hourly_rate')</label>
                       <input type="text" class="form-control hourly" value="{{ $rate_item->hourly }}">
                     </div>
                     <div class="form-group">
-                      <label for="" class="form-label table-label">2 Hour Rate</label>
+                      <label for="" class="form-label table-label">2 @lang('fleet.hour_rate')</label>
                       <input type="text" class="form-control hourly_2" value="{{ $rate_item->hourly_2 }}">
                     </div>
                     <div class="form-group">
-                      <label for="" class="form-label table-label">3 Hour Rate</label>
+                      <label for="" class="form-label table-label">3 @lang('fleet.hour_rate')</label>
                       <input type="text" class="form-control hourly_3" value="{{ $rate_item->hourly_3 }}">
                     </div>
                     <div class="form-group">
-                      <label for="" class="form-label table-label">4 Hour Rate</label>
+                      <label for="" class="form-label table-label">4 @lang('fleet.hour_rate')</label>
                       <input type="text" class="form-control hourly_4" value="{{ $rate_item->hourly_4 }}">
                     </div>
                   </td>
