@@ -74,8 +74,30 @@ class RatesController extends Controller
     return response()->json(['success' => true, 'code' => 200]);   
   }
 
+  public function insurance_update(Request $request) {
+    $data = $request->input('data');
+    foreach($data as $item) {
+      $rate = RateModel::find($item['id']);
+      if ($rate) {  // if record with that id exists
+        $rate->ins_1_2 = $item['ins_1_2'];
+        $rate->ins_3_6 = $item['ins_3_6'];
+        $rate->ins_7_15 = $item['ins_7_15'];
+        $rate->ins_16_30 = $item['ins_16_30'];
+        $rate->save();  // save the updated record
+      }
+      else  // if record with that id does not exist
+        return response()->json(['success' => false, 'code' => 402]);
+    }
+    return response()->json(['success' => true, 'code' => 200]);
+  }
+
   public function insuranceRates() {
-      return view('rates.insuranceRates');
+    $data['rate_list'] = DB::table('category as c')
+      ->leftJoin('rate as r', 'c.id', '=', 'r.category')
+      ->select('c.name', 'r.*')
+      ->where('c.deleted', '=', 0)
+      ->get();
+    return view('rates.insuranceRates', $data);
   }
 
   public function rateCalculator() {
