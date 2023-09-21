@@ -25,7 +25,7 @@
 				<h3 class="card-title">
 					@lang('fleet.edit_hourly_rate')
 				</h3>
-        <a href="javascript:;" class="btn btn-success btn-sm update_rates_btn">Update Rates</a>
+        <a href="javascript:;" class="btn btn-success btn-sm update_rates_btn">@lang('fleet.update')</a>
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
@@ -62,13 +62,13 @@
                   </td>
                   <td>
                     <div class="form-group">
-                      <label for="" class="form-label table-label">Hourly Rate</label>
+                      <label for="" class="form-label table-label">@lang('fleet.hourly_rate')</label>
                       <input type="text" class="form-control hourly_sd" value="{{ $rate_item->hourly_sd }}">
                     </div>
                   </td>
                   <td>
                     <div class="form-group">
-                      <label for="" class="form-label table-label">Hourly Rate</label>
+                      <label for="" class="form-label table-label">@lang('fleet.hourly_rate')</label>
                       <input type="text" class="form-control hourly_da" value="{{ $rate_item->hourly_da }}">
                     </div>
                   </td>
@@ -76,7 +76,7 @@
               @endforeach
             </tbody>
           </table>
-          <a href="javascript:;" class="btn btn-success btn-sm update_rates_btn">Update Rates</a>
+          <a href="javascript:;" class="btn btn-success btn-sm update_rates_btn">@lang('fleet.update')</a>
 				</div>
 			</div>
 		</div>

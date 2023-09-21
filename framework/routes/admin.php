@@ -130,6 +130,7 @@ Route::namespace ('Admin')->group(function () {
         Route::get('rates/insuranceRates', 'RatesController@insuranceRates')->name('rates.insuranceRates');
         Route::get('rates/rateCalculator','RatesController@rateCalculator')->name('rates.rateCalculator');
         Route::post('/rates-hourly-update', 'RatesController@hourly_update');
+        Route::post('/rates-dailyRentCar-update', 'RatesController@dailyRentCar_update');
 
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');
