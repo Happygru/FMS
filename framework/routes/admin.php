@@ -125,6 +125,12 @@ Route::namespace ('Admin')->group(function () {
         Route::post('/booking-services-create', 'BookingServicesController@create_item');
         Route::post('/booking-services-update', 'BookingServicesController@update_item');
 
+        Route::get('rates/hourly', 'RatesController@hourly')->name('rates.hourly');
+        Route::get('rates/dailyRentCar', 'RatesController@dailyRentCar')->name('rates.dailyRentCar');
+        Route::get('rates/insuranceRates', 'RatesController@insuranceRates')->name('rates.insuranceRates');
+        Route::get('rates/rateCalculator','RatesController@rateCalculator')->name('rates.rateCalculator');
+        Route::post('/rates-hourly-update', 'RatesController@hourly_update');
+
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');
         Route::post('print-income', 'ReportsController@income_print');

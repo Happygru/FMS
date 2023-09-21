@@ -1001,6 +1001,62 @@ input:checked + .slider:before {
                </ul>
               </li>
 
+              @if(Request::is('admin/rates*'))
+              @php($class="menu-open")
+              @php($active="active")
+
+              @else
+              @php($class="")
+              @php($active="")
+              @endif
+              <li class="nav-item has-treeview {{$class}}">
+               <a href="#" class="nav-link {{$active}}">
+                <i class="nav-icon fa fa-registered"></i>
+                <p>
+                  @lang('menu.rates')
+                  <i class="right fa fa-angle-left"></i>
+                </p>
+               </a>
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{ route('rates.hourly')}}"
+                    class="nav-link @if(Request::is('admin/rates/hourly')) active @endif">
+                    <i class="fa fa-clock nav-icon "></i>
+                    <p>
+                      @lang('menu.hourly')
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('rates.dailyRentCar')}}"
+                    class="nav-link @if(Request::is('admin/rates/dailyRentCar')) active @endif">
+                    <i class="fa fa-calendar nav-icon "></i>
+                    <p>
+                      @lang('menu.daily_rent_a_car')
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('rates.insuranceRates')}}"
+                    class="nav-link @if(Request::is('admin/rates/insuranceRates')) active @endif">
+                    <i class="fa fa-star nav-icon "></i>
+                    <p>
+                      @lang('menu.insurance_rates')
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('rates.rateCalculator')}}"
+                    class="nav-link @if(Request::is('admin/rates/rateCalculator')) active @endif">
+                    <i class="fa fa-calculator nav-icon "></i>
+                    <p>
+                      @lang('menu.rate_calculator')
+                    </p>
+                  </a>
+                </li>
+               </ul>
+              </li>
+
               @if(Request::is('admin/reports*'))
               @php($class="menu-open")
               @php($active="active")

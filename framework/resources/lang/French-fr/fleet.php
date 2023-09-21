@@ -30,6 +30,13 @@ return [
     'service_added_successfully' => 'Service Added Successfully',
     'service_updated_successfully' => 'Service Updated Successfully',
     'not_found_service' => 'Not Found Service',
+    'edit_hourly_rate' => "Edit Hourly Rate",
+    'all_field_validate' => 'Please check all fields',
+    'vehicle_category' => 'Vehicle Category',
+    'chauffeur_driven_rate_per_hour' => 'Chauffeur-Driven Rate per Hour (GH)',
+    'self_drive_rate_per_hour' => 'Self-Drive Rate Per Hour (GH)',
+    'driver_allowance' => "Driver's Allowance (GH)",
+    'updated_success' => 'Updated Successfully',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Discuter',
     'pusher_app_id' => 'ID de l\'application Pusher',
