@@ -41,6 +41,14 @@ return [
 	"booking_services" => "Booking Services",
 	"all_services" => "All Services",
 	"new_service" => "New Service",
+	"rates" => "Rates",
+	"hourly" => "Hourly",
+	"daily_rent_a_car" => "Daily Rent-A-Car",
+	"insurance_rates" => "Insurance Rates",
+	"rate_calculator" => "Rate Calculator",
+	'branches' => 'Branches',
+    'all_branches' => 'All Branches',
+    'new_branch' => 'New Branch',
 
 	'reports' => 'Rapports',
 
