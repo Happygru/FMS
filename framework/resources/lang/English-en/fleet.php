@@ -15,6 +15,7 @@ return [
     'details' => 'Details',
     'add_booking_service' => 'Add Booking Service',
     'all_services' => 'All Services',
+    'service_type' => 'Service Type',
     'icon' => 'Icon',
     'enter_service_name' => 'Enter Service Name',
     'service_icon' => 'Service Icon',

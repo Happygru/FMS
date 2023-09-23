@@ -32,22 +32,14 @@
 								<th style="width: 60px; text-align: center;">No</th>
 								<th style="width: 20%;min-width:100px">@lang('fleet.icon')</th>
 								<th style="width: 15%;">@lang('fleet.name')</th>
-								<th>@lang('fleet.description')</th>
+								<th style="width: 40%;">@lang('fleet.description')</th>
+								<th style="width: 15%">@lang('fleet.service_type')</th>
 								<th style="width: 90px;white-space:nowrap;">@lang('fleet.action')</th>
 							</tr>
 						</thead>
 						<tbody>
 
 						</tbody>
-						<tfoot>
-							<tr>
-                <th style="width: 60px; text-align: center;"></th>
-                <th style="width: 20%;min-width:100px">@lang('fleet.icon')</th>
-                <th style="width: 15%;">@lang('fleet.name')</th>
-                <th>@lang('fleet.description')</th>
-                <th style="width: 90px;white-space:nowrap;">@lang('fleet.action')</th>
-              </tr>
-            </tfoot>
 					</table>
 				</div>
 			</div>
@@ -85,9 +77,10 @@
 		$.get("{{url('admin/booking-services-fetch')}}", function (res) {
 			let str = ""
 			for(let i = 0; i < res.length; i++) {
-				str += "<tr><td style='text-align: center'>"+(i+1)+"</td><td><img src='{{asset('uploads/services/')}}/"+res[i].icon+"'></td><td>"+res[i].name+"</td><td>"+res[i].description+"<div><p class='badge bg-success'>" + (res[i].website == 1 ? 'website' : '') + "</p> <p class='badge bg-success'>" + (res[i].backend == 1 ? 'backend' : '') + "</p> <p class='badge bg-success'>" + (res[i].corporate == 1 ? 'corporate' : '') + "</p></div></td><td style='text-align: center'><a class='btn btn-info btn-sm' onclick='editItem(" + res[i].id + ")'><i class='fa fa-edit'></i></a> <a onclick='confirmDelete(" + res[i].id + ")' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a></td></tr>";
+				str += "<tr><td style='text-align: center'>"+(i+1)+"</td><td><img src='{{asset('uploads/services/')}}/"+res[i].icon+"'></td><td>"+res[i].name+"</td><td>"+res[i].description+"<div><p class='badge bg-success'>" + (res[i].website == 1 ? 'website' : '') + "</p> <p class='badge bg-success'>" + (res[i].backend == 1 ? 'backend' : '') + "</p> <p class='badge bg-success'>" + (res[i].corporate == 1 ? 'corporate' : '') + "</p></div></td><td>" + (res[i].type == 'C' ? '<p class="badge bg-primary">Chauffeur-Driven</p>' : '<p class="badge bg-warning">Self-Driven</p>') + "</td><td style='text-align: center;white-space:nowrap;'><a class='btn btn-info btn-sm' onclick='editItem(" + res[i].id + ")'><i class='fa fa-edit'></i></a> <a onclick='confirmDelete(" + res[i].id + ")' class='btn btn-danger btn-sm'><i class='fa fa-trash'></i></a></td></tr>";
 			}
 			$("#booking_services_list tbody").html(str);
+			$("#booking_services_list").DataTable();
 		})
 	}
 

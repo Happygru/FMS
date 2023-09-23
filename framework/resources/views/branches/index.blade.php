@@ -23,31 +23,31 @@
                 <div class="table-responsive">
                     <table class="table table-responsive" id="branch_list" style="min-width: max-content; width: 100%;">
                         <thead class="thead-inverse">
-													<tr>
-														<th style="width:40%">Branch</th>
-														<th style="width:15%">Code</th>
-														<th style="width:10%">Rate</th>
-														<th style="width:10%">Commission</th>
-														<th style="width:20%">Manager</th>
-														<th style="width:10%">Actions</th>
-													</tr>
+							<tr>
+								<th style="width:40%">Branch</th>
+								<th style="width:15%">Code</th>
+								<th style="width:10%">Rate</th>
+								<th style="width:10%">Commission</th>
+								<th style="width:20%">Manager</th>
+								<th style="width:10%">Actions</th>
+							</tr>
                         </thead>
                         <tbody>
-													@foreach($branches as $branch)
-														<tr>
-															<td>{{ $branch->name }}</td>
-															<td>{{ $branch->code }}</td>
-															<td>{{ $branch->rate }}</td>
-															<td>{{ $branch->commission }}</td>
-															<td>{{ $branch->username }}</td>
-															<td>
-																<button class="btn btn-success" onclick="edit_branch({{ $branch->id }})">
-																		<i class="fa fa-edit"></i>
-																		Edit
-																</button>
-															</td>
-														</tr>
-													@endforeach
+							@foreach($branches as $branch)
+								<tr>
+									<td>{{ $branch->name }}</td>
+									<td>{{ $branch->code }}</td>
+									<td>{{ $branch->rate }}</td>
+									<td>{{ $branch->commission }}</td>
+									<td>{{ $branch->username }}</td>
+									<td>
+										<button class="btn btn-success" onclick="edit_branch({{ $branch->id }})">
+												<i class="fa fa-edit"></i>
+												Edit
+										</button>
+									</td>
+								</tr>
+							@endforeach
                         </tbody>
                     </table>
                 </div>

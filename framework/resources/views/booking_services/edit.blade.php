@@ -56,6 +56,13 @@
             <textarea id="service_description" rows="10" class="form-control">{{$service->description}}</textarea>
           </div>
           <div class="form-group">
+            <label class="form-label">@lang('fleet.service_type')</label>
+            <select class="form-control" id="service_type">
+              <option value="C" @if($service->type == 'C') selected @endif>Chauffeur-Driven</option>
+              <option value="S" @if($service->type == 'S') selected @endif>Self-Driven</option>
+            </select>
+          </div>
+          <div class="form-group">
             <div class="form-check">
               <input class="form-check-input big-checkbox" type="checkbox" value="" id="website_checkbox" {{$service->website ? 'checked' : ''}}>
               <label class="form-check-label" for="website_checkbox">
@@ -119,6 +126,7 @@
     $("#submit_btn").click(function(e) {
       const name = $("#service_name").val();
       const description = $("#service_description").val();
+      const type = $("#service_type").val();
       const website = $("#website_checkbox").is(":checked");
       const backend = $("#backend_checkbox").is(":checked");
       const corporate = $("#corporate_checkbox").is(":checked");
@@ -154,6 +162,7 @@
       formData.append('name', name);
       formData.append('description', description);
       formData.append('icon', icon);
+      formData.append('type', type);
       formData.append('website', Number(website));
       formData.append('backend', Number(backend));
       formData.append('corporate', Number(corporate));
