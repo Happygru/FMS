@@ -186,6 +186,9 @@ Route::namespace ('Admin')->group(function () {
         // Route::get('fb', 'SettingsController@fb_create')->name('fb');
         Route::post('firebase-settings', 'SettingsController@firebase');
         Route::get('fare-settings', 'SettingsController@fare_settings');
+        Route::post('/fare-fetch', 'SettingsController@fare_fetch_data');
+        Route::post('/fare-update', 'SettingsController@fare_update_data');
+
         Route::post('fare-settings', 'SettingsController@store_fareSettings');
         Route::post('store-key', 'SettingsController@store_key');
         Route::get('test-key', 'SettingsController@test_key');

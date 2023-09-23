@@ -60,6 +60,7 @@ use App\Model\VehicleTypeModel;
 use App\Model\Vendor;
 use App\Model\WorkOrderLogs;
 use App\Model\WorkOrders;
+use App\Model\RateModel;
 use Auth;
 use DB;
 use Edujugon\PushNotification\PushNotification;
@@ -311,11 +312,29 @@ class SettingsController extends Controller {
 		$vehicle_types = VehicleTypeModel::get();
 		$all = array();
 		foreach ($vehicle_types as $type) {
-			$all[] = $type->vehicletype;
+			$all[] = $type;
 		}
 		$data['types'] = array_unique($all);
 		return view('utilities.fare_settings', $data);
 	}
+
+	public function fare_fetch_data(Request $request) {
+		$rate = RateModel::where('category', $request->id)->first();
+    return response()->json(['success' => true, 'data' => $rate, 'code' => 200]);
+	}
+
+  public function fare_update_data(Request $request) {
+    $data = $request->all();
+    $rate = RateModel::find($data['id']);
+
+    if($rate) {
+      $rate->update($data);
+      return response()->json(['success' => true, 'code' => 200]);
+    }
+    else {
+      return response()->json(['success' => false, 'code' => 400]);
+    }
+  }
 
 	public function store_fareSettings(Request $request) {
 		foreach ($request->get('name') as $key => $val) {
