@@ -137,6 +137,10 @@ Route::namespace ('Admin')->group(function () {
         Route::post('/branch-create', 'BranchesController@branch_create');
         Route::post('/branch-update', 'BranchesController@branch_update');
 
+        Route::resource('addon', 'AddonController');
+        Route::post('/addon-create', 'AddonController@addon_create');
+        Route::post('/addon-update', 'AddonController@addon_update');
+
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');
         Route::post('print-income', 'ReportsController@income_print');

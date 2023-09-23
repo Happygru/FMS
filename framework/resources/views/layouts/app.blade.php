@@ -1095,6 +1095,44 @@ input:checked + .slider:before {
                 </ul>
               </li>
 
+              @if(Request::is('admin/addon*'))
+              @php($class="menu-open")
+              @php($active="active")
+
+              @else
+              @php($class="")
+              @php($active="")
+              @endif
+              <li class="nav-item has-treeview {{$class}}">
+               <a href="#" class="nav-link {{$active}}">
+                <i class="nav-icon fa fa-building"></i>
+                <p>
+                  @lang('menu.add_ons')
+                  <i class="right fa fa-angle-left"></i>
+                </p>
+               </a>
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('addon.index')}}"
+                      class="nav-link @if(Request::is('admin/addon')) active @endif">
+                      <i class="fa fa-university nav-icon "></i>
+                      <p>
+                        @lang('menu.all_add_ons')
+                      </p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('addon.create')}}"
+                      class="nav-link @if(Request::is('admin/addon/create')) active @endif">
+                      <i class="fa fa-plus nav-icon "></i>
+                      <p>
+                        @lang('menu.new_add_on')
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
               @if(Request::is('admin/reports*'))
               @php($class="menu-open")
               @php($active="active")

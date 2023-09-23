@@ -60,6 +60,9 @@ return [
     'edit_branch' => 'Edit branch',
     'request_error' => 'Request Error',
     'edit_booking_service' => 'Edit Booking Service',
+    'edit_add_on' => 'Edit Add-On',
+    'image' => 'Image',
+    'addon_already_exist' => 'Add-On is already exists',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'ID de aplicación de Pusher',
