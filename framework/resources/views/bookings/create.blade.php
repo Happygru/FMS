@@ -58,6 +58,19 @@
     justify-content: center;
     gap: 10px;
   }
+
+  .vehicle_detail p {
+    font-weight: bold;
+  }
+
+  .vehicle_detail span, .vehicle_detail p {
+    font-size: 16px;
+  }
+
+  .vehicle_detail hr {
+    border-top: 1px solid #ccc;
+    margin-block: 15px;
+  }
 </style>
 @endsection
 @section('breadcrumb')
@@ -195,8 +208,6 @@
                   <option value="2">2</option>
                   <option value="3">3</option>
                   <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
                 </select>
               </div>
             </div>
@@ -289,15 +300,57 @@
               </div>
               <select id="vehicle_list" class="form-control">
                 @foreach($vehicles as $vehicle)
-                  <option value="{{$vehicle->id}}">{{$vehicle->make_name}}</option>
+                  <option value="{{$vehicle->vehicle_id}}">{{$vehicle->make_name}}</option>
                 @endforeach
               </select>
             </div>
             <div class="col-md-4">
               <img src="{{asset('uploads/vehicles/'.$vehicles[0]->vehicle_image)}}" style="width: 100%;" alt="vehicle_img" id="vehicle_img" />
-              <input type="hidden" id="vehicles_data_string" value={{$vehicles}}>
+              <input type="hidden" id="vehicles_data_string" value="{{$vehicles}}">
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-4 col-sm-6">
+                  <p><i class="fa fa-user-group"></i> - <span id="vehicle_seats">{{$vehicles[0]->seats}}</span></p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <p><i class="fa fa-window-maximize"></i> - <span id="vehicle_doors">{{$vehicles[0]->doors}}</span></p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <p><i class="fa fa-luggage-cart"></i> - <span id="vehicle_luggage">{{$vehicles[0]->luggage}}</span></p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <p><i class="fa fa-snowflake"></i> - <span id="vehicle_aircondition">{{$vehicles[0]->aircondition == 'Y' ? 'Yes' : 'No'}}</span></p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <p><i class="fa fa-sliders"></i> - <span id="vehicle_transmission">{{$vehicles[0]->transmission_type}}</span></p>
+                </div>
+              </div>
+              <div class="row vehicle_detail">
+                <div class="col-md-6">
+                  <span>Daily km Allowance</span>
+                </div>
+                <div class="col-md-6">
+                  <p>150</p>
+                </div>
+                <div class="col-md-6">
+                  <span>Cost per extra km</span>
+                </div>
+                <div class="col-md-6">
+                  <p>0.25USD / 2.875GHS</p>
+                </div>
+                <div class="col-md-6">
+                  Extra km payable(estimate)
+                </div>
+                <div class="col-md-6 vehicle">
+                  <p>Estimated km to & from acc: 60 km</p>
+                  <hr />
+                  <p>Total km Allowance : 0 km</p>
+                  <hr />
+                  <p>Estimated amount : 15 USD / 172.5GHS</p>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="row step_button_group">
             <button class="btn btn-info" onclick="gostep(2)"><i class="fa fa-angle-left"></i> Prev</button>
@@ -410,9 +463,14 @@
       $("#vehicle_list").change(function() {
         var id = $(this).val();
         var data = vehicle_list.filter(function(item){
-          return item.id == id; 
+          return item.vehicle_id == id; 
         })[0];
         $("#vehicle_img").attr("src", "{{asset('uploads/vehicles/')}}" + "/" + data.vehicle_image);
+        $("#vehicle_seats").html(data.seats);
+        $("#vehicle_doors").html(data.doors);
+        $("#vehicle_luggage").html(data.luggage);
+        $("#vehicle_aircondition").html(data.aircondition == 'Y' ? 'Yes' : 'No');
+        $("#vehicle_transmission").html(data.transmission_type);
       })
 
       $("#airport_pickup").change(function() {

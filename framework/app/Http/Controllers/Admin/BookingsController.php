@@ -557,10 +557,21 @@ class BookingsController extends Controller {
 
 		}
 		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		if ($user == null) {
-			$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
-		} else {
-			$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();}
+		// if ($user == null) {
+		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
+		// } else {
+		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
+		// }
+		$query = DB::table('vehicles as v')
+				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
+				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+				->where('v.in_service', '1');
+
+		if ($user !== null) {
+			$query = $query->where('v.group_id', $user);
+		}
+
+		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
 		return view("bookings.create", $data);
 		//dd($data['vehicles']);
