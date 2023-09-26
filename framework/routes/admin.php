@@ -121,6 +121,7 @@ Route::namespace ('Admin')->group(function () {
         Route::resource('booking-services', 'BookingServicesController');
         Route::get('booking-services/edit/{id}', 'BookingServicesController@edit');
         Route::get('/booking-services-fetch', 'BookingServicesController@fetch_data');
+        Route::post('/booking-service-fetch-condition', 'BookingServicesController@fetch_data_condition');
         Route::post('/booking-services-delete', 'BookingServicesController@delete_item');
         Route::post('/booking-services-create', 'BookingServicesController@create_item');
         Route::post('/booking-services-update', 'BookingServicesController@update_item');
@@ -140,6 +141,7 @@ Route::namespace ('Admin')->group(function () {
         Route::resource('addon', 'AddonController');
         Route::post('/addon-create', 'AddonController@addon_create');
         Route::post('/addon-update', 'AddonController@addon_update');
+        Route::post('/get-addon-list', 'AddonController@get_addon_list');
 
         Route::get('reports/income', 'ReportsController@income');
         Route::post('reports/income', 'ReportsController@income_post');

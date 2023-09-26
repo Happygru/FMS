@@ -17,6 +17,7 @@ use App\Model\AddonModel;
 use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Response;
 
 class AddonController extends Controller {
   public function __construct() {
@@ -104,5 +105,10 @@ class AddonController extends Controller {
     $addon->save();
 
     return response()->json(['success' => true, 'code' => 200]);
+  }
+
+  public function get_addon_list(Request $request) {
+    $data = AddonModel::where('type', $request->type)->get();
+    return response()->json(['success' => true, 'data' => $data]);
   }
 }

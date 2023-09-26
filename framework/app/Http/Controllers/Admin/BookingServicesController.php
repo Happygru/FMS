@@ -47,6 +47,11 @@ class BookingServicesController extends Controller {
         $bookingServices = BookingServicesModel::all();
         return response()->json($bookingServices);
     }
+    public function fetch_data_condition(Request $request) {
+        $type = $request->get('service_type');
+        $data = BookingServicesModel::where('type', $type)->get();
+        return response()->json([ 'success' => true, 'data' => $data]);
+    }
 
     public function delete_item(Request $request) {
         $bookingServices = BookingServicesModel::find($request->id);

@@ -66,6 +66,7 @@ return [
     'edit_add_on' => 'Edit Add-On',
     'image' => 'Image',
     'addon_already_exist' => 'Add-On is already exists',
+    'general_information' => 'General Information',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

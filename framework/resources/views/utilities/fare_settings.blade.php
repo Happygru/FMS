@@ -50,6 +50,9 @@
             <li class="nav-item">
 							<a href="#daily_content" data-toggle="tab" class="nav-link text-uppercase btn-sm"> Daily rate <i class="fa"></i></a>
 						</li>
+            <li class="nav-item">
+              <a href="#insurance_content" data-toggle="tab" class="nav-link text-uppercase btn-sm">Insurance rate <i class="fa"></i></a>
+            </li>
 					</ul>
 				</div>
 				<div class="row">
@@ -174,6 +177,44 @@
                   </table>
                 </div>
               </div>
+              <div class="tab-pane" id="insurance_content">
+                <div class="table-responsive">
+                  <table class="table table-responsive">
+                    <thead class="thead-inverse">
+                      <tr>
+                        <th>@lang('fleet.1_2_day_rates')</th>
+                        <th>@lang('fleet.3_6_day_rates')</th>
+                        <th>@lang('fleet.7_15_day_rates')</th>
+                        <th>@lang('fleet.16_30_day_rates')</th>
+                      </tr>   
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="form-group">
+                            <input type="text" class="form-control" id="ins_1_2">
+                          </div>
+                        </td>
+                        <td>
+                          <div class="form-group">
+                            <input type="text" class="form-control" id="ins_3_6">
+                          </div>
+                        </td>
+                        <td>
+                          <div class="form-group">
+                            <input type="text" class="form-control" id="ins_7_15">
+                          </div>
+                        </td>
+                        <td>
+                          <div class="form-group">
+                            <input type="text" class="form-control" id="ins_16_30">
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
               <a href="javascript:;" class="btn btn-success btn-sm update_btn" onclick="update()">@lang('fleet.update')</a>
 						</div>
 					</div>
@@ -231,6 +272,10 @@
       wdwa_16_30_sd: $('#wdwa_16_30_sd').val() || 0,
       wdwa_dka: $('#wdwa_dka').val() || 0,
       wdwa_dkr: $('#wdwa_dkr').val() || 0,
+      ins_1_2: $('#ins_1_2').val() || 0,
+      ins_3_6: $('#ins_3_6').val() || 0,
+      ins_7_15: $('#ins_7_15').val() || 0,
+      ins_16_30: $('#ins_16_30').val() || 0,
     };
 
     $.post("{{url('/admin/fare-update')}}", fleetData, function (data) {
