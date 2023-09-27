@@ -95,17 +95,17 @@
                 <div class="radio">
                   <label>
                     <input type="radio" name="dateTimeOption" value="system_date" checked>
-                    Use System Date/Time
+                    @lang('fleet.use_system_datetime')
                   </label>
                 </div>
                 <div class="radio">
                   <label>
                     <input type="radio" name="dateTimeOption" value="input_date">
-                    Enter Date/Time
+                    @lang('fleet.enter_datetime')
                   </label>
                 </div>
                 <div class="view_datetime">
-                  Current System Date/Time: <span></span>
+                   @lang('fleet.current_system_datetime'): <span></span>
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@
           <div class="row" id="general_date">
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">Select Date</label>
+                <label class="form-label"> @lang('fleet.select_date') </label>
                 <div class='input-group mb-3 date'>
                   <div class="input-group-prepend">
                       <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
@@ -136,7 +136,7 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">Service Type</label>
+                <label class="form-label"> @lang('fleet.service_type') </label>
                 <select class="form-control" id="service">
                   <option value="C">Chauffeur-Driven</option>
                   <option value="S">Self-Driven</option>
@@ -145,21 +145,21 @@
             </div>
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">Reservation</label>
+                <label class="form-label">@lang('fleet.reservation')</label>
                 <select class="form-control" id="reservation_list"></select>
               </div>
             </div>
           </div>
           <div class="row step_button_group">
-            <button class="btn btn-info" onclick="gostep(2)">Next <i class="fa fa-angle-right"></i></button>
+            <button class="btn btn-info" onclick="gostep(2)"> @lang('fleet.next') <i class="fa fa-angle-right"></i></button>
           </div>
         </div>
         <div class="step step-2">
-          <h3>Booking Details <span class="wholeday_component">(Whole Day Service)</span><span class="hourly_component">(Hourly Service)</span></h3>
+          <h3>@lang('fleet.booking_detail') <span class="wholeday_component">(@lang('fleet.whole_day_service'))</span><span class="hourly_component">(@lang('fleet.hourly_service'))</span></h3>
           <div class="row">
             <div class="col-md-3 col-sm-6">
               <div class="form-group">
-                <label class="form-label">Select Customer</label>
+                <label class="form-label">@lang('fleet.select_customer')</label>
                 <select id="customer_list" class="form-control">
                   @foreach($customers as $customer)
                     <option value="{{$customer->id}}">{{$customer->name}}</option>
@@ -169,7 +169,7 @@
             </div>
             <div class="col-md-3 col-sm-6">
               <div class="form-group">
-                <label class="form-label">Pickup Date & Time</label>
+                <label class="form-label">@lang('fleet.pickup')</label>
                 <div class='input-group mb-3 date'>
                   <div class="input-group-prepend">
                       <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
@@ -180,7 +180,7 @@
             </div>
             <div class="col-md-3 col-sm-6">
               <div class="form-group">
-                <label class="form-label">Dropoff Date & Time</label>
+                <label class="form-label">@lang('fleet.dropoff')</label>
                 <div class='input-group mb-3 date'>
                   <div class="input-group-prepend">
                       <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
@@ -192,7 +192,7 @@
             <div class="col-md-3 col-sm-6 wholeday_component">
               <div class="form-group">
                 <label class="form-label">
-                  Final Destination Outside Accra?
+                  @lang('fleet.final_destination_outside_accra')?
                 </label>
                 <select id="destination" class="form-control">
                   <option value="Y">Yes</option>
@@ -202,7 +202,7 @@
             </div>
             <div class="col-md-3 col-sm-6 hourly_component">
               <div class="form-group">
-                <label class="form-label">Number of Hours</label>
+                <label class="form-label">@lang('fleet.number_of_hours')</label>
                 <select id="number_hours" class="form-control">
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -215,7 +215,7 @@
           <div class="row">
             <div class="col-md-3 col-sm-6">
               <div class="form-group">
-                <label class="form-label">Airport Pickup?</label>
+                <label class="form-label">@lang('fleet.airport_pickup')?</label>
                 <select id="airport_pickup" class="form-control">
                   <option value="Y">Yes</option>
                   <option value="N" selected>No</option>
@@ -224,7 +224,7 @@
             </div>
             <div class="col-md-3 col-sm-6" id="driver_list">
               <div class="form-group">
-                <label class="form-label">Select Driver</label>
+                <label class="form-label">@lang('fleet.selectDriver')</label>
                 <select class="form-control">
                   @foreach($drivers as $driver)
                     <option value="{{$driver->id}}">{{$driver->name}}</option>
@@ -234,13 +234,13 @@
             </div>
             <div class="col-md-3 col-sm-6">
               <div class="form-group">
-                <label class="form-label">No. of Travellers(including children)</label>
+                <label class="form-label">@lang('fleet.no_travellers')</label>
                 <input type="number" id="traveller_count" class="form-control" min="1" value="1">
               </div>
             </div>
             <div class="col-md-3 col-sm-6 wholeday_component">
               <div class="form-group">
-                <label class="form-label">Destination Outside Accra</label>
+                <label class="form-label">@lang('fleet.destination_outside_accra')</label>
                 <input type="text" id="final_destination" class="form-control" />
               </div>
             </div>
@@ -250,19 +250,19 @@
               <div class="row">
                 <div class="col-md-6 col-sm-12">
                   <div class="form-group">
-                    <label class="form-label">Pickup Address</label>
+                    <label class="form-label">@lang('fleet.pickup_addr')</label>
                     <input type="text" class="form-control" name="" id="pickup_addr" />
                   </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                   <div class="form-group">
-                    <label class="form-label">Drop-off Address</label>
+                    <label class="form-label">@lang('fleet.dropoff_addr')</label>
                     <input type="text" name="" id="dropoff_addr" class="form-control">
                   </div>
                 </div>
                 <div class="col-md-6 col-sm-12 airport">
                   <div class="form-group">
-                    <label class="form-label">Airport Arrival Date/Time</label>
+                    <label class="form-label">@lang('fleet.airport_arrival_datetime')</label>
                     <div class='input-group mb-3 date'>
                       <div class="input-group-prepend">
                           <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
@@ -273,7 +273,7 @@
                 </div>
                 <div class="col-md-6 col-sm-12 airport">
                   <div class="form-group">
-                    <label class="form-label">Airport Pickup Flight Details</label>
+                    <label class="form-label">@lang('fleet.airport_pickup_flight_details')</label>
                     <input type="text" class="form-control" id="airport_detail">
                   </div>
                 </div>
@@ -281,22 +281,22 @@
             </div>
             <div class="col-md-6 col-sm-12">
               <div class="form-group">
-                <label class="form-label">Note</label>
+                <label class="form-label">@lang('fleet.note')</label>
                 <textarea id="note" rows="5" class="form-control" placeholder="Enter Note for this booking"></textarea>
               </div>
             </div>
           </div>
           <div class="row step_button_group">
-            <button class="btn btn-info" onclick="gostep(1)"><i class="fa fa-angle-left"></i> Prev</button>
-            <button class="btn btn-info" onclick="gostep(3)">Next <i class="fa fa-angle-right"></i></button>
+            <button class="btn btn-info" onclick="gostep(1)"><i class="fa fa-angle-left"></i> @lang('fleet.prev') </button>
+            <button class="btn btn-info" onclick="gostep(3)"> @lang('fleet.next') <i class="fa fa-angle-right"></i></button>
           </div>
         </div>
         <div class="step step-3">
-          <h3>Select Vehicle</h3>
+          <h3>@lang('fleet.selectVehicle')</h3>
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">Select Vehicle</label>
+                <label class="form-label">@lang('fleet.selectVehicle')</label>
               </div>
               <select id="vehicle_list" class="form-control">
                 @foreach($vehicles as $vehicle)
@@ -328,7 +328,7 @@
               </div>
               <div class="row vehicle_detail">
                 <div class="col-md-6">
-                  <span>Daily km Allowance</span>
+                  <span>@lang('fleet.daily_km_allowance')</span>
                 </div>
                 <div class="col-md-6">
                   <p>150</p>
@@ -340,7 +340,7 @@
                   <p>0.25USD / 2.875GHS</p>
                 </div>
                 <div class="col-md-6">
-                  Extra km payable(estimate)
+                  @lang('fleet.extra_km_payable')
                 </div>
                 <div class="col-md-6 vehicle">
                   <p>Estimated km to & from acc: 60 km</p>
@@ -353,8 +353,8 @@
             </div>
           </div>
           <div class="row step_button_group">
-            <button class="btn btn-info" onclick="gostep(2)"><i class="fa fa-angle-left"></i> Prev</button>
-            <button class="btn btn-info" onclick="gostep(4)">Next <i class="fa fa-angle-right"></i></button>
+            <button class="btn btn-info" onclick="gostep(2)"><i class="fa fa-angle-left"></i> @lang('fleet.prev') </button>
+            <button class="btn btn-info" onclick="gostep(4)"> @lang('fleet.next') <i class="fa fa-angle-right"></i></button>
           </div>
         </div>
         <div class="step step-4">
@@ -362,7 +362,7 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">Addon Type</label>
+                <label class="form-label">@lang('fleet.addon_type')</label>
                 <select id="addon_type" class="form-control">
                   <option value="Tours">Tours</option>
                   <option value="Extras">Extras</option>
@@ -371,25 +371,26 @@
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">Addon</label>
+                <label class="form-label">@lang('fleet.addon')</label>
                 <select id="addon_list" class="form-control">
                 </select>
               </div>
               <div class="form-group">
-                <label for="" class="form-label"></label>
+                <label class="form-label">@lang('fleet.quantity')</label>
+                <input type="number" id="addon_quantity" class="form-control" value="1" min="1" />
               </div>
             </div>
             <div class="col-md-4">
               <img src="" style="width: 100%;" alt="addon_img" id="addon_img" />
             </div>
             <div class="col-md-4">
-              <h4>description</h4>
+              <h4>@lang('fleet.description')</h4>
               <p id="addon_description"></p>
             </div>
           </div>
           <div class="row step_button_group">
-            <button class="btn btn-info" onclick="gostep(3)"><i class="fa fa-angle-left"></i> Prev</button>
-            <button class="btn btn-info" onclick="save_booking()"><i class="fa fa-save"></i> Save Booking</button>
+            <button class="btn btn-info" onclick="gostep(3)"><i class="fa fa-angle-left"></i> @lang('fleet.prev') </button>
+            <button class="btn btn-info" onclick="save_booking()"><i class="fa fa-save"></i> @lang('fleet.save_booking') </button>
           </div>
         </div>
       </div>
@@ -578,7 +579,7 @@
         if($("#pickup_addr").val() == ""){
           new PNotify({
             title: 'Error',
-            text: "@lang('PickUp Address is empty')",
+            text: "@lang('fleet.pickup_address_not_empty')",
             type: 'error'
           });
           return;
@@ -587,7 +588,7 @@
         if($("#dropoff_addr").val() == ""){
           new PNotify({
             title: 'Error',
-            text: "@lang('DropOff Address is empty')",
+            text: "@lang('fleet.dropoff_address_not_empty')",
             type: 'error'
           });
           return;
@@ -596,7 +597,7 @@
         if($("#note").val() == ""){
           new PNotify({
             title: 'Error',
-            text: "@lang('Note is empty')",
+            text: "@lang('fleet.note_not_empty')",
             type: 'error'
           });
           return;
@@ -605,7 +606,7 @@
         if($("#airport_pickup").val() == "Y" && $("#airport_detail").val() == "") {
           new PNotify({
             title: 'Error',
-            text: "@lang('Airport Detail is empty')",
+            text: "@lang('fleet.airport_detail_not_empty')",
             type: 'error'
           });
           return;
@@ -614,7 +615,7 @@
         if($("#final_destination").val() == '' && $("#reservation_list").val() != 1) {
           new PNotify({
             title: 'Error',
-            text: "@lang('Destination Outside is empty')",
+            text: "@lang('fleet.destination_outside_accra_not_empty')",
             type: 'error'
           });
           return;

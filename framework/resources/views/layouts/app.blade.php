@@ -1001,7 +1001,7 @@ input:checked + .slider:before {
                </ul>
               </li>
 
-              @if(Request::is('admin/rates*'))
+              <!-- @if(Request::is('admin/rates*'))
               @php($class="menu-open")
               @php($active="active")
 
@@ -1055,7 +1055,7 @@ input:checked + .slider:before {
                   </a>
                 </li>
                </ul>
-              </li>
+              </li> -->
 
               @if(Request::is('admin/branch*'))
               @php($class="menu-open")
