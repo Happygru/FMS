@@ -310,6 +310,11 @@
             </div>
             <div class="col-md-4">
               <div class="row">
+                <div class="col-md-12">
+                  <h4><b id="total_amount"></b></h4>
+                </div>
+              </div>
+              <div class="row">
                 <div class="col-md-4 col-sm-6">
                   <p><i class="fa fa-user-group"></i> - <span id="vehicle_seats">{{$vehicles[0]->seats}}</span></p>
                 </div>
@@ -326,28 +331,28 @@
                   <p><i class="fa fa-sliders"></i> - <span id="vehicle_transmission">{{$vehicles[0]->transmission_type}}</span></p>
                 </div>
               </div>
-              <div class="row vehicle_detail">
+              <div class="row vehicle_detail wholeday_component">
                 <div class="col-md-6">
                   <span>@lang('fleet.daily_km_allowance')</span>
                 </div>
                 <div class="col-md-6">
-                  <p>150</p>
+                  <p id="daily_km_allowance">{{$vehicles[0]->wdwa_dka}}</p>
                 </div>
                 <div class="col-md-6">
-                  <span>Cost per extra km</span>
+                  <span>@lang('fleet.cost_per_extra_km')</span>
                 </div>
                 <div class="col-md-6">
-                  <p>0.25USD / 2.875GHS</p>
+                  <p id="daily_extra_per_cost">{{$vehicles[0]->wdwa_dkr}}GH₵</p>
                 </div>
                 <div class="col-md-6">
                   @lang('fleet.extra_km_payable')
                 </div>
                 <div class="col-md-6 vehicle">
-                  <p>Estimated km to & from acc: 60 km</p>
+                  <p>@lang('fleet.estimated_km_to_from_acc'): <span id="estimated_km_to">60</span>km</p>
                   <hr />
-                  <p>Total km Allowance : 0 km</p>
+                  <p>@lang('fleet.total_km_allowance'): <span id="total_km_allowance">0</span>km</p>
                   <hr />
-                  <p>Estimated amount : 15 USD / 172.5GHS</p>
+                  <p>@lang('fleet.estimated_amount'): <span id="estimated_amount">15 USD / 172.5GHS</span></p>
                 </div>
               </div>
             </div>
@@ -441,6 +446,7 @@
 
     let vehicle_list;
     let addon_list;
+    let distance_between_two_points = 200;
 
     $(document).ready(function() {
       set_datetime();
@@ -452,7 +458,7 @@
       $(".wholeday_component").hide();
       $(".airport").hide();
       vehicle_list = JSON.parse($("#vehicles_data_string").val());
-
+      set_vehicle_detail(vehicle_list[0]);
       $("#service").change(function() {
         if($(this).val() == 'C') {
           $("#driver_list").show();
@@ -466,12 +472,7 @@
         var data = vehicle_list.filter(function(item){
           return item.vehicle_id == id; 
         })[0];
-        $("#vehicle_img").attr("src", "{{asset('uploads/vehicles/')}}" + "/" + data.vehicle_image);
-        $("#vehicle_seats").html(data.seats);
-        $("#vehicle_doors").html(data.doors);
-        $("#vehicle_luggage").html(data.luggage);
-        $("#vehicle_aircondition").html(data.aircondition == 'Y' ? 'Yes' : 'No');
-        $("#vehicle_transmission").html(data.transmission_type);
+        set_vehicle_detail(data);
       })
 
       $("#airport_pickup").change(function() {
@@ -574,6 +575,52 @@
       })
     }
 
+    function set_vehicle_detail(data) {
+      $("#vehicle_img").attr("src", "{{asset('uploads/vehicles/')}}" + "/" + data.vehicle_image);
+      $("#vehicle_seats").html(data.seats);
+      $("#vehicle_doors").html(data.doors);
+      $("#vehicle_luggage").html(data.luggage);
+      $("#vehicle_aircondition").html(data.aircondition == 'Y' ? 'Yes' : 'No');
+      $("#vehicle_transmission").html(data.transmission_type);
+      $("#daily_km_allowance").text(data.wdwa_dka);
+      $("#daily_extra_per_cost").text(data.wdwa_dkr + "GH₵");
+      $("#estimated_km_to").text(distance_between_two_points - data.wdwa_dka > 0 ? distance_between_two_points - data.wdwa_dka : 0);
+      $("#total_km_allowance").text(distance_between_two_points + data.wdwa_dka);
+      if($("#reservation_list").val() == 1){
+        let hours = $("#number_hours").val();
+        let hourly_rate = 0;
+        let property = 'hourly';
+
+        // If hours is not equal to '1', modify the property string
+        if(hours !== '1') {
+            property = 'hourly_' + hours;
+        }
+
+        // Get the corresponding value from the data object
+        hourly_rate = data[property];
+        $("#total_amount").text(hourly_rate * hours + "GH₵");
+      } else {
+        let pickup_date = $("#pickup_date").val();
+        let dropoff_date = $("#dropoff_date").val();
+        let diff_days = get_difference_days(pickup_date, dropoff_date);
+        let daily_cost = 0;
+        let reservation_mode = $("#service").val();
+        let suffix = reservation_mode === 'C' ? '' : '_sd';
+        if(diff_days == 0)
+          diff_days = 1;
+        if (diff_days > 0 && diff_days < 3)
+          daily_cost = data['wdwa_1_2' + suffix];
+        else if (diff_days >= 3 && diff_days < 7)
+          daily_cost = data['wdwa_3_6' + suffix];
+        else if (diff_days >= 7 && diff_days < 15)
+          daily_cost = data['wdwa_7_15' + suffix];
+        else
+          daily_cost = data['wdwa_16_30' + suffix];
+        $("#estimated_amount").text(daily_cost + "GH₵");
+        $("#total_amount").text(daily_cost * diff_days + "GH₵");
+      }
+    }
+
     function gostep(step) {
       if(step == 3) {
         if($("#pickup_addr").val() == ""){
@@ -620,6 +667,18 @@
           });
           return;
         }
+        var id = $("#vehicle_list").val();
+        var data = vehicle_list.filter(function(item){
+          return item.vehicle_id == id; 
+        })[0];
+        set_vehicle_detail(data);
+
+        // Get distance 
+        // var origin = $("#pickup_addr").val();
+        // var destination = $("#dropoff_addr").val();
+        // $.post("{{url('admin/get-distance')}}", {origin, destination}, function(res) {
+        //   console.log(res);
+        // });
       }
 
       $(".step").hide();
@@ -632,6 +691,69 @@
         $(".hourly_component").hide();
         $(".wholeday_component").show();
       }
+    }
+
+    function get_difference_days(date1 = '0000-00-00 00:00:00', date2 = '0000-00-00 00:00:00') {
+      // Define the two dates
+      let from_date = new Date(date1);
+      let to_date = new Date(date2);
+
+      // Calculate the difference in milliseconds
+      let differenceInMilliseconds = Math.abs(to_date - from_date);
+
+      // Calculate the difference in days
+      let differenceInDays = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+
+      return differenceInDays;
+    }
+
+    function save_booking() {
+      const postData = new FormData();
+      postData.append('customer_id', $("#customer_list").val());
+      postData.append('user_id', "{{Auth::user()->id}}");
+      postData.append('vehicle_id', $("#vehicle_list").val());
+      postData.append('reservation_type', $("#reservation_list").val());
+      postData.append('service_type', $("#service").val());
+      postData.append('addon_id', $("#addon_list").val());
+      postData.append('addon_quantity', $("#addon_quantity").val());
+      if($("#service").val() == "C")
+        postData.append('driver_id', $("#driver_list").val());
+      postData.append('pickup', $("#pickup_date").val());
+      postData.append('dropoff', $("#dropoff_date").val());
+      postData.append('duration', get_difference_days($("#pickup_date").val(), $("#dropoff_date").val()) * 24 * 60);
+      postData.append('pickup_addr', $("#pickup_addr").val());
+      postData.append('dest_addr', $("#dropoff_addr").val());
+      postData.append('note', $("#note").val());
+      postData.append('travellers', $("#traveller_count").val());
+      postData.append('airport_pickup', $("#airport_pickup").val());
+      postData.append('airport_pickup_details', $("#airport_detail").val());
+      postData.append('airport_date', $("#airport_date").val());
+      postData.append('status', 1);
+      postData.append('payment', 1);
+
+      $.ajax({
+        url: "{{url('admin/booking-create')}}",
+        type: "POST",
+        data: postData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,  // tell jQuery not to set contentType
+        success: function (res) {
+          if(!res.success) {
+            new PNotify({
+              title: 'Error',
+              text: "@lang('fleet.booking_created_failed')",
+              type: 'error'
+            });
+            return;
+          }
+          new PNotify({
+            title: 'Success',
+            text: "@lang('fleet.booking_created_successfully')",
+            type: 'success'
+          });
+          setTimeout(function(){ location.reload(''); }, 1000);
+        }
+      });
     }
   </script>
 @endsection

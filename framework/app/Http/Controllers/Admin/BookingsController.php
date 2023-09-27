@@ -639,7 +639,7 @@ class BookingsController extends Controller {
 
 	}
 
-	public function store(BookingRequest $request) {
+	public function create_booking(Request $request) {
 
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
 		if ($xx) {
@@ -649,36 +649,36 @@ class BookingsController extends Controller {
 
 			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('dest_addr')]);
 
-			$booking = Bookings::find($id);
-			$booking->user_id = $request->get("user_id");
-			$booking->driver_id = $request->get('driver_id');
-			$dropoff = Carbon::parse($booking->dropoff);
-			$pickup = Carbon::parse($booking->pickup);
-			$diff = $pickup->diffInMinutes($dropoff);
-			$booking->note = $request->get('note');
-			$booking->duration = $diff;
-			$booking->udf = serialize($request->get('udf'));
-			$booking->accept_status = 1; //0=yet to accept, 1= accept
-			$booking->ride_status = "Upcoming";
-			$booking->booking_type = 1;
-			$booking->journey_date = date('d-m-Y', strtotime($booking->pickup));
-			$booking->journey_time = date('H:i:s', strtotime($booking->pickup));
-			$booking->save();
-			$mail = Bookings::find($id);
-			$this->booking_notification($booking->id);
+			// $booking = Bookings::find($id);
+			// $booking->user_id = $request->get("user_id");
+			// $booking->driver_id = $request->get('driver_id');
+			// $dropoff = Carbon::parse($booking->dropoff);
+			// $pickup = Carbon::parse($booking->pickup);
+			// $diff = $pickup->diffInMinutes($dropoff);
+			// $booking->note = $request->get('note');
+			// $booking->duration = $diff;
+			// $booking->udf = serialize($request->get('udf'));
+			// $booking->accept_status = 1; //0=yet to accept, 1= accept
+			// $booking->ride_status = "Upcoming";
+			// $booking->booking_type = 1;
+			// $booking->journey_date = date('d-m-Y', strtotime($booking->pickup));
+			// $booking->journey_time = date('H:i:s', strtotime($booking->pickup));
+			// $booking->save();
+			// $mail = Bookings::find($id);
+			// $this->booking_notification($id);
 
 			// send sms to customer while adding new booking
-			$this->sms_notification($booking->id);
+			// $this->sms_notification($id);
 
 			// browser notification
-			$this->push_notification($booking->id);
+			// $this->push_notification($id);
 			// if (Hyvikk::email_msg('email') == 1) {
 			// 	Mail::to($mail->customer->email)->send(new VehicleBooked($booking));
 			// 	Mail::to($mail->driver->email)->send(new DriverBooked($booking));
 			// }
-			return redirect()->route("bookings.index");
+			return response()->json(['success' => true]);
 		} else {
-			return redirect()->route("bookings.create")->withErrors(["error" => "Selected Vehicle is not Available in Given Timeframe"])->withInput();
+			return response()->json(['success' => false]);
 		}
 	}
 
@@ -905,5 +905,29 @@ class BookingsController extends Controller {
 		// if booking->status != 1 then delete income record
 		IncomeModel::where('income_id', $request->cancel_id)->where('income_cat', 1)->delete();
 		return back()->with(['msg' => 'Booking cancelled successfully!']);
+	}
+
+	public function get_distance(Request $request) {
+		$origin = urlencode($request->get('origin'));
+		$destination = urlencode($request->get('destination'));
+		$api_key = Hyvikk::api('api_key');
+		$url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$origin&destinations=$destination&key=$api_key";
+		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+		$response = curl_exec($ch);
+		curl_close($ch);
+		$responseData = json_decode($response, true);
+		if (isset($responseData['rows'][0]['elements'][0]['distance'])) {
+			$distance = $responseData['rows'][0]['elements'][0]['distance']['text'];
+			return response()->json(['success' => true, 'distance' => $distance]);
+		} else {
+			return response()->json(['success' => false]);
+		}
 	}
 }

@@ -205,6 +205,8 @@ class CustomersController extends Controller {
 		$user->address = $request->get("address");
 		$user->mobno = $request->get("phone");
 		$user->gender = $request->get('gender');
+		$user->customer_type = $request->get('customer_type');
+		$user->birthday = $request->get('birthday');
 		$user->save();
 
 		return redirect()->route("customers.index");

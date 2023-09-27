@@ -222,7 +222,9 @@ Route::namespace ('Admin')->group(function () {
         Route::get("/vehicles/disable/{id}", 'VehiclesController@disable');
         Route::post('/bookings-fetch', 'BookingsController@fetch_data');
         Route::post('/driver-bookings-fetch', 'DriversController@fetch_bookings_data');
+        Route::post('/get-distance', 'BookingsController@get_distance');
         Route::resource('/bookings', 'BookingsController');
+        Route::post('/booking-create', 'BookingsController@create_booking');
         Route::post('/prev-address', 'BookingsController@prev_address');
         Route::get('print/{id}', 'BookingsController@print');
         Route::resource('/acquisition', 'AcquisitionController');
