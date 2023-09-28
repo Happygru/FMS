@@ -451,6 +451,7 @@
     let settings;
     let tax;
     let vehicle_amount;
+    let track_time = new Date();
 
     $(document).ready(function() {
       set_datetime();
@@ -501,7 +502,9 @@
           set_datetime();
           $(".view_datetime").show();
           $("#general_date").hide();
+          track_time = new Date();
         } else {
+          track_time = $("#general_date .datetimepicker").val();
           $(".view_datetime").hide();
           $("#general_date").show();
         }
@@ -744,7 +747,8 @@
       postData.append('airport_pickup_details', $("#airport_detail").val());
       postData.append('airport_date', $("#airport_date").val());
       postData.append('vehicle_amount', vehicle_amount);
-      postData.append('tax', tax);
+      postData.append('track_time', track_time);
+      postData.append('tax', tax)
       postData.append('status', 1);
       postData.append('payment', 1);
 

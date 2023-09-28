@@ -37,6 +37,7 @@ use DB;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 use Minishlink\WebPush\Subscription;
 use Minishlink\WebPush\WebPush;
 
@@ -645,7 +646,10 @@ class BookingsController extends Controller {
 
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
 		if ($xx) {
-			$id = Bookings::create($request->all())->id;
+			$data = $request->all();
+			$booking_id = md5(time().$request->get('customer_id').$request->get('user_id'));
+			$data['booking_id'] = $booking_id;
+			$id = Bookings::create($data)->id;
 
 			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('pickup_addr')]);
 
