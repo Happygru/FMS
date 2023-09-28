@@ -26,6 +26,7 @@ use App\Model\Hyvikk;
 use App\Model\IncCats;
 use App\Model\IncomeModel;
 use App\Model\ServiceReminderModel;
+use App\Model\Settings;
 use App\Model\User;
 use App\Model\VehicleModel;
 use App\Model\VehicleTypeModel;
@@ -573,6 +574,7 @@ class BookingsController extends Controller {
 
 		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
+		$data['settings'] = Settings::all();
 		return view("bookings.create", $data);
 		//dd($data['vehicles']);
 	}
@@ -912,22 +914,16 @@ class BookingsController extends Controller {
 		$destination = urlencode($request->get('destination'));
 		$api_key = Hyvikk::api('api_key');
 		$url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$origin&destinations=$destination&key=$api_key";
-		$ch = curl_init();
-
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
-		$response = curl_exec($ch);
-		curl_close($ch);
-		$responseData = json_decode($response, true);
-		if (isset($responseData['rows'][0]['elements'][0]['distance'])) {
-			$distance = $responseData['rows'][0]['elements'][0]['distance']['text'];
-			return response()->json(['success' => true, 'distance' => $distance]);
+		
+		$response = file_get_contents($url);
+	
+		$data = json_decode($response);
+		var_dump($data);
+		if(!empty($data->rows[0]->elements[0]->distance)) {
+			$distance = $data->rows[0]->elements[0]->distance->text;
+			return $distance;
 		} else {
-			return response()->json(['success' => false]);
+			return "Not found";
 		}
 	}
 }

@@ -402,6 +402,7 @@
     </div>
   </div>
 </div>
+<input type="hidden" value="{{$settings}}" id="settings">
 @endsection
 @section('script')
   <script src="{{ asset('assets/js/moment.js') }}"></script>
@@ -447,6 +448,9 @@
     let vehicle_list;
     let addon_list;
     let distance_between_two_points = 200;
+    let settings;
+    let tax;
+    let vehicle_amount;
 
     $(document).ready(function() {
       set_datetime();
@@ -459,6 +463,15 @@
       $(".airport").hide();
       vehicle_list = JSON.parse($("#vehicles_data_string").val());
       set_vehicle_detail(vehicle_list[0]);
+      settings = JSON.parse($("#settings").val());
+      let tax_setting = settings.find(setting => setting.name == 'tax_charge').value;
+      if(tax_setting.length > 1) {
+        tax = Object.values(JSON.parse(tax_setting)).reduce(function(total, currentValue){
+          return total + parseFloat(currentValue);
+        }, 0); 
+      } else {
+        tax = 0;
+      }
       $("#service").change(function() {
         if($(this).val() == 'C') {
           $("#driver_list").show();
@@ -598,7 +611,8 @@
 
         // Get the corresponding value from the data object
         hourly_rate = data[property];
-        $("#total_amount").text(hourly_rate * hours + "GH₵");
+        vehicle_amount = hourly_rate * hours * (parseInt((100 + tax)/100));
+        $("#total_amount").text(vehicle_amount + "GH₵");
       } else {
         let pickup_date = $("#pickup_date").val();
         let dropoff_date = $("#dropoff_date").val();
@@ -617,7 +631,8 @@
         else
           daily_cost = data['wdwa_16_30' + suffix];
         $("#estimated_amount").text(daily_cost + "GH₵");
-        $("#total_amount").text(daily_cost * diff_days + "GH₵");
+        vehicle_amount = daily_cost * diff_days * (parseInt((100 + tax)/100))
+        $("#total_amount").text(vehicle_amount + "GH₵");
       }
     }
 
@@ -717,7 +732,7 @@
       postData.append('addon_id', $("#addon_list").val());
       postData.append('addon_quantity', $("#addon_quantity").val());
       if($("#service").val() == "C")
-        postData.append('driver_id', $("#driver_list").val());
+        postData.append('driver_id', $("#driver_list select").val());
       postData.append('pickup', $("#pickup_date").val());
       postData.append('dropoff', $("#dropoff_date").val());
       postData.append('duration', get_difference_days($("#pickup_date").val(), $("#dropoff_date").val()) * 24 * 60);
@@ -728,6 +743,8 @@
       postData.append('airport_pickup', $("#airport_pickup").val());
       postData.append('airport_pickup_details', $("#airport_detail").val());
       postData.append('airport_date', $("#airport_date").val());
+      postData.append('vehicle_amount', vehicle_amount);
+      postData.append('tax', tax);
       postData.append('status', 1);
       postData.append('payment', 1);
 
