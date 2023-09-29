@@ -103,6 +103,8 @@ return [
     'estimated_amount' => 'Estimated amount',
     'booking_created_successfully' => 'Booking created successfully',
     'booking_created_failed' => 'Booking created failed',
+    'booking_updated_successfully' => 'Booking updated successfully',
+    'booking_updated_failed' => 'Booking updated failed',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

@@ -225,6 +225,7 @@ Route::namespace ('Admin')->group(function () {
         Route::post('/get-distance', 'BookingsController@get_distance');
         Route::resource('/bookings', 'BookingsController');
         Route::post('/booking-create', 'BookingsController@create_booking');
+        Route::post('/booking-update', 'BookingsController@update_booking');
         Route::post('/prev-address', 'BookingsController@prev_address');
         Route::get('print/{id}', 'BookingsController@print');
         Route::resource('/acquisition', 'AcquisitionController');

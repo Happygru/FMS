@@ -17,6 +17,7 @@ use App\Http\Requests\BookingRequest;
 use App\Mail\CustomerInvoice;
 use App\Mail\DriverBooked;
 use App\Mail\VehicleBooked;
+use App\Model\AddonModel;
 use App\Model\Address;
 use App\Model\BookingIncome;
 use App\Model\BookingPaymentsModel;
@@ -126,7 +127,7 @@ class BookingsController extends Controller {
 					return ($row->customer->name) ?? "";
 				})
 				->addColumn('ride_status', function ($row) {
-					return ($row->getMeta('ride_status')) ?? "";
+					return ($row->ride_status) ?? "";
 				})
 				->editColumn('pickup_addr', function ($row) {
 					return str_replace(",", "<br/>", $row->pickup_addr);
@@ -185,10 +186,7 @@ class BookingsController extends Controller {
 					return $query;
 				})
 				->filterColumn('ride_status', function ($query, $keyword) {
-					$query->whereHas("metas", function ($q) use ($keyword) {
-						$q->where('key', 'ride_status');
-						$q->whereRaw("value like ?", ["%{$keyword}%"]);
-					});
+					$query->where("ride_status", "%{$keyword}%");
 					return $query;
 				})
 				->filterColumn('tax_total', function ($query, $keyword) {
@@ -245,41 +243,41 @@ class BookingsController extends Controller {
 	public function complete_post(Request $request) {
 		// dd($request->all());
 		$booking = Bookings::find($request->get("booking_id"));
-
+		$booking->ride_status = 'Completed';
 		$booking->setMeta([
-			'customerId' => $request->get('customerId'),
-			'vehicleId' => $request->get('vehicleId'),
-			'day' => $request->get('day'),
-			'mileage' => $request->get('mileage'),
-			'waiting_time' => $request->get('waiting_time'),
-			'date' => $request->get('date'),
-			'total' => round($request->get('total'), 2),
-			'total_kms' => $request->get('mileage'),
+			// 'customerId' => $request->get('customerId'),
+			// 'vehicleId' => $request->get('vehicleId'),
+			// 'day' => $request->get('day'),
+			// 'mileage' => $request->get('mileage'),
+			// 'waiting_time' => $request->get('waiting_time'),
+			// 'date' => $request->get('date'),
+			// 'total' => round($request->get('total'), 2),
+			// 'total_kms' => $request->get('mileage'),
 			// 'ride_status' => 'Completed',
-			'tax_total' => round($request->get('tax_total'), 2),
-			'total_tax_percent' => round($request->get('total_tax_charge'), 2),
-			'total_tax_charge_rs' => round($request->total_tax_charge_rs, 2),
+			// 'tax_total' => round($request->get('tax_total'), 2),
+			// 'total_tax_percent' => round($request->get('total_tax_charge'), 2),
+			// 'total_tax_charge_rs' => round($request->total_tax_charge_rs, 2),
 		]);
-		if ($booking->driver->driver_commision != null) {
-			$commision = $booking->driver->driver_commision;
-			$amnt = $commision;
-			if ($booking->driver->driver_commision_type == 'percent') {
-				$amnt = ($booking->total * $commision) / 100;
-			}
-			// $driver_amount = round($booking->total - $amnt, 2);
-			$booking->driver_amount = $amnt;
-			$booking->driver_commision = $booking->driver->driver_commision;
-			$booking->driver_commision_type = $booking->driver->driver_commision_type;
-			$booking->save();
-		}
+		// if ($booking->driver->driver_commision != null) {
+		// 	$commision = $booking->driver->driver_commision;
+		// 	$amnt = $commision;
+		// 	if ($booking->driver->driver_commision_type == 'percent') {
+		// 		$amnt = ($booking->total * $commision) / 100;
+		// 	}
+		// 	// $driver_amount = round($booking->total - $amnt, 2);
+		// 	$booking->driver_amount = $amnt;
+		// 	$booking->driver_commision = $booking->driver->driver_commision;
+		// 	$booking->driver_commision_type = $booking->driver->driver_commision_type;
+		// 	$booking->save();
+		// }
 		$booking->save();
 
 		$id = IncomeModel::create([
-			"vehicle_id" => $request->get("vehicleId"),
+			"vehicle_id" => $booking->vehicle_id,
 			// "amount" => $request->get('total'),
 			"amount" => $request->get('tax_total'),
 			"driver_amount" => $booking->driver_amount ?? $request->get('tax_total'),
-			"user_id" => $request->get("customerId"),
+			"user_id" => $request->customer_id,
 			"date" => $request->get('date'),
 			"mileage" => $request->get("mileage"),
 			"income_cat" => $request->get("income_type"),
@@ -294,11 +292,10 @@ class BookingsController extends Controller {
 		$xx->receipt = 1;
 		$xx->save();
 
-		if (Hyvikk::email_msg('email') == 1) {
-			Mail::to($booking->customer->email)->send(new CustomerInvoice($booking));
-		}
+		// if (Hyvikk::email_msg('email') == 1) {
+		// 	Mail::to($booking->customer->email)->send(new CustomerInvoice($booking));
+		// }
 		return redirect()->route("bookings.index");
-
 	}
 
 	public function complete($id) {
@@ -581,39 +578,70 @@ class BookingsController extends Controller {
 	}
 
 	public function edit($id) {
-		$booking = Bookings::whereId($id)->get()->first();
-		// dd($booking->vehicle_typeid);
-		if ($booking->vehicle_typeid != null) {
-			$condition = " and type_id = '" . $booking->vehicle_typeid . "'";
-		} else {
-			$condition = "";
-		}
-		$q = "select id,name,deleted_at from users where user_type='D' and deleted_at is null and id not in (select user_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
-		// $drivers = collect(DB::select(DB::raw($q)));
-		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
-			$q1 = "select * from vehicles where in_service=1" . $condition . " and deleted_at is null and id not in (select vehicle_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "'  or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
-		} else {
-			$q1 = "select * from vehicles where in_service=1" . $condition . " and deleted_at is null and group_id=" . Auth::user()->group_id . " and id not in (select vehicle_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "'  or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
-		}
+		// $booking = Bookings::whereId($id)->get()->first();
+		// // dd($booking->vehicle_typeid);
+		// if ($booking->vehicle_typeid != null) {
+		// 	$condition = " and type_id = '" . $booking->vehicle_typeid . "'";
+		// } else {
+		// 	$condition = "";
+		// }
+		// $q = "select id,name,deleted_at from users where user_type='D' and deleted_at is null and id not in (select user_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
+		// // $drivers = collect(DB::select(DB::raw($q)));
+		// if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+		// 	$q1 = "select * from vehicles where in_service=1" . $condition . " and deleted_at is null and id not in (select vehicle_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "'  or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
+		// } else {
+		// 	$q1 = "select * from vehicles where in_service=1" . $condition . " and deleted_at is null and group_id=" . Auth::user()->group_id . " and id not in (select vehicle_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "'  or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
+		// }
 
-		$v_ids = array();
-		$vehicles_data = collect(DB::select(DB::raw($q1)));
-		foreach ($vehicles_data as $v) {
-			$v_ids[] = $v->id;
-		}
-		$vehicles = VehicleModel::whereIn('id', $v_ids)->get();
-		$index['drivers'] = [];
+		// $v_ids = array();
+		// $vehicles_data = collect(DB::select(DB::raw($q1)));
+		// foreach ($vehicles_data as $v) {
+		// 	$v_ids[] = $v->id;
+		// }
+		// $vehicles = VehicleModel::whereIn('id', $v_ids)->get();
+		// $index['drivers'] = [];
+		// $drivers = User::whereUser_type("D")->get();
+		// foreach ($drivers as $d) {
+		// 	if ($d->getMeta('is_active') == 1) {
+		// 		$index['drivers'][] = $d;
+		// 	}
+		// }
+		// $index['vehicles'] = $vehicles;
+		// $index['data'] = $booking;
+		// $index['udfs'] = unserialize($booking->getMeta('udf'));
+		$user = Auth::user()->group_id;
+		$data['customers'] = User::where('user_type', 'C')->get();
 		$drivers = User::whereUser_type("D")->get();
+		$data['drivers'] = [];
+
 		foreach ($drivers as $d) {
 			if ($d->getMeta('is_active') == 1) {
-				$index['drivers'][] = $d;
+				$data['drivers'][] = $d;
 			}
-		}
-		$index['vehicles'] = $vehicles;
-		$index['data'] = $booking;
-		$index['udfs'] = unserialize($booking->getMeta('udf'));
 
-		return view("bookings.edit", $index);
+		}
+		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
+		// if ($user == null) {
+		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
+		// } else {
+		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
+		// }
+
+		$data['booking_detail'] = Bookings::find($id);
+		$data['addon_detail'] = AddonModel::find($data['booking_detail']->addon_id);
+		$query = DB::table('vehicles as v')
+				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
+				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+				->where('v.in_service', '1');
+
+		if ($user !== null) {
+			$query = $query->where('v.group_id', $user);
+		}
+
+		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['branches'] = BranchModel::where('deleted', 0)->get();
+		$data['settings'] = Settings::all();
+		return view("bookings.edit", $data);
 	}
 
 	public function destroy(Request $request) {
@@ -642,8 +670,19 @@ class BookingsController extends Controller {
 
 	}
 
-	public function create_booking(Request $request) {
+	public function update_booking(Request $request) {
+		$data = $request->all();
+		if ($data) {
+			$id = $request->get("id");
+			$booking = Bookings::findOrFail($id);
+			$booking->update($data);
+			return response()->json(['success' => true]);
+		} else {
+			return response()->json(['success' => false]);
+		}
+	}
 
+	public function create_booking(Request $request) {
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
 		if ($xx) {
 			$data = $request->all();
@@ -655,7 +694,7 @@ class BookingsController extends Controller {
 
 			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('dest_addr')]);
 
-			// $booking = Bookings::find($id);
+			$booking = Bookings::find($id);
 			// $booking->user_id = $request->get("user_id");
 			// $booking->driver_id = $request->get('driver_id');
 			// $dropoff = Carbon::parse($booking->dropoff);
@@ -665,11 +704,11 @@ class BookingsController extends Controller {
 			// $booking->duration = $diff;
 			// $booking->udf = serialize($request->get('udf'));
 			// $booking->accept_status = 1; //0=yet to accept, 1= accept
-			// $booking->ride_status = "Upcoming";
+			$booking->ride_status = "Upcoming";
 			// $booking->booking_type = 1;
-			// $booking->journey_date = date('d-m-Y', strtotime($booking->pickup));
-			// $booking->journey_time = date('H:i:s', strtotime($booking->pickup));
-			// $booking->save();
+			$booking->journey_date = date('d-m-Y', strtotime($booking->pickup));
+			$booking->journey_time = date('H:i:s', strtotime($booking->pickup));
+			$booking->save();
 			// $mail = Bookings::find($id);
 			// $this->booking_notification($id);
 

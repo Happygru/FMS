@@ -127,7 +127,7 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="form-label">Yoks Branch</label>
-                <select class="form-control">
+                <select class="form-control" id="branch">
                   @foreach($branches as $branch)
                     <option value="{{$branch->id}}">{{$branch->name}}</option>
                   @endforeach
@@ -194,7 +194,7 @@
                 <label class="form-label">
                   @lang('fleet.final_destination_outside_accra')?
                 </label>
-                <select id="destination" class="form-control">
+                <select id="final_destination" class="form-control">
                   <option value="Y">Yes</option>
                   <option value="N">No</option>
                 </select>
@@ -241,7 +241,7 @@
             <div class="col-md-3 col-sm-6 wholeday_component">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.destination_outside_accra')</label>
-                <input type="text" id="final_destination" class="form-control" />
+                <input type="text" id="destination_outside" class="form-control" />
               </div>
             </div>
           </div>
@@ -369,10 +369,10 @@
               <div class="form-group">
                 <label class="form-label">@lang('fleet.addon_type')</label>
                 <select id="addon_type" class="form-control">
-                  <option value="Tours">Tours</option>
-                  <option value="Extras">Extras</option>
-                  <option value="Amenities">Amenities</option>
-                  <option value="Tickets">Tickets</option>
+                  <option value="Tours" @if($addon_detail->type == 'Tours') selected @endif>Tours</option>
+                  <option value="Extras" @if($addon_detail->type == 'Extras') selected @endif>Extras</option>
+                  <option value="Amenities" @if($addon_detail->type == 'Amenities') selected @endif>Amenities</option>
+                  <option value="Tickets" @if($addon_detail->type == 'Tickets') selected @endif>Tickets</option>
                 </select>
               </div>
               <div class="form-group">
@@ -452,6 +452,7 @@
     let tax;
     let vehicle_amount;
     let track_time = new Date();
+    let tax_charge;
 
     $(document).ready(function() {
       set_datetime();
@@ -600,8 +601,9 @@
       $("#vehicle_transmission").html(data.transmission_type);
       $("#daily_km_allowance").text(data.wdwa_dka);
       $("#daily_extra_per_cost").text(data.wdwa_dkr + "GH₵");
-      $("#estimated_km_to").text(distance_between_two_points - data.wdwa_dka > 0 ? distance_between_two_points - data.wdwa_dka : 0);
-      $("#total_km_allowance").text(distance_between_two_points + data.wdwa_dka);
+      let diff_days = get_difference_days(pickup_date, dropoff_date);
+      $("#estimated_km_to").text(distance_between_two_points - data.wdwa_dka * diff_days > 0 ? distance_between_two_points - data.wdwa_dka * diff_days : 0);
+      $("#total_km_allowance").text(distance_between_two_points);
       if($("#reservation_list").val() == 1){
         let hours = $("#number_hours").val();
         let hourly_rate = 0;
@@ -614,7 +616,9 @@
 
         // Get the corresponding value from the data object
         hourly_rate = data[property];
-        vehicle_amount = hourly_rate * hours * (parseInt((100 + tax)/100));
+        let fixed_amount = hourly_rate * hours;
+        tax_charge = (fixed_amount * tax / 100).toFixed(2);
+        vehicle_amount = tax_charge + fixed_amount;
         $("#total_amount").text(vehicle_amount + "GH₵");
       } else {
         let pickup_date = $("#pickup_date").val();
@@ -635,6 +639,13 @@
           daily_cost = data['wdwa_16_30' + suffix];
         $("#estimated_amount").text(daily_cost + "GH₵");
         vehicle_amount = daily_cost * diff_days * (parseInt((100 + tax)/100))
+        let fixed_amount = daily_cost * diff_days;
+        if(distance_between_two_points > data.wdwa_dka * diff_days){
+          let diff_kms = distance_between_two_points - data.wdwa_dka * diff_days;
+          fixed_amount += data.wdwa_dkr * diff_kms;
+        }
+        tax_charge = (fixed_amount * tax / 100).toFixed(2);
+        tax_total = tax_charge + fixed_amount;
         $("#total_amount").text(vehicle_amount + "GH₵");
       }
     }
@@ -677,7 +688,7 @@
           return;
         }
 
-        if($("#final_destination").val() == '' && $("#reservation_list").val() != 1) {
+        if($("#destination_outside").val() == '' && ($("#reservation_list").val() != 1 || $("#final_destination") == 'Y')) {
           new PNotify({
             title: 'Error',
             text: "@lang('fleet.destination_outside_accra_not_empty')",
@@ -730,6 +741,7 @@
       postData.append('customer_id', $("#customer_list").val());
       postData.append('user_id', "{{Auth::user()->id}}");
       postData.append('vehicle_id', $("#vehicle_list").val());
+      postData.append('branch_id', $("#branch").val());
       postData.append('reservation_type', $("#reservation_list").val());
       postData.append('service_type', $("#service").val());
       postData.append('addon_id', $("#addon_list").val());
@@ -746,9 +758,13 @@
       postData.append('airport_pickup', $("#airport_pickup").val());
       postData.append('airport_pickup_details', $("#airport_detail").val());
       postData.append('airport_date', $("#airport_date").val());
-      postData.append('vehicle_amount', vehicle_amount);
+      postData.append('hours', $("#number_hours").val());
+      postData.append('final_destination', $("#final_destination").val());
+      postData.append('destination_outside', $("#destination_outside").val());
+      postData.append('tax_charge', tax_charge);
+      postData.append('tax_total', vehicle_amount);
       postData.append('track_time', track_time);
-      postData.append('tax', tax)
+      postData.append('tax_percent', tax)
       postData.append('status', 1);
       postData.append('payment', 1);
 

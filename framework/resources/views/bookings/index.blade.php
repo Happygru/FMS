@@ -186,32 +186,6 @@
           {!! Form::open(['route' => 'bookings.complete','method'=>'post']) !!}
           <input type="hidden" name="status" id="status" value="1" />
           <input type="hidden" name="booking_id" id="bookingId" value="" />
-          <input type="hidden" name="userId" id="userId" value="" />
-          <input type="hidden" name="customerId" id="customerId" value="" />
-          <input type="hidden" name="vehicleId" id="vehicleId" value="" />
-          <input type="hidden" name="type" id="type" value="" />
-          <input type="hidden" name="base_km_1" value="" id="base_km_1">
-          <input type="hidden" name="base_fare_1" value="" id="base_fare_1">
-          <input type="hidden" name="wait_time_1" value="" id="wait_time_1">
-          <input type="hidden" name="std_fare_1" value="" id="std_fare_1">
-          <input type="hidden" name="base_km_2" value="" id="base_km_2">
-          <input type="hidden" name="base_fare_2" value="" id="base_fare_2">
-          <input type="hidden" name="wait_time_2" value="" id="wait_time_2">
-          <input type="hidden" name="std_fare_2" value="" id="std_fare_2">
-          <input type="hidden" name="base_km_3" value="" id="base_km_3">
-          <input type="hidden" name="base_fare_3" value="" id="base_fare_3">
-          <input type="hidden" name="wait_time_3" value="" id="wait_time_3">
-          <input type="hidden" name="std_fare_3" value="" id="std_fare_3">
-          @php($no_of_tax = 0)
-          @if(Hyvikk::get('tax_charge') != "null")
-          @php($no_of_tax = sizeof(json_decode(Hyvikk::get('tax_charge'), true)))
-          @php($taxes = json_decode(Hyvikk::get('tax_charge'), true))
-          @php($i=0)
-          @foreach($taxes as $key => $val)
-          <input type="hidden" name="{{ 'tax_'.$i }}" value="{{ $val }}" class="{{ 'tax_'.$i }}">
-          @php($i++)
-          @endforeach
-          @endif
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -225,7 +199,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.daytype')</label>
                 <select id="day" name="day" class="form-control vehicles" required>
@@ -234,23 +208,22 @@
                   <option value="3">Night</option>
                 </select>
               </div>
-            </div>
-          </div>
-          <div class="row">
+            </div> -->
             <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.trip_mileage') ({{Hyvikk::get('dis_format')}})</label>
-                {!! Form::number('mileage',null,['class'=>'form-control sum','min'=>1,'id'=>'mileage']) !!}
+                {!! Form::number('mileage',null,['class'=>'form-control sum', 'disabled','min'=>1,'id'=>'mileage']) !!}
               </div>
             </div>
-
+          </div>
+          <!-- <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.waitingtime')</label>
                 {!! Form::number('waiting_time',0,['class'=>'form-control sum','min'=>0,'id'=>'waiting_time']) !!}
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -276,19 +249,19 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.amount') </label>
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{Hyvikk::get('currency')}}</span>
                   </div>
-                  {!! Form::number('total',null,['class'=>'form-control','id'=>'total','required','min'=>0,
+                  {!! Form::number('total',null,['class'=>'form-control','id'=>'total','required', 'readonly', 'min'=>0,
                   'step'=>'0.01']) !!}
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.total') @lang('fleet.amount') </label>
                 <div class="input-group mb-3">
@@ -300,7 +273,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
+          </div>
+          <div class="row">
+            <div class="col-md-6">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.date')</label>
                 <div class='input-group'>
@@ -349,60 +324,18 @@
 </script>
 <script type="text/javascript">
   $(document).on("click", ".open-AddBookDialog", function () {
-    // alert($(this).data('base_km_1'));
-    // window.open("route('bookings.index')/?type="+$(this).data('vehicle-type'));
+    var booking_id = $(this).data('booking-id');
+    var tax = $(this).data('tax-percent');
+    var tax_charge = $(this).data('tax-charge');
+    var tax_total = $(this).data('tax-total');
+    var distance = $(this).data('distance');
 
-    // const query = new URLSearchParams(window.location.search);
-    // query.append("type", "true");
-
-    // window.location.search = 'type='+$(".fleet #type").val( type );
-
-     var booking_id = $(this).data('booking-id');
-
-     $(".fleet #bookingId").val( booking_id );
-
-     var user_id = $(this).data('user-id');
-     $(".fleet #userId").val( user_id );
-
-     var customer_id = $(this).data('customer-id');
-     $(".fleet #customerId").val( customer_id );
-
-     var vehicle_id = $(this).data('vehicle-id');
-     $(".fleet #vehicleId").val( vehicle_id );
-
-     var type = $(this).data('vehicle-type');
-     $(".fleet #type").val( type );
-
-     $(".fleet #mileage").val($(this).data('base-mileage'));
-     $(".fleet #total").val($(this).data('base-fare'));
-
-     $(".fleet #base_km_1").val($(this).data('base_km_1'));
-     $(".fleet #base_fare_1").val($(this).data('base_fare_1'));
-     $(".fleet #wait_time_1").val($(this).data('wait_time_1'));
-     $(".fleet #std_fare_1").val($(this).data('std_fare_1'));
-     $(".fleet #base_km_2").val($(this).data('base_km_2'));
-     $(".fleet #base_fare_2").val($(this).data('base_fare_2'));
-     $(".fleet #wait_time_2").val($(this).data('wait_time_2'));
-     $(".fleet #std_fare_2").val($(this).data('std_fare_2'));
-     $(".fleet #base_km_3").val($(this).data('base_km_3'));
-     $(".fleet #base_fare_3").val($(this).data('base_fare_3'));
-     $(".fleet #wait_time_3").val($(this).data('wait_time_3'));
-     $(".fleet #std_fare_3").val($(this).data('std_fare_3'));
-
-    var total = $("#total").val();
-
-    var i;
-    var tax_size = '{{ $no_of_tax }}';
-    var total_tax_val = 0;
-    for (i = 0; i < tax_size; i++) {
-      total_tax_val = Number(total_tax_val) + Number($('.tax_'+i).val());
-      // console.log($('.tax_'+i).val());
-    }
-    // console.log(total_tax_val);
-    $('#total_tax_charge').val(total_tax_val);
-    $('#total_tax_charge_rs').val((Number(total)*Number(total_tax_val))/100);
-    $('#tax_total').val(Number(total) + (Number(total)*Number(total_tax_val))/100);
-
+    $(".fleet #bookingId").val(booking_id);
+    $('#total_tax_charge').val(tax);
+    $('#total_tax_charge_rs').val(tax_charge);
+    $('#total').val(tax_total);
+    $("#tax_total").val(tax_total + tax_charge);
+    $('#mileage').val(distance);
   });
 
   $("#del_btn").on("click",function(){
@@ -428,82 +361,6 @@
 
 <!-- testing total-->
 <script type="text/javascript" language="javascript">
-  $(".sum").change(function(){
-  // alert($("#base_km_1").val());
-  // alert($('.vtype').data('base_km_1'));
-  // console.log($("#type").val());
-
-    var day = $("#day").find(":selected").val();
-    if(day == 1){
-      var base_km = $("#base_km_1").val();
-      var base_fare = $("#base_fare_1").val();
-      var wait_time = $("#wait_time_1").val();
-      var std_fare = $("#std_fare_1").val();
-        if(Number($("#mileage").val()) <= Number(base_km)){
-          var total = Number(base_fare) + (Number($("#waiting_time").val()) * Number(wait_time));
-        }
-        else{
-          var sum = Number($("#mileage").val() - base_km) * Number(std_fare);
-      var total = Number(base_fare) + Number(sum) + (Number($("#waiting_time").val()) * Number(wait_time));
-      }
-    }
-
-    if(day == 2){
-      var base_km = $("#base_km_2").val();
-      var base_fare = $("#base_fare_2").val();
-      var wait_time = $("#wait_time_2").val();
-      var std_fare = $("#std_fare_2").val();
-        if(Number($("#mileage").val()) <= Number(base_km)){
-          var total = Number(base_fare) + (Number($("#waiting_time").val()) * Number(wait_time));
-        }
-        else{
-          var sum = Number($("#mileage").val() - base_km) * Number(std_fare);
-      var total = Number(base_fare) + Number(sum) + (Number($("#waiting_time").val()) * Number(wait_time));
-      }
-    }
-
-    if(day == 3){
-      var base_km = $("#base_km_3").val();
-      var base_fare = $("#base_fare_3").val();
-      var wait_time =$("#wait_time_3").val();
-      var std_fare = $("#std_fare_3").val();
-        if(Number($("#mileage").val()) <= Number(base_km)){
-          var total = Number(base_fare) + (Number($("#waiting_time").val()) * Number(wait_time));
-        }
-        else{
-          var sum = Number($("#mileage").val() - base_km) * Number(std_fare);
-      var total = Number(base_fare) + Number(sum) + (Number($("#waiting_time").val()) * Number(wait_time));
-      }
-    }
-    $("#total").val(total);
-    var i;
-    var tax_size = '{{ $no_of_tax }}';
-    var total_tax_val = 0;
-    for (i = 0; i < tax_size; i++) {
-      total_tax_val = Number(total_tax_val) + Number($('.tax_'+i).val());
-      // console.log($('.tax_'+i).val());
-    }
-    // console.log(total_tax_val);
-    $('#total_tax_charge').val(total_tax_val);
-    $('#total_tax_charge_rs').val((Number(total)*Number(total_tax_val))/100);
-    $('#tax_total').val(Number(total) + (Number(total)*Number(total_tax_val))/100);
-});
-
-  $("#total").change(function(){
-    var total = $("#total").val();
-    var i;
-    var tax_size = '{{ $no_of_tax }}';
-    var total_tax_val = 0;
-    for (i = 0; i < tax_size; i++) {
-      total_tax_val = Number(total_tax_val) + Number($('.tax_'+i).val());
-      // console.log($('.tax_'+i).val());
-    }
-    // console.log(total_tax_val);
-    $('#total_tax_charge_rs').val((Number(total)*Number(total_tax_val))/100);
-    $('#tax_total').val(Number(total) + (Number(total)*Number(total_tax_val))/100);
-
-  });
-  
   $(document).on('click','input[type="checkbox"]',function(){
     if(this.checked){
       $('#bulk_delete').prop('disabled',false);
