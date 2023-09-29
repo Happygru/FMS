@@ -368,10 +368,10 @@
               <div class="form-group">
                 <label class="form-label">@lang('fleet.addon_type')</label>
                 <select id="addon_type" class="form-control">
-                  <option value="Tours">Tours</option>
-                  <option value="Extras">Extras</option>
-                  <option value="Amenities">Amenities</option>
-                  <option value="Tickets">Tickets</option>
+                  <option value="Tours" @if($addon_detail->type == 'Tours') selected @endif>Tours</option>
+                  <option value="Extras" @if($addon_detail->type == 'Extras') selected @endif>Extras</option>
+                  <option value="Amenities" @if($addon_detail->type == 'Amenities') selected @endif>Amenities</option>
+                  <option value="Tickets" @if($addon_detail->type == 'Tickets') selected @endif>Tickets</option>
                 </select>
               </div>
               <div class="form-group">
