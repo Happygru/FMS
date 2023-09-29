@@ -20,7 +20,37 @@ class BookingQuotationModel extends Model {
 	protected $dates = ['deleted_at'];
 	protected $table = "booking_quotation";
 	protected $fillable = [
-		'customer_id', 'vehicle_id', 'user_id', 'pickup', 'dropoff', 'pickup_addr', 'dest_addr', 'travellers', 'status', 'comment', 'dropoff_time', 'driver_id', 'note', 'day', 'mileage', 'waiting_time', 'total', 'tax_total', 'total_tax_percent', 'total_tax_charge_rs',
+		'booking_id',
+		'customer_id',
+		'user_id',
+		'vehicle_id',
+		'branch_id',
+		'service_type',
+		'reservice_type',
+		'addon_id',
+		'addon_quantity',
+		'driver_id',
+		'pickup',
+		'dropoff',
+		'duration',
+		'pickup_addr',
+		'dest_addr',
+		'note',
+		'travellers',
+		'hours',
+		'distance',
+		'tax_percent',
+		'tax_charge',
+		'tax_total',
+		'status',
+		'airport_pickup',
+		'airport_pickup_details',
+		'airport_date',
+		'final_destination',
+		'destination_outside',
+		'payment',
+		'track_time',
+		'ride_status'
 	];
 
 	public function vehicle() {

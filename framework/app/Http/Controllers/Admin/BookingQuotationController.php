@@ -16,6 +16,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BookingQuotationRequest;
 use App\Mail\DriverBooked;
 use App\Mail\VehicleBooked;
+use App\Model\BranchModel;
+use App\Model\AddonModel;
+use App\Model\Settings;
 use App\Model\Address;
 use App\Model\BookingIncome;
 use App\Model\BookingQuotationModel;
@@ -31,6 +34,7 @@ use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class BookingQuotationController extends Controller {
 	public function __construct() {
@@ -165,37 +169,53 @@ class BookingQuotationController extends Controller {
 	}
 
 	public function create() {
-		$group_id = Auth::user()->group_id;
+		$user = Auth::user()->group_id;
 		$data['customers'] = User::where('user_type', 'C')->get();
-		$data['drivers'] = [];
 		$drivers = User::whereUser_type("D")->get();
+		$data['drivers'] = [];
+
 		foreach ($drivers as $d) {
 			if ($d->getMeta('is_active') == 1) {
 				$data['drivers'][] = $d;
 			}
+
 		}
 		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		if ($group_id == null || Auth::user()->user_type == "S") {
-			$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
-		} else {
-			$data['vehicles'] = VehicleModel::where([['group_id', $group_id], ['in_service', '1']])->get();
+		// if ($user == null) {
+		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
+		// } else {
+		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
+		// }
+		$query = DB::table('vehicles as v')
+				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
+				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+				->where('v.in_service', '1');
+
+		if ($user !== null) {
+			$query = $query->where('v.group_id', $user);
 		}
+
+		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['branches'] = BranchModel::where('deleted', 0)->get();
+		$data['settings'] = Settings::all();
 		return view('booking_quotation.create', $data);
 	}
 
-	public function store(BookingQuotationRequest $request) {
-		// dd($request->all());
+	public function store(Request $request) {
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
 		if ($xx) {
-			$id = BookingQuotationModel::create($request->all())->id;
-
+			$data = $request->all();
+			$booking_id = md5(time().$request->get('customer_id').$request->get('user_id'));
+			$data['booking_id'] = $booking_id;
+			$id = BookingQuotationModel::create($data)->id;
 			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('pickup_addr')]);
-
 			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('dest_addr')]);
-
-			return redirect()->route("booking-quotation.index");
+			$booking = BookingQuotationModel::find($id);
+			$booking->ride_status = "Upcoming";
+			$booking->save();
+			return response()->json(['success' => true]);
 		} else {
-			return redirect()->route("booking-quotation.create")->withErrors(["error" => "Selected Vehicle is not Available in Given Timeframe"])->withInput();
+			return response()->json(['success' => false]);
 		}
 	}
 
@@ -262,81 +282,114 @@ class BookingQuotationController extends Controller {
 	}
 
 	public function approve($id) {
-		$group_id = Auth::user()->group_id;
+		$user = Auth::user()->group_id;
 		$data['customers'] = User::where('user_type', 'C')->get();
-		$data['drivers'] = User::whereUser_type("D")->get();
-		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		$data['data'] = BookingQuotationModel::find($id);
-		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
-			$data['vehicles'] = VehicleModel::whereRaw("in_service=1 and deleted_at is null and id not in (select vehicle_id from bookings where status=0 and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $data['data']->pickup . "' and '" . $data['data']->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $data['data']->pickup . "' and '" . $data['data']->dropoff . "'  or dropoff between '" . $data['data']->pickup . "' and '" . $data['data']->dropoff . "'))")->get();
-		} else {
-			$data['vehicles'] = VehicleModel::whereRaw("in_service=1 and deleted_at is null and group_id=" . Auth::user()->group_id . " and id not in (select vehicle_id from bookings where status=0 and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $data['data']->pickup . "' and '" . $data['data']->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $data['data']->pickup . "' and '" . $data['data']->dropoff . "'  or dropoff between '" . $data['data']->pickup . "' and '" . $data['data']->dropoff . "'))")->get();
+		$drivers = User::whereUser_type("D")->get();
+		$data['drivers'] = [];
+
+		foreach ($drivers as $d) {
+			if ($d->getMeta('is_active') == 1) {
+				$data['drivers'][] = $d;
+			}
+
 		}
+		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
+		// if ($user == null) {
+		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
+		// } else {
+		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
+		// }
+
+		$data['booking_detail'] = BookingQuotationModel::find($id);
+		$data['addon_detail'] = AddonModel::find($data['booking_detail']->addon_id);
+		$query = DB::table('vehicles as v')
+				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
+				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+				->where('v.in_service', '1');
+
+		if ($user !== null) {
+			$query = $query->where('v.group_id', $user);
+		}
+
+		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['branches'] = BranchModel::where('deleted', 0)->get();
+		$data['settings'] = Settings::all();
 
 		return view('booking_quotation.approve', $data);
 	}
 
-	public function add_booking(BookingQuotationRequest $request) {
+	public function add_booking(Request $request) {
 		// dd($request->all());
+		// $xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
+		// if (!$xx) {
+		// 	$id = Bookings::create($request->all())->id;
+
+		// 	Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('pickup_addr')]);
+
+		// 	Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('dest_addr')]);
+
+		// 	$booking = Bookings::find($id);
+		// 	$booking->user_id = $request->get("user_id");
+		// 	$booking->driver_id = $request->get('driver_id');
+		// 	$dropoff = Carbon::parse($booking->dropoff);
+		// 	$pickup = Carbon::parse($booking->pickup);
+		// 	$diff = $pickup->diffInMinutes($dropoff);
+		// 	$booking->note = $request->get('note');
+		// 	$booking->duration = $diff;
+		// 	$booking->accept_status = 1; //0=yet to accept, 1= accept
+		// 	$booking->ride_status = "Upcoming";
+		// 	$booking->booking_type = 1;
+		// 	$booking->journey_date = date('d-m-Y', strtotime($booking->pickup));
+		// 	$booking->journey_time = date('H:i:s', strtotime($booking->pickup));
+		// 	$booking->receipt = 1;
+		// 	$booking->day = $request->get('day');
+		// 	$booking->mileage = $request->get('mileage');
+		// 	$booking->waiting_time = $request->get('waiting_time');
+		// 	$booking->date = date('Y-m-d');
+		// 	$booking->total = round($request->get('total'), 2);
+		// 	$booking->total_kms = $request->get('mileage');
+		// 	$booking->tax_total = round($request->get('tax_total'), 2);
+		// 	$booking->total_tax_percent = round($request->get('total_tax_percent'), 2);
+		// 	$booking->total_tax_charge_rs = round($request->total_tax_charge_rs, 2);
+		// 	$booking->save();
+
+		// 	$inc_id = IncomeModel::create([
+		// 		"vehicle_id" => $request->get("vehicle_id"),
+		// 		// "amount" => $request->get('total'),
+		// 		"amount" => round($request->get('tax_total'), 2),
+		// 		"user_id" => $request->get("customer_id"),
+		// 		"date" => date('Y-m-d'),
+		// 		"mileage" => $request->get("mileage"),
+		// 		"income_cat" => 1,
+		// 		"income_id" => $booking->id,
+		// 		"tax_percent" => round($request->get('total_tax_percent'), 2),
+		// 		"tax_charge_rs" => round($request->total_tax_charge_rs, 2),
+		// 	])->id;
+
+		// 	BookingIncome::create(['booking_id' => $booking->id, "income_id" => $inc_id]);
+
+		// 	$this->booking_notification($booking->id);
+		// 	// For the test
+		// 	// if (Hyvikk::email_msg('email') == 1) {
+		// 	// 	Mail::to($booking->customer->email)->send(new VehicleBooked($booking));
+		// 	// 	Mail::to($booking->driver->email)->send(new DriverBooked($booking));
+		// 	// }
+		// 	// browser notification to driver,admin,customer
+		// 	BookingQuotationModel::find($request->id)->delete();
+		// 	return redirect('admin/booking-quotation')->with('msg', 'Booking quotation approved successfully and added to bookings.');
+		// } else {
+		// 	return back()->withErrors(["error" => "Selected Vehicle is not Available in Given Timeframe"])->withInput();
+		// }
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
-		if (!$xx) {
-			$id = Bookings::create($request->all())->id;
-
-			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('pickup_addr')]);
-
-			Address::updateOrCreate(['customer_id' => $request->get('customer_id'), 'address' => $request->get('dest_addr')]);
-
-			$booking = Bookings::find($id);
-			$booking->user_id = $request->get("user_id");
-			$booking->driver_id = $request->get('driver_id');
-			$dropoff = Carbon::parse($booking->dropoff);
-			$pickup = Carbon::parse($booking->pickup);
-			$diff = $pickup->diffInMinutes($dropoff);
-			$booking->note = $request->get('note');
-			$booking->duration = $diff;
-			$booking->accept_status = 1; //0=yet to accept, 1= accept
-			$booking->ride_status = "Upcoming";
-			$booking->booking_type = 1;
-			$booking->journey_date = date('d-m-Y', strtotime($booking->pickup));
-			$booking->journey_time = date('H:i:s', strtotime($booking->pickup));
-			$booking->receipt = 1;
-			$booking->day = $request->get('day');
-			$booking->mileage = $request->get('mileage');
-			$booking->waiting_time = $request->get('waiting_time');
-			$booking->date = date('Y-m-d');
-			$booking->total = round($request->get('total'), 2);
-			$booking->total_kms = $request->get('mileage');
-			$booking->tax_total = round($request->get('tax_total'), 2);
-			$booking->total_tax_percent = round($request->get('total_tax_percent'), 2);
-			$booking->total_tax_charge_rs = round($request->total_tax_charge_rs, 2);
-			$booking->save();
-
-			$inc_id = IncomeModel::create([
-				"vehicle_id" => $request->get("vehicle_id"),
-				// "amount" => $request->get('total'),
-				"amount" => round($request->get('tax_total'), 2),
-				"user_id" => $request->get("customer_id"),
-				"date" => date('Y-m-d'),
-				"mileage" => $request->get("mileage"),
-				"income_cat" => 1,
-				"income_id" => $booking->id,
-				"tax_percent" => round($request->get('total_tax_percent'), 2),
-				"tax_charge_rs" => round($request->total_tax_charge_rs, 2),
-			])->id;
-
-			BookingIncome::create(['booking_id' => $booking->id, "income_id" => $inc_id]);
-
-			$this->booking_notification($booking->id);
-			// For the test
-			// if (Hyvikk::email_msg('email') == 1) {
-			// 	Mail::to($booking->customer->email)->send(new VehicleBooked($booking));
-			// 	Mail::to($booking->driver->email)->send(new DriverBooked($booking));
-			// }
-			// browser notification to driver,admin,customer
-			BookingQuotationModel::find($request->id)->delete();
-			return redirect('admin/booking-quotation')->with('msg', 'Booking quotation approved successfully and added to bookings.');
+		if ($xx) {
+			$data = $request->all();
+			unset($data['id']);
+			$data['ride_status'] = 'Upcoming';
+			$result = Bookings::create($data);
+			BookingQuotationModel::find($request->get('id'))->delete();
+			return response()->json(['success' => true]);
 		} else {
-			return back()->withErrors(["error" => "Selected Vehicle is not Available in Given Timeframe"])->withInput();
+			return response()->json(['success' => false]);
 		}
 	}
 

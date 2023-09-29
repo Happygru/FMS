@@ -765,8 +765,8 @@
       postData.append('tax_total', vehicle_amount);
       postData.append('track_time', track_time);
       postData.append('tax_percent', tax)
-      postData.append('status', 1);
-      postData.append('payment', 1);
+      postData.append('status', 0);
+      postData.append('payment', 0);
 
       $.ajax({
         url: "{{url('admin/booking-create')}}",

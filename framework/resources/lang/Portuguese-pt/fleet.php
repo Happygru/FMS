@@ -102,6 +102,10 @@ return [
     'booking_created_failed' => 'Booking created failed',
     'booking_updated_successfully' => 'Booking updated successfully',
     'booking_updated_failed' => 'Booking updated failed',
+    'booking_quotation_created_successfully' => 'Booking Quotation created successfully',
+    'booking_quotation_created_failed' => 'Booking Quotation created failed',
+    'booking_quotation_updated_successfully' => 'Booking Quotation updated successfully',
+    'booking_quotation_updated_failed' => 'Booking Quotation updated failed',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Bate-papo',
     'pusher_app_id' => 'ID do aplicativo Pusher',

@@ -25,7 +25,37 @@ class Bookings extends Model {
 	protected $table = "bookings";
 	protected $metaTable = 'bookings_meta';
 	protected $fillable = [
-		'booking_id', 'customer_id', 'vehicle_id', 'user_id', 'service_type', 'reservation_type', 'addon_id', 'addon_quantity', 'driver_id', 'pickup', 'dropoff', 'pickup_addr', 'dest_addr', 'travellers', 'status', 'comment', 'dropoff_time', 'note', 'airport_pickup', 'airport_pickup_details', 'duration', 'tax', 'tax_total', 'airport_date', 'track_time', 'ride_status'
+		'booking_id',
+		'customer_id',
+		'user_id',
+		'vehicle_id',
+		'branch_id',
+		'service_type',
+		'reservice_type',
+		'addon_id',
+		'addon_quantity',
+		'driver_id',
+		'pickup',
+		'dropoff',
+		'duration',
+		'pickup_addr',
+		'dest_addr',
+		'note',
+		'travellers',
+		'hours',
+		'distance',
+		'tax_percent',
+		'tax_charge',
+		'tax_total',
+		'status',
+		'airport_pickup',
+		'airport_pickup_details',
+		'airport_date',
+		'final_destination',
+		'destination_outside',
+		'payment',
+		'track_time',
+		'ride_status'
 	];
 
 	protected function getMetaKeyName() {
