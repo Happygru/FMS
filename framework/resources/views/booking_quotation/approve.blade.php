@@ -796,7 +796,7 @@
             text: "@lang('fleet.booking_created_successfully')",
             type: 'success'
           });
-          // setTimeout(function(){ location.reload(''); }, 1000);
+          setTimeout(function(){ location.reload("{{route('booking-quotation.index')}}"); }, 1000);
         }
       });
     }
