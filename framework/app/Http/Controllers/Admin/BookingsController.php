@@ -671,11 +671,11 @@ class BookingsController extends Controller {
 	}
 
 	public function update_booking(Request $request) {
-		$data = $request->all();
-		if ($data) {
+		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
+		if ($xx) {
 			$id = $request->get("id");
-			$booking = Bookings::findOrFail($id);
-			$booking->update($data);
+$booking = Bookings::findOrFail($id);
+			$booking->save();
 			return response()->json(['success' => true]);
 		} else {
 			return response()->json(['success' => false]);
@@ -961,12 +961,11 @@ class BookingsController extends Controller {
 		$response = file_get_contents($url);
 	
 		$data = json_decode($response);
-		var_dump($data);
 		if(!empty($data->rows[0]->elements[0]->distance)) {
 			$distance = $data->rows[0]->elements[0]->distance->text;
-			return $distance;
+			return response()->json(['success' => true, 'distance' => $distance]);			
 		} else {
-			return "Not found";
+			return response()->json(['success' => false]);
 		}
 	}
 }

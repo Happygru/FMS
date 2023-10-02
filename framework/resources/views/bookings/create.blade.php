@@ -650,7 +650,7 @@
       }
     }
 
-    function gostep(step) {
+    async function gostep(step) {
       if(step == 3) {
         if($("#pickup_addr").val() == ""){
           new PNotify({
@@ -703,11 +703,31 @@
         set_vehicle_detail(data);
 
         // Get distance 
-        // var origin = $("#pickup_addr").val();
-        // var destination = $("#dropoff_addr").val();
-        // $.post("{{url('admin/get-distance')}}", {origin, destination}, function(res) {
-        //   console.log(res);
-        // });
+        var origin = $("#pickup_addr").val();
+        var destination = $("#dropoff_addr").val();
+        var token = "{{ csrf_token() }}";
+
+        let response = await fetch("{{url('admin/get-distance')}}", {
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': token
+          },
+          body: JSON.stringify({origin, destination})
+        });
+        let res = await response.json();
+       
+        if (res.success) {
+          distance_between_two_points = (res.distance * 1.60934).toFixed(2);
+        } else {
+          distance_between_two_points = 0;
+          new PNotify({
+              title: 'Error',
+              text: "@lang('fleet.address_invalid')",
+              type: 'error'
+          });
+          return;
+        }
       }
 
       $(".step").hide();

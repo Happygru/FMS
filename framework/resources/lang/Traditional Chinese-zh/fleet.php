@@ -106,6 +106,7 @@ return [
     'booking_quotation_created_failed' => 'Booking Quotation created failed',
     'booking_quotation_updated_successfully' => 'Booking Quotation updated successfully',
     'booking_quotation_updated_failed' => 'Booking Quotation updated failed',
+    'address_invalid' => 'The points you entered are invalid or cannot be driving by car.',
     ////////////////////////////////////////////////////////////////
     'chat' => '聊天',
     'pusher_app_id' => 'Pusher 應用編號',
