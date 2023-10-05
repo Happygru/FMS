@@ -50,17 +50,13 @@
       <span class="crm_logo icon">🏢</span>
       <a href="{{url('admin/crm-corporate-accounts')}}">@lang('menu.corporate_accounts')</a>
     </div>
-    <!-- <div class="crm_card">
-      <span class="crm_logo icon">🚶</span>
-      <a href="#">Individual Accounts</a>
-    </div> -->
     <div class="crm_card">
       <span class="crm_logo icon">🎯</span>
       <a href="#">Lead Management</a>
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">📞</span>
-      <a href="#">Contact Management</a>
+      <a href="{{url('admin/crm-contacts')}}">Contact Management</a>
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">📃</span>

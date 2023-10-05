@@ -90,10 +90,10 @@
 					<h3 class="card-title">
 						@lang('fleet.corporate_account_management')
 					</h3>
-					<button class="btn btn-sm btn-success">
+					<a class="btn btn-sm btn-success" href="{{url('admin/crm-corporate-accounts/create')}}">
 						<i class="fa fa-plus"></i>
 						Add account
-					</button>
+					</a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -129,6 +129,7 @@
 										<th>Phone</th>
 										<th>Address</th>
 										<th>Location</th>
+										<th>Created_at</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -141,11 +142,12 @@
 											<td>{{ $accounts->phone }}</td>
 											<td>{{ $accounts->address }}</td>
 											<td>{{ $accounts->location }}</td>
+											<td>{{ $accounts->created_at ? (new DateTime($accounts->created_at))->format('Y-m-d') : '' }}</td>
 											<td>
-												<button class="btn btn-sm btn-info">
+												<button class="btn btn-sm btn-info" onclick="edit({{$accounts->id}})">
 													<i class="fa fa-edit"></i>
 												</button>
-												<button class="btn btn-sm btn-danger">
+												<button class="btn btn-sm btn-danger" onclick="confirmDelete({{$accounts->id}})">
 													<i class="fa fa-trash"></i>
 												</button>
 											</td>
@@ -168,9 +170,51 @@
 		</div>
 	</div>
 </div>
+
+<div id="bulkModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@lang('fleet.delete')</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>@lang('fleet.confirm_delete')</p>
+      </div>
+      <div class="modal-footer">
+        <button id="bulk_action" class="btn btn-danger" onclick="deleteItem()">@lang('fleet.delete')</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('fleet.close')</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 @section("script")
 <script>
-	
+
+var deleteID;
+
+function edit(id) {
+	window.location.href = "{{url('admin/crm-corporate-accounts/edit')}}/"+id;
+}
+
+function confirmDelete(id) {
+	$("#bulkModal").modal('show');
+	deleteID = id;
+}
+
+function deleteItem() {
+	$.post("{{url('admin/crm-corporate-account-delete')}}", {id: deleteID}, function (res) {
+		new PNotify({
+			title: 'Success!',
+			text: "@lang('fleet.deleted')",
+			type: 'success'
+		});
+		setTimeout(() => {
+			window.location.reload();
+		}, 1000);
+	})
+}
 </script>
 @endsection

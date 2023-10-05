@@ -32,8 +32,16 @@ Route::namespace ('Admin')->group(function () {
     Route::group(['middleware' => ['lang_check', 'auth', 'officeadmin', 'IsInstalled']], function () {
 
         Route::resource('crm', 'CRMController');
-        Route::get('crm-all-accounts', 'CRMController@all_accounts');
+        
         Route::get('crm-corporate-accounts', 'CRMController@corporate_accounts');
+        Route::get('crm-corporate-accounts/create', 'CRMController@create_corporate_account');
+        Route::post('crm-corporate-accounts/create', 'CRMController@create_corporate_account');
+        Route::get('crm-corporate-accounts/edit/{id}', 'CRMController@edit_corporate_account');
+        Route::post('crm-corporate-accounts/edit', 'CRMController@edit_corporate_account');
+
+        Route::get('crm-contacts', 'CRMController@contacts');
+        Route::get('crm-contacts/create', 'CRMController@create_contact');
+
 
         Route::get('/vehicles-track/{id?}','TrackerController@vehicles_track');
         Route::get('/track/{id?}','TrackerController@track');
