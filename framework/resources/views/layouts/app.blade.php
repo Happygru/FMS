@@ -705,6 +705,16 @@ input:checked + .slider:before {
               </li>
               @endif
 
+              <li class="nav-item">
+                <a href="{{ route('crm.index')}}" class="nav-link @if(Request::is('admin/crm*')) active @endif">
+                  <i class="nav-icon fa fa-handshake"></i>
+                  <p>
+                    @lang('menu.crm')
+                    <span class="right badge badge-danger"></span>
+                  </p>
+                </a>
+              </li>
+
               @if (!Auth::guest() && Auth::user()->user_type != "D" && Auth::user()->user_type != "C" )
            
               @if((Request::is('admin/drivers*')) || (Request::is('admin/users*')) || (Request::is('admin/customers*'))

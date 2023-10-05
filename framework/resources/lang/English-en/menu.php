@@ -53,4 +53,7 @@ return [
 	'profile' => 'Profile',
 	'logout' => "Logout",
 	'calendar' => 'Booking Calendar',
+	'crm' => 'CRM',
+	'all_accounts' => 'All Accounts',
+	'corporate_accounts' => 'Corporate Accounts'
 ];

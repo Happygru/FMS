@@ -31,7 +31,10 @@ Route::namespace ('Admin')->group(function () {
     Route::get("/", 'HomeController@index')->middleware(['lang_check', 'auth']);
     Route::group(['middleware' => ['lang_check', 'auth', 'officeadmin', 'IsInstalled']], function () {
 
-       
+        Route::resource('crm', 'CRMController');
+        Route::get('crm-all-accounts', 'CRMController@all_accounts');
+        Route::get('crm-corporate-accounts', 'CRMController@corporate_accounts');
+
         Route::get('/vehicles-track/{id?}','TrackerController@vehicles_track');
         Route::get('/track/{id?}','TrackerController@track');
         Route::get('/traccar-settings','TrackerController@traccar_settings')->name('traccar.settings');
