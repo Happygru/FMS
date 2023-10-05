@@ -129,6 +129,7 @@
 										<th>Phone</th>
 										<th>Address</th>
 										<th>Location</th>
+										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -140,11 +141,19 @@
 											<td>{{ $accounts->phone }}</td>
 											<td>{{ $accounts->address }}</td>
 											<td>{{ $accounts->location }}</td>
+											<td>
+												<button class="btn btn-sm btn-info">
+													<i class="fa fa-edit"></i>
+												</button>
+												<button class="btn btn-sm btn-danger">
+													<i class="fa fa-trash"></i>
+												</button>
+											</td>
 										</tr>
 									@endforeach
 									@if (count($corporateAccounts) < 1)
 										<tr>
-											<td rowspan="6" colspan="2">No Data</td>
+											<td rowspan="2" colspan="7" style="text-align: center;">No Data</td>
 										</tr>
 									@endif
 								</tbody>
