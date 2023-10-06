@@ -42,10 +42,6 @@
       <span class="crm_logo icon">📈</span>
       <a href="#">Sales Activity</a>
     </div>
-    <!-- <div class="crm_card">
-      <span class="crm_logo icon">👥</span>
-      <a href="{{url('admin/crm-all-accounts')}}">All Accounts</a>
-    </div> -->
     <div class="crm_card">
       <span class="crm_logo icon">🏢</span>
       <a href="{{url('admin/crm-corporate-accounts')}}">@lang('menu.corporate_accounts')</a>
@@ -56,11 +52,11 @@
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">📞</span>
-      <a href="{{url('admin/crm-contacts')}}">Contact Management</a>
+      <a href="{{url('admin/crm-contacts')}}">@lang('fleet.contact_management')</a>
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">📃</span>
-      <a href="#">Document Management</a>
+      <a href="{{url('admin/crm-documents')}}">@lang('fleet.document_management')</a>
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">🔍</span>

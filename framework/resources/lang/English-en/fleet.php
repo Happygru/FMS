@@ -119,8 +119,13 @@ return [
     'created_successfully' => 'Created successfully',
     'created_failed' => 'Created failed',
     'contact_management' => 'Contact Management',
+    'document_management' => 'Document Management',
+    'add_document' => 'Add Document',
+    'edit_document' => 'Edit Document',
     'job_title' => 'Job Title',
     'add_contact' => 'Add Contact',
+    'edit_contact' => 'Edit Contact',
+    'file' => 'File',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

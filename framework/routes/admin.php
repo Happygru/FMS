@@ -38,10 +38,21 @@ Route::namespace ('Admin')->group(function () {
         Route::post('crm-corporate-accounts/create', 'CRMController@create_corporate_account');
         Route::get('crm-corporate-accounts/edit/{id}', 'CRMController@edit_corporate_account');
         Route::post('crm-corporate-accounts/edit', 'CRMController@edit_corporate_account');
+        Route::post('crm-corporate-accounts/delete', 'CRMController@delete_corporate');
+
+        Route::get('crm-documents', 'CRMController@documents');
+        Route::get('crm-documents/create', 'CRMController@create_document');
+        Route::post('crm-documents/create', 'CRMController@create_document');
+        Route::get('crm-documents/edit/{id}', 'CRMController@edit_document');
+        Route::post('crm-documents/edit', 'CRMController@edit_document');
+        Route::post('crm-documents/delete', 'CRMController@delete_document');
 
         Route::get('crm-contacts', 'CRMController@contacts');
         Route::get('crm-contacts/create', 'CRMController@create_contact');
-
+        Route::post('crm-contacts/create', 'CRMController@create_contact');
+        Route::get('crm-contacts/edit/{id}', 'CRMController@edit_contact');
+        Route::post('crm-contacts/edit', 'CRMController@edit_contact');
+        Route::post('crm-contacts/delete', 'CRMController@delete_contact');
 
         Route::get('/vehicles-track/{id?}','TrackerController@vehicles_track');
         Route::get('/track/{id?}','TrackerController@track');

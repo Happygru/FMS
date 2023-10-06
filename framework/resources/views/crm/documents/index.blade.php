@@ -79,7 +79,7 @@
 @endsection
 @section("breadcrumb")
 <li class="breadcrumb-item "><a href="{{ route('crm.index') }}">@lang('menu.crm')</a></li>
-<li class="breadcrumb-item active">@lang('menu.corporate_accounts')</li>
+<li class="breadcrumb-item active">@lang('fleet.documents')</li>
 @endsection
 @section('content')
 <div class="row">
@@ -88,11 +88,11 @@
 			<div class="card-header with-border">
 				<div>
 					<h3 class="card-title">
-						@lang('fleet.corporate_account_management')
+						@lang('fleet.document_management')
 					</h3>
-					<a class="btn btn-sm btn-success" href="{{url('admin/crm-corporate-accounts/create')}}">
+					<a class="btn btn-sm btn-success" href="{{url('admin/crm-documents/create')}}">
 						<i class="fa fa-plus"></i>
-						Add account
+						@lang('fleet.add_document')
 					</a>
 				</div>
 			</div>
@@ -124,36 +124,35 @@
 								<thead class="thead-inverse">
 									<tr>
 										<th>No</th>
-										<th>Name</th>
-										<th>Email</th>
-										<th>Phone</th>
-										<th>Address</th>
-										<th>Location</th>
+										<th>@lang('fleet.name')</th>
+										<th>@lang('fleet.description')</th>
+                                        <th>@lang('fleet.corporate')</th>
 										<th>Created_at</th>
-										<th>Action</th>
+										<th>@lang('fleet.action')</th>
 									</tr>
 								</thead>
 								<tbody>
-									@foreach ($corporateAccounts as $key => $accounts)
+									@foreach ($documents as $key => $document)
 										<tr>
-											<td>{{ (($corporateAccounts->currentPage() - 1 ) * $corporateAccounts->perPage() ) + $loop->iteration }}</td>
-											<td>{{ $accounts->name }}</td>
-											<td>{{ $accounts->email }}</td>
-											<td>{{ $accounts->phone }}</td>
-											<td>{{ $accounts->address }}</td>
-											<td>{{ $accounts->location }}</td>
-											<td>{{ $accounts->created_at ? (new DateTime($accounts->created_at))->format('Y-m-d') : '' }}</td>
+											<td>{{ (($documents->currentPage() - 1 ) * $documents->perPage() ) + $loop->iteration }}</td>
+											<td>{{ $document->name }}</td>
+											<td>{{ $document->description }}</td>
+                                            <td>{{ $document->c_name }}</td>
+											<td>{{ $document->created_at ? (new DateTime($document->created_at))->format('Y-m-d') : '' }}</td>
 											<td>
-												<button class="btn btn-sm btn-info" onclick="edit({{$accounts->id}})">
+                                                <a class="btn btn-sm btn-info" href="{{asset('uploads/corporate_documents/').$document->attach}}" download>
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+												<button class="btn btn-sm btn-success" onclick="edit({{$document->id}})">
 													<i class="fa fa-edit"></i>
 												</button>
-												<button class="btn btn-sm btn-danger" onclick="confirmDelete({{$accounts->id}})">
+												<button class="btn btn-sm btn-danger" onclick="confirmDelete({{$document->id}})">
 													<i class="fa fa-trash"></i>
 												</button>
 											</td>
 										</tr>
 									@endforeach
-									@if (count($corporateAccounts) < 1)
+									@if (count($documents) < 1)
 										<tr>
 											<td rowspan="2" colspan="7" style="text-align: center;">No Data</td>
 										</tr>
@@ -163,7 +162,7 @@
 						</div>
 					</div>
 					<div class="col-md-12 pagination">
-						{{ $corporateAccounts->withQueryString()->links() }}
+						{{ $documents->withQueryString()->links() }}
 					</div>
 				</div>
 			</div>
@@ -196,7 +195,7 @@
 var deleteID;
 
 function edit(id) {
-	window.location.href = "{{url('admin/crm-corporate-accounts/edit')}}/"+id;
+	window.location.href = "{{url('admin/crm-documents/edit')}}/"+id;
 }
 
 function confirmDelete(id) {
@@ -205,7 +204,7 @@ function confirmDelete(id) {
 }
 
 function deleteItem() {
-	$.post("{{url('admin/crm-corporate-account/delete')}}", {id: deleteID}, function (res) {
+	$.post("{{url('admin/crm-documents/delete')}}", {id: deleteID}, function (res) {
 		new PNotify({
 			title: 'Success!',
 			text: "@lang('fleet.deleted')",

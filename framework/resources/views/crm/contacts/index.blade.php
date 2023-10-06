@@ -68,10 +68,10 @@
                                         <td>{{$contact->phone}}</td>
                                         <td>{{$contact->job}}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-success">
+                                            <a class="btn btn-sm btn-success" href="{{url('admin/crm-contacts/edit/').'/'.$contact->id}}">
                                                 <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-danger">
+                                            </a>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteConfirm({{$contact->id}})">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </td>
@@ -88,11 +88,30 @@
 @endsection
 @section("script")
 <script>
+    var deleteID;
     $(document).ready(function() {
         $(".select2").select2();
         $("#select_account").change(function() {
             window.location.href = "{{url('admin/crm-contacts')}}?account=" + $(this).val();
         })
     })
+
+    function confirmDelete(id) {
+        $("#bulkModal").modal('show');
+        deleteID = id;
+    }
+
+    function deleteItem() {
+        $.post("{{url('admin/crm-contacts/delete')}}", {id: deleteID}, function (res) {
+            new PNotify({
+                title: 'Success!',
+                text: "@lang('fleet.deleted')",
+                type: 'success'
+            });
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        })
+    }
 </script>
 @endsection
