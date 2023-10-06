@@ -253,6 +253,7 @@ Route::namespace ('Admin')->group(function () {
         Route::resource('/acquisition', 'AcquisitionController');
         Route::resource('/income', 'IncomeController');
         Route::resource('/settings', 'SettingsController');
+        Route::get('/logs', 'SettingsController@logs');
         Route::post('/customers-fetch', 'CustomersController@fetch_data');
         Route::resource('/customers', 'CustomersController');
         Route::resource('/expense', 'ExpenseController');

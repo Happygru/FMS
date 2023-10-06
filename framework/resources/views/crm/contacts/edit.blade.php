@@ -158,7 +158,7 @@
                 }
                 new PNotify({
                     title: 'Success',
-                    text: "@lang('fleet.updated_successfully')",
+                    text: "@lang('fleet.updated_success')",
                     type: 'success'
                 });
                 setTimeout(function(){ window.location.reload(''); }, 1000);

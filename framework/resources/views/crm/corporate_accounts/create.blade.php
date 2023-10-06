@@ -60,15 +60,6 @@
                         <label class="form-label">@lang('fleet.location')</label>
                         <input type="text" id="location" class="form-control" placeholder="@lang('fleet.location')" />
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">@lang('fleet.documents')</label>
-                        <div class="icon_file_select_form">
-                            <input type="text" class="form-control" placeholder="@lang('fleet.documents')"
-                                id="document" disabled />
-                            <button class='btn btn-info btn-sm' id="select_btn">...</button>
-                        </div>
-                        <input type="file" style="display: none" accept=".pdf, .doc, .docx" id="select_file" />
-                    </div>
                     <div>
                         <button class="btn btn-success" onclick="create()">
                             <i class="fa fa-plus"></i>
@@ -108,20 +99,6 @@ function initMap() {
 <script>
 
     var file;
-
-    $(document).ready(function() {
-        $("#select_btn").click(function(){
-            $("#select_file").click();
-        })
-
-        $("#select_file").change(function(e){
-            file = $(this).get(0).files[0];
-            if(file)
-                $("#document").val(file.name);
-            else
-                $("#document").val('');
-        })
-    })
 
     function create() {
         var name = $("#name").val();
@@ -181,8 +158,7 @@ function initMap() {
         formData.append('phone', phone);
         formData.append('address', address);
         formData.append('location', location);
-        if(file)
-            formData.append('document', file);
+
         $.ajax({
             url: "{{url('admin/crm-corporate-accounts/create')}}",
             type: "POST",

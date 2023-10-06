@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Model\ContactsModel;
 use App\Model\DocumentsModel;
 use App\Model\User;
-use App\Model\CorporatesModel;
+use App\Model\Log;
 use Illuminate\Http\Request;
 use DB;
 
@@ -15,7 +15,8 @@ class CRMController extends Controller {
 
     }
 
-    public function index() {
+    public function index(Request $request) {
+        Log::activity($request, 'View CRM page');
         return view('crm.index');
     }
 
@@ -31,7 +32,7 @@ class CRMController extends Controller {
         $searchkey =  isset($data['searchkey']) ? $data['searchkey'] : '';
         $perPage = isset($data['perPage']) && in_array($data['perPage'], $validPerPage) ? $data['perPage'] : 10;
 
-        $corporateAccounts = CorporatesModel::query();
+        $corporateAccounts = User::where('user_type', "C")->where('customer_type', "C");
 
         if (!empty($searchkey)) {
             $corporateAccounts->where('name', 'LIKE', "%{$searchkey}%")
@@ -41,45 +42,38 @@ class CRMController extends Controller {
         $corporateAccounts->orderBy('updated_at', 'desc');
 
         $corporateAccounts = $corporateAccounts->paginate($perPage);
-
+        Log::activity($request, 'View CRM / Corporate Accounts page');
         return view('crm.corporate_accounts.index', compact('corporateAccounts'));
     }
 
     public function create_corporate_account(Request $request) {
         if($request->isMethod('get')){
+            Log::activity($request, 'View Create Corporate Account page');
             return view('crm.corporate_accounts.create');
         } else if($request->isMethod('post')) {
 
             // Check if a record with the same name already exists
-            $existingService = CorporatesModel::firstWhere('name', $request->input('name'));
+            $existingService = User::firstWhere('name', $request->input('name'));
             if ($existingService) {
                 // Return a response indicating that the name is already taken
                 return response()->json(['success' => false, 'code' => 402]);
             }
 
             // Create a new BookingService
-            $corporate = new CorporatesModel;
+            $corporate = new User;
 
             // Set the properties
             $corporate->name = $request->input('name');
             $corporate->email = $request->input('email');
-            $corporate->address = $request->input('address');
+            $corporate->addr = $request->input('address');
             $corporate->location = $request->input('location');
             $corporate->phone = $request->input('phone');
-
-            if($request->hasFile('document')) {
-                // Generate a new filename
-                // Store the file in the 'uploads' disk, in the 'uploads' directory
-                $uploads_dir = 'uploads/corporate_documents';
-                $file = $request->file('document');
-                $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
-                $file->move($uploads_dir, $newFileName);
-                $corporate->document = $newFileName;  // Store the path of the uploaded file
-            }
+            $corporate->user_type = 'C';
+            $corporate->customer_type = 'C';
 
             // Save the new BookingService
             $corporate->save();
-
+            Log::activity($request, 'Create new corporate account');
             // Return a response
             return response()->json(['success' => true, 'code' => 200]);       
         }
@@ -87,8 +81,9 @@ class CRMController extends Controller {
 
     public function edit_corporate_account(Request $request, $id) {
         if($request->isMethod('get')) {
-            $data['account'] = CorporatesModel::find($id);
+            $data['account'] = User::find($id);
             if($data['account']) {
+                Log::activity($request, 'View Edit Corporate Account page');
                 return view('crm.corporate_accounts.edit', $data);
             } else {
                 return redirect()->back()->with('error', 'No service found with the specified id.');
@@ -96,36 +91,27 @@ class CRMController extends Controller {
         } else {
             
             // Check if a record with the same name already exists
-            $existingService = CorporatesModel::firstWhere('name', $request->input('name'));
+            $existingService = User::firstWhere('name', $request->input('name'));
             if ($existingService) {
                 // Return a response indicating that the name is already taken
                 return response()->json(['success' => false, 'code' => 402]);
             }
 
             // Create a new BookingService
-            $corporate = CorporatesModel::find($request->input('id'));
+            $corporate = User::find($request->input('id'));
 
             // Set the properties
             $corporate->name = $request->input('name');
             $corporate->email = $request->input('email');
-            $corporate->address = $request->input('address');
+            $corporate->addr = $request->input('address');
             $corporate->location = $request->input('location');
             $corporate->phone = $request->input('phone');
-            $corporate->document = $request->input('document');
-
-            if($request->hasFile('document')) {
-                // Generate a new filename
-                // Store the file in the 'uploads' disk, in the 'uploads' directory
-                $uploads_dir = 'uploads/corporate_documents';
-                $file = $request->file('document');
-                $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
-                $file->move($uploads_dir, $newFileName);
-                $corporate->document = $newFileName;  // Store the path of the uploaded file
-            }
+            $corporate->customer_type = 'C';
+            $corporate->user_type = 'C';
 
             // Save the new BookingService
             $corporate->save();
-
+            Log::activity($request, 'Edit Corporate Account');
             // Return a response
             return response()->json(['success' => true, 'code' => 200]);
         }
@@ -134,19 +120,20 @@ class CRMController extends Controller {
     public function contacts(Request $request) {
         $data = $request->query();
         $account_id =  isset($data['account']) ? $data['account'] : 'all';
-        $query = DB::table('contacts')
-        ->leftJoin('corporates', 'contacts.account_id', '=', 'corporates.id');
+        $query = DB::table('contacts')->leftJoin('users', 'contacts.account_id', '=', 'users.id');
         if($account_id !== 'all')
             $query->where('contacts.account_id', $account_id);
-        $data['contacts'] = $query->orderBy('contacts.created_at', 'desc')->select("contacts.*", "corporates.name as u_name")->get();
-        $data['accounts'] = CorporatesModel::orderBy('created_at', 'desc')->get();
+        $data['contacts'] = $query->orderBy('contacts.created_at', 'desc')->select("contacts.*", "users.name as u_name")->get();
+        $data['accounts'] = User::where('user_type', 'C')->where('customer_type', 'C')->orderBy('created_at', 'desc')->get();
         $data['active_account'] = $account_id;
+        Log::activity($request, 'View contacts page');
         return view('crm.contacts.index', $data);
     }
 
     public function create_contact(Request $request) {
         if($request->isMethod('get')) {
-            $data['accounts'] = CorporatesModel::orderBy('created_at', 'desc')->get();
+            Log::activity($request, 'View Create contact page');
+            $data['accounts'] = User::where('user_type', 'C')->where('customer_type', 'C')->orderBy('created_at', 'desc')->get();
             return view('crm.contacts.create', $data);
         } else {
             $contact = ContactsModel::where('name', $request->name)->first();
@@ -163,7 +150,7 @@ class CRMController extends Controller {
             $newContact->job = $request->job;
 
             $newContact->save();
-            
+            Log::activity($request, 'Create new contact');
             if ($newContact) {
                 return response()->json(['success' => true, 'message' => 'Contact created successfully']);
             } else {
@@ -174,7 +161,8 @@ class CRMController extends Controller {
 
     public function edit_contact(Request $request, $id = 0) {
         if($request->isMethod('get')) {
-            $data['accounts'] = CorporatesModel::orderBy('created_at', 'desc')->get();
+            Log::activity($request, 'View Edit contact page');
+            $data['accounts'] = User::where('user_type', 'C')->where('customer_type', 'C')->orderBy('created_at', 'desc')->get();
             $data['contact'] = ContactsModel::find($id);
             return view('crm.contacts.edit', $data);            
         } else {
@@ -185,7 +173,7 @@ class CRMController extends Controller {
             $contact->phone = $request->phone;
             $contact->job = $request->job;
             $contact->save();
-            
+            Log::activity($request, 'Edit contact');
             return response()->json(['success' => true]);
         }
     }
@@ -198,24 +186,25 @@ class CRMController extends Controller {
         $perPage = isset($data['perPage']) && in_array($data['perPage'], $validPerPage) ? $data['perPage'] : 10;
 
         $documents = DB::table('documents as d')
-                                ->leftJoin('corporates as c', 'd.corporate_id', '=', 'c.id')
+                                ->leftJoin('users as c', 'd.corporate_id', '=', 'c.id')
                                 ->select("d.*", "c.name as c_name");
 
         if (!empty($searchkey)) {
             $documents->where('d.name', 'LIKE', "%{$searchkey}%")->orWhere('c.name', 'LIKE', "%{$searchkey}%")
-            ->orWhere('d.email', 'LIKE', "%{$searchkey}%");
+            ->orWhere('d.description', 'LIKE', "%{$searchkey}%");
         }
 
         $documents->orderBy('updated_at', 'desc');
 
         $documents = $documents->paginate($perPage);
-
+        Log::activity($request, 'View documents page');
         return view('crm.documents.index', compact('documents'));
     }
 
     public function create_document(Request $request) {
         if($request->isMethod('get')){
-            $data['corporates'] = CorporatesModel::orderBy('created_at', 'desc')->get();
+            Log::activity($request, 'View create document page');
+            $data['corporates'] = User::where('user_type', 'C')->where('customer_type', 'C')->orderBy('created_at', 'desc')->get();
             return view('crm.documents.create', $data);
         } else if($request->isMethod('post')) {
 
@@ -245,7 +234,7 @@ class CRMController extends Controller {
 
             // Save the new BookingService
             $corporate->save();
-
+            Log::activity($request, 'Create new document');
             // Return a response
             return response()->json(['success' => true, 'code' => 200]);       
         }
@@ -253,8 +242,9 @@ class CRMController extends Controller {
 
     public function edit_document(Request $request, $id) {
         if($request->isMethod('get')) {
+            Log::activity($request, 'View Edit Document Page');
             $data['document'] = DocumentsModel::find($id);
-            $data['corporates'] = CorporatesModel::orderBy('created_at', 'desc')->get();
+            $data['corporates'] = User::where('user_type', 'C')->where('customer_type', 'C')->orderBy('created_at', 'desc')->get();
             if($data['document']) {
                 return view('crm.documents.edit', $data);
             } else {
@@ -289,7 +279,7 @@ class CRMController extends Controller {
 
             // Save the new BookingService
             $corporate->save();
-
+            Log::activity($request, 'Edit document');
             // Return a response
             return response()->json(['success' => true, 'code' => 200]);
         }
@@ -298,18 +288,21 @@ class CRMController extends Controller {
     public function delete_contact(Request $request) {
         $contact = ContactsModel::find($request->id);
         $contact->delete();
+        Log::activity($request, 'Delete contact');
         return response()->json(['success' => true]);
     }
 
     public function delete_corporate(Request $request) {
-        $contact = CorporatesModel::find($request->id);
+        $contact = User::find($request->id);
         $contact->delete();
+        Log::activity($request, 'Delete corporate');
         return response()->json(['success' => true]);
     }
 
     public function delete_document(Request $request) {
         $contact = DocumentsModel::find($request->id);
         $contact->delete();
+        Log::activity($request, 'Delete document');
         return response()->json(['success' => true]);
     }
 }

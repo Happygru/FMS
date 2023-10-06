@@ -662,4 +662,24 @@ class SettingsController extends Controller {
 		return "true";
 	}
 
+	public function logs(Request $request) {
+		$validPerPage = [10, 20, 50, 100];
+        $data = $request->query();
+        $searchkey =  isset($data['searchkey']) ? $data['searchkey'] : '';
+        $perPage = isset($data['perPage']) && in_array($data['perPage'], $validPerPage) ? $data['perPage'] : 10;
+
+        $documents = DB::table('logs as d')
+                                ->leftJoin('users as c', 'd.user_id', '=', 'c.id')
+                                ->select("d.*", "c.name as c_name");
+
+        if (!empty($searchkey)) {
+            $documents->where('d.action', 'LIKE', "%{$searchkey}%")->orWhere('c.name', 'LIKE', "%{$searchkey}%");
+        }
+
+        $documents->orderBy('d.updated_at', 'desc');
+
+        $documents = $documents->paginate($perPage);
+        return view('logs.index', compact('documents'));
+	}
+
 }

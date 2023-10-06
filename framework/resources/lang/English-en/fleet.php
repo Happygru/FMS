@@ -126,6 +126,11 @@ return [
     'add_contact' => 'Add Contact',
     'edit_contact' => 'Edit Contact',
     'file' => 'File',
+    'logs' => 'Logs',
+    'request_method' => 'Request Method',
+    'url' => 'Url',
+    'username' => 'Username',
+    'ipaddress' => 'IP Address',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

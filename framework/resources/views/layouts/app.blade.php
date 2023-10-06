@@ -1744,6 +1744,14 @@ input:checked + .slider:before {
                     </a>
                   </li>
 
+                  <li class="nav-item">
+                    <a href="{{ url('admin/logs') }}"
+                      class="nav-link @if(Request::is('admin/logs*')) active @endif">
+                      <i class="fa fa-edit nav-icon"></i>
+                      <p>@lang('fleet.logs')</p>
+                    </a>
+                  </li>
+
                   <!-- <li class="nav-item">
                     <a href="{{ url('admin/frontend-settings')}}"
                       class="nav-link @if(Request::is('admin/frontend-settings')) active @endif">

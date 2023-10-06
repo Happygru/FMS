@@ -78,8 +78,8 @@
 	</style>
 @endsection
 @section("breadcrumb")
-<li class="breadcrumb-item "><a href="{{ route('crm.index') }}">@lang('menu.crm')</a></li>
-<li class="breadcrumb-item active">@lang('menu.corporate_accounts')</li>
+<li class="breadcrumb-item active">@lang('menu.settings')</li>
+<li class="breadcrumb-item active">@lang('fleet.logs')</li>
 @endsection
 @section('content')
 <div class="row">
@@ -88,12 +88,8 @@
 			<div class="card-header with-border">
 				<div>
 					<h3 class="card-title">
-						@lang('fleet.corporate_account_management')
+						@lang('fleet.logs')
 					</h3>
-					<a class="btn btn-sm btn-success" href="{{url('admin/crm-corporate-accounts/create')}}">
-						<i class="fa fa-plus"></i>
-						Add account
-					</a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -124,36 +120,27 @@
 								<thead class="thead-inverse">
 									<tr>
 										<th>No</th>
-										<th>Name</th>
-										<th>Email</th>
-										<th>Phone</th>
-										<th>Address</th>
-										<th>Location</th>
+										<th>@lang('fleet.method')</th>
+										<th>@lang('fleet.url')</th>
+                                        <th>@lang('fleet.action')</th>
+                                        <th>@lang('fleet.username')</th>
+                                        <th>@lang('fleet.ipaddress')</th>
 										<th>Created_at</th>
-										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									@foreach ($corporateAccounts as $key => $accounts)
+									@foreach ($documents as $key => $document)
 										<tr>
-											<td>{{ (($corporateAccounts->currentPage() - 1 ) * $corporateAccounts->perPage() ) + $loop->iteration }}</td>
-											<td>{{ $accounts->name }}</td>
-											<td>{{ $accounts->email }}</td>
-											<td>{{ $accounts->phone }}</td>
-											<td>{{ $accounts->addr }}</td>
-											<td>{{ $accounts->location }}</td>
-											<td>{{ $accounts->created_at ? (new DateTime($accounts->created_at))->format('Y-m-d') : '' }}</td>
-											<td>
-												<button class="btn btn-sm btn-info" onclick="edit({{$accounts->id}})">
-													<i class="fa fa-edit"></i>
-												</button>
-												<button class="btn btn-sm btn-danger" onclick="confirmDelete({{$accounts->id}})">
-													<i class="fa fa-trash"></i>
-												</button>
-											</td>
+											<td>{{ (($documents->currentPage() - 1 ) * $documents->perPage() ) + $loop->iteration }}</td>
+											<td>{{ $document->method }}</td>
+											<td>{{ $document->url }}</td>
+                                            <td>{{ $document->action }}</td>
+                                            <td>{{ $document->c_name }}</td>
+                                            <td>{{ $document->ipaddress }}</td>
+											<td>{{ $document->created_at ? (new DateTime($document->created_at))->format('Y-m-d') : '' }}</td>
 										</tr>
 									@endforeach
-									@if (count($corporateAccounts) < 1)
+									@if (count($documents) < 1)
 										<tr>
 											<td rowspan="2" colspan="7" style="text-align: center;">No Data</td>
 										</tr>
@@ -163,7 +150,7 @@
 						</div>
 					</div>
 					<div class="col-md-12 pagination">
-						{{ $corporateAccounts->withQueryString()->links() }}
+						{{ $documents->withQueryString()->links() }}
 					</div>
 				</div>
 			</div>
@@ -191,30 +178,5 @@
 </div>
 @endsection
 @section("script")
-<script>
 
-var deleteID;
-
-function edit(id) {
-	window.location.href = "{{url('admin/crm-corporate-accounts/edit')}}/"+id;
-}
-
-function confirmDelete(id) {
-	$("#bulkModal").modal('show');
-	deleteID = id;
-}
-
-function deleteItem() {
-	$.post("{{url('admin/crm-corporate-account/delete')}}", {id: deleteID}, function (res) {
-		new PNotify({
-			title: 'Success!',
-			text: "@lang('fleet.deleted')",
-			type: 'success'
-		});
-		setTimeout(() => {
-			window.location.reload();
-		}, 1000);
-	})
-}
-</script>
 @endsection
