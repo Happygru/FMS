@@ -647,7 +647,10 @@ class BookingsController extends Controller {
 		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
 		// }
 
-		$data['booking_detail'] = Bookings::find($id);
+		$data['booking_detail'] = DB::table('bookings as b')
+								->leftJoin('vehicles as v', 'b.vehicle_id','=', 'v.id')
+								->where('b.id', $id)
+								->select("b.*", "v.type_id as vehicle_type")->first();
 		$data['addon_detail'] = AddonModel::find($data['booking_detail']->addon_id);
 		$query = DB::table('vehicles as v')
 				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
@@ -659,6 +662,7 @@ class BookingsController extends Controller {
 		}
 
 		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['vehicle_types'] = DB::table('vehicle_types')->where('isenable', 1)->whereNull('deleted_at')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
 		$data['settings'] = Settings::all();
 		return view("bookings.edit", $data);
@@ -694,7 +698,7 @@ class BookingsController extends Controller {
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
 		if ($xx) {
 			$id = $request->get("id");
-$booking = Bookings::findOrFail($id);
+			$booking = Bookings::find($id);
 			$booking->save();
 			return response()->json(['success' => true]);
 		} else {

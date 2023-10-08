@@ -463,7 +463,7 @@
       setInterval(set_datetime, 60000);
       get_addon_list('Tours');
       get_vehicle_list($("#vehicle_types").val());
-      $(".step-3").show();
+      $(".step-1").show();
       $("#general_date").hide();
       $(".wholeday_component").hide();
       $(".airport").hide();
@@ -486,7 +486,6 @@
 
       $("#vehicle_list").change(function() {
         var id = $(this).val();
-        console.log(id);
         var data = vehicle_list.filter(function(item){
           return item.vehicle_id == id; 
         })[0];

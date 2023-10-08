@@ -273,7 +273,7 @@
                 <div class="col-md-6 col-sm-12 airport">
                   <div class="form-group">
                     <label class="form-label">@lang('fleet.airport_pickup_flight_details')</label>
-                    <input type="text" class="form-control" id="airport_detail" value="{{$booking_detail->airport_detail}}">
+                    <input type="text" class="form-control" id="airport_detail" value="{{$booking_detail->airport_pickup_details}}">
                   </div>
                 </div>
               </div>
@@ -295,39 +295,42 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">@lang('fleet.selectVehicle')</label>
+                <label class="form-label">@lang('fleet.vehicle_types')</label>
               </div>
-              <select id="vehicle_list" class="form-control">
-                @foreach($vehicles as $key => $vehicle)
-                  <option value="{{$vehicle->vehicle_id}}" <?php if($vehicle->vehicle_id == $booking_detail->vehicle_id) { $img_key = $key; echo "selected"; } ?>>{{$vehicle->make_name}}</option>
+              <select id="vehicle_types" class="form-control">
+                @foreach($vehicle_types as $vehicle_type)
+                  <option value="{{$vehicle_type->id}}" @if($booking_detail->vehicle_type == $vehicle_type->id) selected @endif>{{$vehicle_type->displayname}}</option>
                 @endforeach
               </select>
+              <div class="form-group mt-4">
+                <label class="form-label">@lang('fleet.selectVehicle')</label>
+              </div>
+              <select id="vehicle_list" class="form-control"></select>
             </div>
             <div class="col-md-4">
-              <img src="{{asset('uploads/vehicles/'.$vehicles[$img_key]->vehicle_image)}}" style="width: 100%;" alt="vehicle_img" id="vehicle_img" />
-              <input type="hidden" id="vehicles_data_string" value="{{$vehicles}}">
+              <img src="{{asset('uploads/vehicles/'.$vehicles[0]->vehicle_image)}}" style="width: 100%;" alt="vehicle_img" id="vehicle_img" />
             </div>
             <div class="col-md-4">
               <div class="row">
                 <div class="col-md-12">
-                  <h4><b id="total_amount">{{$booking_detail->tax_charge + $booking_detail->total}}</b></h4>
+                  <h4><b id="total_amount"></b></h4>
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-4 col-sm-6">
-                  <p><i class="fa fa-user-group"></i> - <span id="vehicle_seats">{{$vehicles[$key]->seats}}</span></p>
+                  <p><i class="fa fa-user-group"></i> - <span id="vehicle_seats"></span></p>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <p><i class="fa fa-window-maximize"></i> - <span id="vehicle_doors">{{$vehicles[$key]->doors}}</span></p>
+                  <p><i class="fa fa-window-maximize"></i> - <span id="vehicle_doors"></span></p>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <p><i class="fa fa-luggage-cart"></i> - <span id="vehicle_luggage">{{$vehicles[$key]->luggage}}</span></p>
+                  <p><i class="fa fa-luggage-cart"></i> - <span id="vehicle_luggage"></span></p>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <p><i class="fa fa-snowflake"></i> - <span id="vehicle_aircondition">{{$vehicles[$key]->aircondition == 'Y' ? 'Yes' : 'No'}}</span></p>
+                  <p><i class="fa fa-snowflake"></i> - <span id="vehicle_aircondition"></span></p>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <p><i class="fa fa-sliders"></i> - <span id="vehicle_transmission">{{$vehicles[$key]->transmission_type}}</span></p>
+                  <p><i class="fa fa-sliders"></i> - <span id="vehicle_transmission"></span></p>
                 </div>
               </div>
               <div class="row vehicle_detail wholeday_component">
@@ -335,13 +338,13 @@
                   <span>@lang('fleet.daily_km_allowance')</span>
                 </div>
                 <div class="col-md-6">
-                  <p id="daily_km_allowance">{{$vehicles[$key]->wdwa_dka}}</p>
+                  <p id="daily_km_allowance"></p>
                 </div>
                 <div class="col-md-6">
                   <span>@lang('fleet.cost_per_extra_km')</span>
                 </div>
                 <div class="col-md-6">
-                  <p id="daily_extra_per_cost">{{$vehicles[$key]->wdwa_dkr}}GH₵</p>
+                  <p id="daily_extra_per_cost"></p>
                 </div>
                 <div class="col-md-6">
                   @lang('fleet.extra_km_payable')
@@ -458,12 +461,12 @@
       get_reservation_list();
       setInterval(set_datetime, 60000);
       get_addon_list('Tours');
+      get_vehicle_list($("#vehicle_types").val());
       $(".step-1").show();
       $("#general_date").hide();
       $(".wholeday_component").hide();
-      @if($booking_detail->reservation_type == 1) $(".airport").hide(); @endif
-      vehicle_list = JSON.parse($("#vehicles_data_string").val());
-      set_vehicle_detail(vehicle_list[{{$img_key}}]);
+      @if($booking_detail->airport_pickup == 'N') $(".airport").hide(); @endif
+
       settings = JSON.parse($("#settings").val());
       let tax_setting = settings.find(setting => setting.name == 'tax_charge').value;
       if(tax_setting.length > 1) {
@@ -529,6 +532,7 @@
       $("#addon_type").change(function() {
         get_addon_list($(this).val())
       })
+      
     })
 
     function set_datetime() {
@@ -565,6 +569,20 @@
           $("#addon_img").attr("src", "{{asset('uploads/addons')}}" + "/" + image);
           $("#addon_description").text(description);
         })
+      })
+    }
+
+    function get_vehicle_list(id) {
+      $.post("{{url('admin/fetch-vehicle-list-by-type')}}", { id }, function(res) {
+        vehicle_list = res.data;
+        let str = '';
+        vehicle_list.map((item) => {
+          str += '<option value="' + item.vehicle_id + '">' + item.make_name + '</option>';
+        })
+        if(vehicle_list.length < 1) {
+          str = '<option value="-1">No Data</option>';
+        }
+        $("#vehicle_list").html(str);
       })
     }
 
@@ -695,7 +713,7 @@
           return;
         }
 
-        if($("#destination_outside").val() == '' && ($("#reservation_list").val() != 1 || $("#final_destination") == 'Y')) {
+        if(!($("#destination_outside").val() == '' || ($("#reservation_list").val() != 1 || $("#final_destination") == 'Y'))) {
           new PNotify({
             title: 'Error',
             text: "@lang('fleet.destination_outside_accra_not_empty')",
@@ -715,6 +733,17 @@
         // $.post("{{url('admin/get-distance')}}", {origin, destination}, function(res) {
         //   console.log(res);
         // });
+      }
+
+      if(step == 4) {
+        if(!parseInt($("#vehicle_list").val())) {
+          new PNotify({
+              title: 'Error',
+              text: "@lang('fleet.vehicle') @lang('fleet.is_not_empty')",
+              type: 'error'
+          });
+          return;
+        }
       }
 
       $(".step").hide();

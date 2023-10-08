@@ -120,7 +120,6 @@
 								<thead class="thead-inverse">
 									<tr>
 										<th>No</th>
-										<th>@lang('fleet.method')</th>
 										<th>@lang('fleet.url')</th>
                                         <th>@lang('fleet.action')</th>
                                         <th>@lang('fleet.username')</th>
@@ -132,7 +131,6 @@
 									@foreach ($documents as $key => $document)
 										<tr>
 											<td>{{ (($documents->currentPage() - 1 ) * $documents->perPage() ) + $loop->iteration }}</td>
-											<td>{{ $document->method }}</td>
 											<td>{{ $document->url }}</td>
                                             <td>{{ $document->action }}</td>
                                             <td>{{ $document->c_name }}</td>
