@@ -209,7 +209,10 @@ class BookingsController extends Controller {
 				->filterColumn('dropoff', function ($query, $keyword) {
 					$query->whereRaw("DATE_FORMAT(dropoff,'%d-%m-%Y %h:%i %p') LIKE ?", ["%$keyword%"]);
 				})
-				->rawColumns(['payment', 'action', 'check', 'pickup_addr', 'dest_addr'])
+				->addColumn('source', function($row){
+					return $row->source == 'F' ? '<p class="badge bg-primary">FMS System</p>' : '<p class="badge bg-success">Website</p>';
+				})
+				->rawColumns(['payment', 'action', 'check', 'pickup_addr', 'dest_addr', 'source'])
 				->make(true);
 			//return datatables(User::all())->toJson();
 

@@ -43,6 +43,7 @@
                 <th style="width: 10% !important">@lang('fleet.payment_status')</th>
                 <th>@lang('fleet.booking_status')</th>
                 <th style="width: 10% !important">@lang('fleet.amount')</th>
+                <th>From</th>
                 <th style="width: 10% !important">@lang('fleet.action')</th>
               </tr>
             </thead>
@@ -66,6 +67,7 @@
                 <th>@lang('fleet.payment_status')</th>
                 <th>@lang('fleet.booking_status')</th>
                 <th>@lang('fleet.amount')</th>
+                <th>From</th>
                 <th>@lang('fleet.action')</th>
               </tr>
             </tfoot>
@@ -420,6 +422,7 @@
             {data: 'payment',  name: 'payment'},
             {data: 'ride_status',  name: 'ride_status'},
             {data: 'tax_total',  name: 'tax_total'},
+            {data: 'source', name: 'source'},
             {data: 'action',  name: 'action', searchable:false, orderable:false}
         ],
         order: [[1, 'desc']],

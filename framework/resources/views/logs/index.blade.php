@@ -125,7 +125,7 @@
                                         <th>@lang('fleet.action')</th>
                                         <th>@lang('fleet.username')</th>
                                         <th>@lang('fleet.ipaddress')</th>
-										<th>Created_at</th>
+										<th>Log Date</th>
 									</tr>
 								</thead>
 								<tbody>

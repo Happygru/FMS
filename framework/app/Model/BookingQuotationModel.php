@@ -23,6 +23,7 @@ class BookingQuotationModel extends Model {
 		'booking_id',
 		'customer_id',
 		'user_id',
+		'source',
 		'vehicle_id',
 		'branch_id',
 		'service_type',

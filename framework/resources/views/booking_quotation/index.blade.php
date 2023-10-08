@@ -41,6 +41,7 @@
                 <th style="width: 10% !important">@lang('fleet.dropoff')</th>
                 <th style="width: 10% !important">@lang('fleet.passengers')</th>
                 <th style="width: 10% !important">@lang('fleet.total') @lang('fleet.amount')</th>
+                <th>From</th>
                 <th>@lang('fleet.approve')/@lang('fleet.reject') </th>
                 <th style="width: 10% !important">@lang('fleet.action')</th>
               </tr>
@@ -62,6 +63,7 @@
                 <th>@lang('fleet.dropoff')</th>
                 <th>@lang('fleet.passengers')</th>
                 <th>@lang('fleet.total') @lang('fleet.amount')</th>
+                <th>From</th>
                 <th>@lang('fleet.approve')/@lang('fleet.reject')</th>
                 <th>@lang('fleet.action')</th>
               </tr>

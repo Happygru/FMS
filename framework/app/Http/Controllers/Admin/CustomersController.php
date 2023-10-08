@@ -17,6 +17,7 @@ use App\Http\Requests\Customers as CustomerRequest;
 use App\Http\Requests\ImportRequest;
 use App\Imports\CustomerImport;
 use App\Model\User;
+use App\Model\Log;
 use Auth;
 use DataTables;
 use Illuminate\Http\Request;
@@ -75,7 +76,8 @@ class CustomersController extends Controller {
 		return back();
 	}
 
-	public function index() {
+	public function index(Request $request) {
+		Log::activity($request, 'View customer page');
 		return view("customers.index");
 	}
 
@@ -83,7 +85,7 @@ class CustomersController extends Controller {
 		if ($request->ajax()) {
 
 			$users = User::where("user_type", "C")->orderBy('users.id', 'desc');
-
+			Log::activity($request, 'Fetch customers datatables');
 			return DataTables::eloquent($users)
 				->addColumn('check', function ($user) {
 					$tag = '<input type="checkbox" name="ids[]" value="' . $user->id . '" class="checkbox" id="chk' . $user->id . '" onclick=\'checkcheckbox();\'>';
@@ -116,7 +118,8 @@ class CustomersController extends Controller {
 		}
 	}
 
-	public function create() {
+	public function create(Request $request) {
+		Log::activity($request, 'View customer create page');
 		return view("customers.create");
 	}
 	public function store(CustomerRequest $request) {
@@ -173,14 +176,16 @@ class CustomersController extends Controller {
 
 		// Save the new BookingService
 		$corporate->save();
-
+		Log::activity($request, 'Create a customer account');
 		return response()->json(['success' => true]);
 	}
 
-	public function show($id) {
+	public function show(Request $request, $id) {
 		$index['customer'] = User::where('id', $id)->first();
-		if($index['customer'])
+		if($index['customer']){
+			Log::activity($request, 'View customer detail page');
 			return view("customers.show", $index);
+		}
 		else
 			return redirect()->back()->with('error', 'No user found with the specified id.');
 	}
@@ -194,14 +199,17 @@ class CustomersController extends Controller {
 			'email' => time() . "_deleted" . $user->email,
 		]);
 		$user->delete();
+		Log::activity($request, 'Delete customer');
 
 		return redirect()->route('customers.index');
 	}
 
-	public function edit($id) {
+	public function edit(Request $request, $id) {
 		$index['data'] = User::where('id', $id)->first();
-		if($index['data'])
+		if($index['data']){
+			Log::activity($request, 'View customer edit page');
 			return view("customers.edit", $index);
+		}
 		else
 			return redirect()->back()->with('error', 'No user found with the specified id.');
 	}
@@ -224,7 +232,7 @@ class CustomersController extends Controller {
 
 		// Save the new BookingService
 		$corporate->save();
-
+		Log::activity($request, 'Update a customer');
 		return response()->json(['success' => true]);
 	}
 

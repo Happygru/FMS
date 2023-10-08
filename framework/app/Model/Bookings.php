@@ -32,6 +32,7 @@ class Bookings extends Model {
 		'branch_id',
 		'service_type',
 		'reservice_type',
+		'source',
 		'addon_id',
 		'addon_quantity',
 		'driver_id',
