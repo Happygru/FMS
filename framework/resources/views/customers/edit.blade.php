@@ -1,6 +1,27 @@
 @extends('layouts.app')
+
 @section('extra_css')
-  <link rel="stylesheet" href="{{asset('assets/css/bootstrap-datepicker.min.css')}}">
+<style>
+.icon_file_select_form {
+    display: flex;
+}
+
+.icon_file_select_form>a {
+    padding: 8px 12px;
+}
+
+#select_service_icon {
+    cursor: not-allowed;
+}
+
+.big-checkbox {
+    transform: scale(1.5);
+}
+
+.form-check {
+    cursor: pointer;
+}
+</style>
 @endsection
 @section("breadcrumb")
 <li class="breadcrumb-item"><a href="{{ route('customers.index')}}">@lang('fleet.customers')</a></li>
@@ -8,133 +29,206 @@
 @endsection
 @section('content')
 <div class="row">
-  <div class="col-md-12">
-    <div class="card card-warning">
-      <div class="card-header">
-        <h3 class="card-title">
-          @lang('fleet.edit_customer')
-        </h3>
-      </div>
-
-      <div class="card-body">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-          <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-          </ul>
+    <div class="col-xs-12 col-sm-12">
+        <div class="card card-info">
+            <div class="card-header with-border">
+                <h3 class="card-title">
+                  @lang('fleet.edit_customer')
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <img src="{{asset('uploads/avatars/'.($data->avatar ? $data->avatar : 'default.jpg'))}}" style="width: 100px; height: 100%; border-radius: 50%;" id="selected_img" />
+                    <button class="btn btn-sm btn-success my-4" id="select_button">Browse...</button>
+                    <input type="file" id="select_img" style="display: none;">
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.name')</label>
+                      <input type="text" class="form-control" placeholder="@lang('fleet.name')" id="name" value="{{$data->name}}" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.email')</label>
+                      <input type="email" placeholder="@lang('fleet.email')" id="email" class="form-control" value="{{$data->email}}" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label class="form-label">@lang('fleet.gender')</label>
+                    <select id="gender" class="form-control">
+                      <option value="M" @if($data->gender == 'M') selected @endif>Male</option>
+                      <option value="F" @if($data->gender == 'F') selected @endif>Female</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.phone')</label>
+                      <input type="text" id="phone" class="form-control" placeholder="@lang('fleet.phone')" value="{{$data->phone}}" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.address')</label>
+                      <input type="text" id="address" class="form-control" placeholder="@lang('fleet.address')" value="{{$data->addr}}" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.location')</label>
+                      <input type="text" id="location" class="form-control" placeholder="@lang('fleet.location')" value="{{$data->location}}}" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label class="form-label">@lang('fleet.customer_type')</label>
+                    <select id="customer_type" class="form-control">
+                      <option value="I" @if($data->customer_type == 'I') selected @endif>Individual</option>
+                      <option value="C" @if($data->customer_type == 'C') selected @endif>Corporate</option>
+                    </select>
+                  </div>
+                  <div class="col-md-12">
+                      <button class="btn btn-success" onclick="update()">
+                          <i class="fa fa-save"></i>
+                          @lang('fleet.save')
+                      </button>
+                      <a class="btn btn-danger" href="{{url('admin/customers')}}">
+                          <i class="fa fa-share"></i>
+                          Return
+                      </a>
+                  </div>
+                </div>
+            </div>
         </div>
-        @endif
-
-        {!! Form::open(['route' => ['customers.update',$data->id],'method'=>'PATCH']) !!}
-        {!! Form::hidden('id',$data->id) !!}
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              {!! Form::label('first_name', __('fleet.firstname'), ['class' => 'form-label']) !!}
-              {!! Form::text('first_name', $data->getMeta('first_name'),['class' => 'form-control','required']) !!}
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="form-group">
-              {!! Form::label('last_name', __('fleet.lastname'), ['class' => 'form-label']) !!}
-              {!! Form::text('last_name', $data->getMeta('last_name'),['class' => 'form-control','required']) !!}
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="form-group">
-              {!! Form::label('phone',__('fleet.phone'), ['class' => 'form-label']) !!}
-              <div class=" input-group mb-3">
-                <div class="input-group-prepend date">
-                  <span class="input-group-text"><i class="fa fa-phone"></i></span>
-                </div>
-                {!! Form::number('phone', $data->getMeta('mobno'),['class' => 'form-control','required']) !!}
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="form-group">
-              {!! Form::label('email', __('fleet.email'), ['class' => 'form-label']) !!}
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                </div>
-                {!! Form::email('email', $data->email,['class' => 'form-control','required']) !!}
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="form-group">
-              {!! Form::label('address', __('fleet.address'), ['class' => 'form-label']) !!}
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fa fa-home"></i></span>
-                </div>
-                {!! Form::textarea('address', $data->getMeta('address'),['class' => 'form-control','size'=>'30x2']) !!}
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-md-3">
-            <div class="form-group">
-              {!! Form::label('gender', __('fleet.gender') , ['class' => 'form-label']) !!}<br>
-              <input type="radio" name="gender" class="flat-red gender" value="1" @if($data->gender == 1) checked @endif
-              required> @lang('fleet.male')<br>
-              <input type="radio" name="gender" class="flat-red gender" value="0" @if($data->gender == 0) checked @endif
-              required> @lang('fleet.female')
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="form-group">
-              {!! Form::label('customer_type', __('fleet.customer_type') , ['class' => 'form-label']) !!}<br>
-              <input type="radio" name="customer_type" class="flat-red customer_type" value="1" @if($data->customer_type == 1) checked @endif
-              required> @lang('fleet.individual')<br>
-              <input type="radio" name="customer_type" class="flat-red customer_type" value="0" @if($data->customer_type == 0) checked @endif
-              required> @lang('fleet.corporate')
-            </div>
-          </div>
-          
-          <div class="col-md-6">
-            <div class="form-group">
-              {!! Form::label('birthday', __('fleet.birthday'), ['class' => 'form-label required']) !!}
-              <div class="input-group date">
-                <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                </div>
-                {!! Form::text('birthday', $data->birthday, ['class' => 'form-control','required']) !!}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          {!! Form::submit(__('fleet.update'), ['class' => 'btn btn-warning']) !!}
-        </div>
-        {!! Form::close() !!}
-      </div>
     </div>
-  </div>
 </div>
-
 @endsection
-@section('script')
-<script src="{{ asset('assets/js/moment.js') }}"></script>
-<!-- bootstrap datepicker -->
-<script src="{{asset('assets/js/bootstrap-datepicker.min.js')}}"></script>
-<script type="text/javascript">
-  //Flat red color scheme for iCheck
-  $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-    checkboxClass: 'icheckbox_flat-green',
-    radioClass   : 'iradio_flat-green'
-  })
+@section("script")
+@if(Hyvikk::api('google_api') == '1')
+<script>
+function initMap() {
+    // var input = document.getElementById('searchMapInput');
+    var pickup_addr = document.getElementById('address');
+    new google.maps.places.Autocomplete(pickup_addr);
 
-  $('#birthday').datepicker({
-    autoclose: true,
-    format: 'yyyy-mm-dd'
-  });
+    var dropoff_addr = document.getElementById('location');
+    new google.maps.places.Autocomplete(dropoff_addr);
+
+    // autocomplete.addListener('place_changed', function() {
+    //     var place = autocomplete.getPlace();
+    //     document.getElementById('pickup_addr').innerHTML = place.formatted_address;
+    // });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ Hyvikk::api('api_key') }}&libraries=places&callback=initMap"
+    async defer></script>
+@endif
+<script>
+
+    var file;
+
+    $(document).ready(function() {
+      $("#select_img").change(function(e) {
+        file = $(this).get(0).files[0];
+        if(file)
+        {
+          var reader = new FileReader();
+          reader.onload = function(){
+              $("#selected_img").attr('src', reader.result);
+          };
+          reader.readAsDataURL(e.target.files[0]);
+        }
+        if(file)
+          $("#selected_img").attr('src', reader.result);
+        else
+          $("#selected_img").attr('src', '{{asset('uploads/avatars/default.jpg')}}');
+      })
+
+      $("#select_button").click(function(){
+        $("#select_img").click();
+      })
+    })
+
+    function update() {
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var phone = $("#phone").val();
+        var address = $("#address").val();
+        var location = $("#location").val();
+        var gender = $("#gender").val();
+        var customer_type = $("#customer_type").val();
+
+        if(name == ''){
+            new PNotify({
+                title: 'Error',
+                text: "@lang('fleet.name') @lang('fleet.is_not_empty')",
+                type: 'error'
+            });
+            return;
+        }
+
+        if(email == '') {
+            new PNotify({
+                title: 'Error',
+                text: "@lang('fleet.email') @lang('fleet.is_not_empty')",
+                type: 'error'
+            });
+            return;
+        }
+
+        if(phone == '') {
+            new PNotify({
+                title: 'Error',
+                text: "@lang('fleet.phone') @lang('fleet.is_not_empty')",
+                type: 'error'
+            });
+            return;
+        }
+
+        if(address == '') {
+            new PNotify({
+                title: 'Error',
+                text: "@lang('fleet.address') @lang('fleet.is_not_empty')",
+                type: 'error'
+            });
+            return;
+        }
+
+        if(location == '') {
+            new PNotify({
+                title: 'Error',
+                text: "@lang('fleet.location') @lang('fleet.is_not_empty')",
+                type: 'error'
+            });
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('id', {{$data->id}});
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        formData.append('address', address);
+        formData.append('location', location);
+        formData.append('gender', gender);
+        formData.append('customer_type', customer_type);
+        formData.append('avatar', file);
+
+        $.ajax({
+            url: "{{route('customers.ajax_update')}}",
+            type: "POST",
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+            success: function (res) {
+                if(!res.success) {
+                    new PNotify({
+                        title: 'Error',
+                        text: "@lang('fleet.update_failed')",
+                        type: 'error'
+                    });
+                    return;
+                }
+                new PNotify({
+                    title: 'Success',
+                    text: "@lang('fleet.updated_success')",
+                    type: 'success'
+                });
+                // setTimeout(function(){ window.location.reload(''); }, 1000);
+                console.log(res);
+            }
+      });
+    }
+
 </script>
 @endsection

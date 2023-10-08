@@ -32,11 +32,12 @@ class User extends Authenticatable {
 	protected $table = "users";
 	protected $metaTable = 'users_meta'; //optional.
 	protected $fillable = [
-		'name', 'email', 'password', 'user_type', 'group_id', 'api_token', 'addr', 'location', 'customer_type'
+		'name', 'email', 'password', 'user_type', 'group_id', 'api_token', 'addr', 'location', 'customer_type', 'phone', 'avatar'
 	];
 
 	protected $hidden = ['password', 'remember_token', 'api_token'];
 
+	
 	protected function getMetaKeyName() {
 		return 'user_id'; // The parent foreign key
 	}

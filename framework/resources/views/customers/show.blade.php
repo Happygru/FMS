@@ -33,11 +33,11 @@
           <div class="col-md-6">
             <p><b>@lang('fleet.name')</b>: {{ $customer->name }}</p>
             <p><b>@lang('fleet.email')</b>: {{ $customer->email }}</p>
-            <p><b>@lang('fleet.gender')</b>: {{ $customer->gender==1?__('frontend.male'):__('frontend.female') }}</p>
+            <p><b>@lang('fleet.gender')</b>: {{ $customer->gender=='M'?__('frontend.male'):__('frontend.female') }}</p>
           </div>
           <div class="col-md-6">
-            <p><b>@lang('fleet.phone')</b>: {{ $customer->mobno }}</p>
-            <p><b>@lang('fleet.address')</b>: {{ $customer->address }}</p>
+            <p><b>@lang('fleet.phone')</b>: {{ $customer->phone }}</p>
+            <p><b>@lang('fleet.address')</b>: {{ $customer->addr }}</p>
           </div>
         </div>
       </div>

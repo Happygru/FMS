@@ -124,9 +124,9 @@ class VehiclesController extends Controller {
 					return $tag;
 				})
 				->editColumn('vehicle_image', function ($vehicle) {
-					$src = ($vehicle->vehicle_image != null)?asset('uploads/' . $vehicle->vehicle_image): asset('assets/images/vehicle.jpeg');
+					$src = ($vehicle->vehicle_image != null)?asset('uploads/vehicles/' . $vehicle->vehicle_image): asset('assets/images/vehicle.jpeg');
 
-					return '<img src="' . $src . '" height="70px" width="70px">';
+					return '<img src="' . $src . '" height="70px" width="90px">';
 				})
 				->addColumn('make', function ($vehicle) {
 					return ($vehicle->make_name) ? $vehicle->make_name : '';

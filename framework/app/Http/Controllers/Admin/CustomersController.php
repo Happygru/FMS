@@ -82,7 +82,7 @@ class CustomersController extends Controller {
 	public function fetch_data(Request $request) {
 		if ($request->ajax()) {
 
-			$users = User::select('users.*')->with(['user_data'])->whereUser_type("C")->orderBy('users.id', 'desc')->groupBy('users.id');
+			$users = User::where("user_type", "C")->orderBy('users.id', 'desc');
 
 			return DataTables::eloquent($users)
 				->addColumn('check', function ($user) {
@@ -90,24 +90,29 @@ class CustomersController extends Controller {
 					return $tag;
 				})
 				->addColumn('mobno', function ($user) {
-					return $user->getMeta('mobno');
+					return $user->phone;
+				})
+				->editColumn('avatar', function ($user) {
+					return "<img src=".asset('uploads/avatars/')."/".($user->avatar ? $user->avatar : 'default.jpg')." style='width: 50px; height: 50px; border-radius: 50%;' />";
+				})
+				->addColumn('customer_type', function ($user) {
+					return $user->customer_type == 'C' ? 'Corporate' : 'Individual';
 				})
 				->editColumn('name', function ($user) {
 					return "<a href=" . route('customers.show', $user->id) . ">$user->name</a>";
 				})
 				->addColumn('gender', function ($user) {
-					return ($user->getMeta('gender')) ? "Male" : "Female";
+					return ($user->gender == 'M') ? "Male" : "Female";
 				})
 				->addColumn('address', function ($user) {
-					return $user->getMeta('address');
+					return $user->addr;
 				})
 				->addColumn('action', function ($user) {
 					return view('customers.list-actions', ['row' => $user]);
 				})
-				->rawColumns(['action', 'check', 'name'])
+				->rawColumns(['action', 'check', 'name', 'avatar'])
 				->make(true);
 			//return datatables(User::all())->toJson();
-
 		}
 	}
 
@@ -136,44 +141,48 @@ class CustomersController extends Controller {
 		return redirect()->route("customers.index");
 	}
 	public function ajax_store(Request $request) {
-		$v = Validator::make($request->all(), [
-			'first_name' => 'required',
-			'last_name' => 'required',
-			'email' => 'unique:users,email',
-			'phone' => 'numeric',
-		]);
-
-		if ($v->fails()) {
-			$d = 0;
-
-		} else {
-			$id = User::create([
-				"name" => $request->get("first_name") . " " . $request->get("last_name"),
-				"email" => $request->get("email"),
-				"password" => bcrypt("password"),
-				"user_type" => "C",
-				"api_token" => str_random(60),
-			])->id;
-			$user = User::find($id);
-			$user->first_name = $request->get("first_name");
-			$user->last_name = $request->get("last_name");
-			$user->address = $request->get("address");
-			$user->mobno = $request->get("phone");
-			$user->gender = $request->get('gender');
-			$user->save();
-			$user->givePermissionTo(['Bookings add', 'Bookings edit', 'Bookings list', 'Bookings delete']);
-			$d = User::whereUser_type("C")->get(["id", "name as text"]);
-
+		// Check if a record with the same name already exists
+		$existingService = User::firstWhere('email', $request->input('email'));
+		if ($existingService) {
+			// Return a response indicating that the name is already taken
+			return response()->json(['success' => false, 'code' => 402]);
 		}
 
-		return $d;
 
+		$corporate = new User;
+
+		if($request->hasFile('avatar')) {
+			// Generate a new filename
+			// Store the file in the 'uploads' disk, in the 'uploads' directory
+			$uploads_dir = 'uploads/avatars';
+			$file = $request->file('avatar');
+			$newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+			$file->move($uploads_dir, $newFileName);
+			$corporate->avatar = $newFileName;  // Store the path of the uploaded file
+		}
+
+		// Set the properties
+		$corporate->name = $request->input('name');
+		$corporate->email = $request->input('email');
+		$corporate->gender = $request->input('gender');
+		$corporate->phone = $request->input('phone');
+		$corporate->addr = $request->input('address');
+		$corporate->location = $request->input('location');
+		$corporate->customer_type = $request->input('customer_type');
+		$corporate->user_type = 'C';
+
+		// Save the new BookingService
+		$corporate->save();
+
+		return response()->json(['success' => true]);
 	}
 
 	public function show($id) {
-		$index['customer'] = User::find($id);
-
-		return view('customers.show', $index);
+		$index['customer'] = User::where('id', $id)->first();
+		if($index['customer'])
+			return view("customers.show", $index);
+		else
+			return redirect()->back()->with('error', 'No user found with the specified id.');
 	}
 
 	public function destroy(Request $request) {
@@ -190,26 +199,33 @@ class CustomersController extends Controller {
 	}
 
 	public function edit($id) {
-		$index['data'] = User::whereId($id)->first();
-		return view("customers.edit", $index);
+		$index['data'] = User::where('id', $id)->first();
+		if($index['data'])
+			return view("customers.edit", $index);
+		else
+			return redirect()->back()->with('error', 'No user found with the specified id.');
 	}
-	public function update(CustomerRequest $request) {
+	public function ajax_update(Request $request) {
+		// Check if a record with the same name already exists
+		$corporate = User::find($request->id);
+		if (!$corporate) {
+			// Return a response indicating that the name is already taken
+			return response()->json(['success' => false, 'code' => 402]);
+		}
 
-		$user = User::find($request->id);
-		$user->name = $request->get("first_name") . " " . $request->get("last_name");
-		$user->email = $request->get('email');
-		// $user->password = bcrypt($request->get("password"));
-		// $user->save();
-		$user->first_name = $request->get("first_name");
-		$user->last_name = $request->get("last_name");
-		$user->address = $request->get("address");
-		$user->mobno = $request->get("phone");
-		$user->gender = $request->get('gender');
-		$user->customer_type = $request->get('customer_type');
-		$user->birthday = $request->get('birthday');
-		$user->save();
+		// Set the properties
+		$corporate->name = $request->input('name');
+		$corporate->email = $request->input('email');
+		$corporate->gender = $request->input('gender');
+		$corporate->phone = $request->input('phone');
+		$corporate->addr = $request->input('address');
+		$corporate->location = $request->input('location');
+		$corporate->customer_type = $request->input('customer_type');
 
-		return redirect()->route("customers.index");
+		// Save the new BookingService
+		$corporate->save();
+
+		return response()->json(['success' => true]);
 	}
 
 	public function bulk_delete(Request $request) {

@@ -287,12 +287,15 @@ Route::namespace ('Admin')->group(function () {
         Route::post("/reports/payments", "ReportsController@drivers_payments_post")->name("reports.payments");
 
         Route::post('/customer/ajax_save', 'CustomersController@ajax_store')->name('customers.ajax_store');
+        Route::post('/customer/ajax_update', 'CustomersController@ajax_update')->name('customers.ajax_update');
         Route::get("/bookings_calendar", 'BookingsController@calendar_view')->name("bookings.calendar");
         Route::get('/calendar/event/calendar/{id}', 'BookingsController@calendar_event');
         Route::get('/calendar/event/service/{id}', 'BookingsController@service_view');
         Route::get('/calendar', 'BookingsController@calendar');
         Route::post('/get_driver', 'BookingsController@get_driver');
         Route::post('/get_vehicle', 'BookingsController@get_vehicle');
+        Route::post('/fetch-vehicle-list-by-type', 'BookingsController@fetch_vehicle_list_by_type');
+
         Route::post('/bookings/complete', 'BookingsController@complete_post')->name("bookings.complete");
         Route::get('/bookings/complete', 'BookingsController@complete_post')->name("bookings.complete");
 

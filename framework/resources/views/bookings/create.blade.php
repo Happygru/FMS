@@ -296,17 +296,20 @@
           <div class="row">
             <div class="col-md-4">
               <div class="form-group">
-                <label class="form-label">@lang('fleet.selectVehicle')</label>
+                <label class="form-label">@lang('fleet.vehicle_types')</label>
               </div>
-              <select id="vehicle_list" class="form-control">
-                @foreach($vehicles as $vehicle)
-                  <option value="{{$vehicle->vehicle_id}}">{{$vehicle->make_name}}</option>
+              <select id="vehicle_types" class="form-control">
+                @foreach($vehicle_types as $vehicle_type)
+                  <option value="{{$vehicle_type->id}}">{{$vehicle_type->displayname}}</option>
                 @endforeach
               </select>
+              <div class="form-group mt-4">
+                <label class="form-label">@lang('fleet.selectVehicle')</label>
+              </div>
+              <select id="vehicle_list" class="form-control"></select>
             </div>
             <div class="col-md-4">
               <img src="{{asset('uploads/vehicles/'.$vehicles[0]->vehicle_image)}}" style="width: 100%;" alt="vehicle_img" id="vehicle_img" />
-              <input type="hidden" id="vehicles_data_string" value="{{$vehicles}}">
             </div>
             <div class="col-md-4">
               <div class="row">
@@ -459,12 +462,11 @@
       get_reservation_list();
       setInterval(set_datetime, 60000);
       get_addon_list('Tours');
-      $(".step-1").show();
+      get_vehicle_list($("#vehicle_types").val());
+      $(".step-3").show();
       $("#general_date").hide();
       $(".wholeday_component").hide();
       $(".airport").hide();
-      vehicle_list = JSON.parse($("#vehicles_data_string").val());
-      set_vehicle_detail(vehicle_list[0]);
       settings = JSON.parse($("#settings").val());
       let tax_setting = settings.find(setting => setting.name == 'tax_charge').value;
       if(tax_setting.length > 1) {
@@ -484,6 +486,7 @@
 
       $("#vehicle_list").change(function() {
         var id = $(this).val();
+        console.log(id);
         var data = vehicle_list.filter(function(item){
           return item.vehicle_id == id; 
         })[0];
@@ -530,7 +533,25 @@
       $("#addon_type").change(function() {
         get_addon_list($(this).val())
       })
+
+      $("#vehicle_types").change(function() {
+        get_vehicle_list($(this).val());
+      })
     })
+
+    function get_vehicle_list(id) {
+      $.post("{{url('admin/fetch-vehicle-list-by-type')}}", { id }, function(res) {
+        vehicle_list = res.data;
+        let str = '';
+        vehicle_list.map((item) => {
+          str += '<option value="' + item.vehicle_id + '">' + item.make_name + '</option>';
+        })
+        if(vehicle_list.length < 1) {
+          str = '<option value="-1">No Data</option>';
+        }
+        $("#vehicle_list").html(str);
+      })
+    }
 
     function set_datetime() {
       $(".set-datetime .view_datetime > span").text(get_current_datetime());
@@ -724,6 +745,17 @@
           new PNotify({
               title: 'Error',
               text: "@lang('fleet.address_invalid')",
+              type: 'error'
+          });
+          return;
+        }
+      }
+
+      if(step == 4) {
+        if(parseInt($("#vehicle_list").val())) {
+          new PNotify({
+              title: 'Error',
+              text: "@lang('fleet.vehicle') @lang('fleet.is_not_empty')",
               type: 'error'
           });
           return;

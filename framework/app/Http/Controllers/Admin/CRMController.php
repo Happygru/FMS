@@ -51,37 +51,45 @@ class CRMController extends Controller {
             Log::activity($request, 'View Create Corporate Account page');
             return view('crm.corporate_accounts.create');
         } else if($request->isMethod('post')) {
-
-            // Check if a record with the same name already exists
-            $existingService = User::firstWhere('name', $request->input('name'));
+            $existingService = User::firstWhere('email', $request->input('email'));
             if ($existingService) {
                 // Return a response indicating that the name is already taken
                 return response()->json(['success' => false, 'code' => 402]);
             }
-
-            // Create a new BookingService
+    
+    
             $corporate = new User;
-
+    
+            if($request->hasFile('avatar')) {
+                // Generate a new filename
+                // Store the file in the 'uploads' disk, in the 'uploads' directory
+                $uploads_dir = 'uploads/avatars';
+                $file = $request->file('avatar');
+                $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+                $file->move($uploads_dir, $newFileName);
+                $corporate->avatar = $newFileName;  // Store the path of the uploaded file
+            }
+    
             // Set the properties
             $corporate->name = $request->input('name');
             $corporate->email = $request->input('email');
+            $corporate->gender = $request->input('gender');
+            $corporate->phone = $request->input('phone');
             $corporate->addr = $request->input('address');
             $corporate->location = $request->input('location');
-            $corporate->phone = $request->input('phone');
+            $corporate->customer_type = $request->input('customer_type');
             $corporate->user_type = 'C';
-            $corporate->customer_type = 'C';
-
+            Log::activity($request, 'Create a new corporate account');
             // Save the new BookingService
             $corporate->save();
-            Log::activity($request, 'Create new corporate account');
-            // Return a response
-            return response()->json(['success' => true, 'code' => 200]);       
+    
+            return response()->json(['success' => true, 'code' => '200']); 
         }
     }
 
     public function edit_corporate_account(Request $request, $id) {
         if($request->isMethod('get')) {
-            $data['account'] = User::find($id);
+            $data['account'] = User::where('id', $id)->first();
             if($data['account']) {
                 Log::activity($request, 'View Edit Corporate Account page');
                 return view('crm.corporate_accounts.edit', $data);
@@ -90,29 +98,25 @@ class CRMController extends Controller {
             }
         } else {
             
-            // Check if a record with the same name already exists
-            $existingService = User::firstWhere('name', $request->input('name'));
-            if ($existingService) {
+            $corporate = User::find($request->id);
+            if (!$corporate) {
                 // Return a response indicating that the name is already taken
                 return response()->json(['success' => false, 'code' => 402]);
             }
-
-            // Create a new BookingService
-            $corporate = User::find($request->input('id'));
-
+    
             // Set the properties
             $corporate->name = $request->input('name');
             $corporate->email = $request->input('email');
+            $corporate->gender = $request->input('gender');
+            $corporate->phone = $request->input('phone');
             $corporate->addr = $request->input('address');
             $corporate->location = $request->input('location');
-            $corporate->phone = $request->input('phone');
-            $corporate->customer_type = 'C';
-            $corporate->user_type = 'C';
-
+            $corporate->customer_type = $request->input('customer_type');
             // Save the new BookingService
             $corporate->save();
-            Log::activity($request, 'Edit Corporate Account');
-            // Return a response
+
+            Log::activity($request, 'Update a corporate cccount');
+    
             return response()->json(['success' => true, 'code' => 200]);
         }
     }

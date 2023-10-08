@@ -42,11 +42,13 @@
               <th>
                 <input type="checkbox" id="chk_all">
               </th>
+              <th>@lang('fleet.avatar')</th>
               <th>@lang('fleet.name')</th>
               <th>@lang('fleet.email')</th>
               <th>@lang('fleet.phone')</th>
               <th>@lang('fleet.gender')</th>
               <th>@lang('fleet.address')</th>
+              <th>@lang('fleet.customer_type')</th>
               <th>@lang('fleet.action')</th>
             </tr>
           </thead>
@@ -58,11 +60,13 @@
               <th>
                 @can('Customer delete')<button class="btn btn-danger" id="bulk_delete" data-toggle="modal" data-target="#bulkModal" disabled title="@lang('fleet.delete')"><i class="fa fa-trash"></i></button>@endcan
               </th>
+              <th>@lang('fleet.avatar')</th>
               <th>@lang('fleet.name')</th>
               <th>@lang('fleet.email')</th>
               <th>@lang('fleet.phone')</th>
               <th>@lang('fleet.gender')</th>
               <th>@lang('fleet.address')</th>
+              <th>@lang('fleet.customer_type')</th>
               <th>@lang('fleet.action')</th>
             </tr>
           </tfoot>
@@ -250,11 +254,13 @@
          },
          columns: [
             {data: 'check',name:'check', searchable:false, orderable:false},
+            {data: 'avatar', name: 'avatar', searchable:false, orderable:false},
             {data: 'name', name: 'name'},
             {data: 'email', name: 'email'},            
-            {data: 'mobno', name: 'user_data.value'},            
+            {data: 'mobno', name: 'user_data.value'},
             {data: 'gender', name: 'user_data.value'},            
             {data: 'address', name: 'user_data.value'},
+            {data: 'customer_type', name: 'customer_type'},
             {data: 'action',name:'action',  searchable:false, orderable:false}
         ],
         order: [[1, 'desc']],

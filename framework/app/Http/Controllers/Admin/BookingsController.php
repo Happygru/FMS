@@ -478,6 +478,22 @@ class BookingsController extends Controller {
 
 	}
 
+	public function fetch_vehicle_list_by_type(Request $request) {
+		$user = Auth::user()->group_id;
+		$query = DB::table('vehicles as v')
+		->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
+		->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+		->where('v.in_service', '1')
+		->where('v.type_id', $request->id);
+
+		if ($user !== null) {
+			$query = $query->where('v.group_id', $user);
+		}
+
+		$data = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		return response()->json([ 'success' => true, 'data' => $data]);
+	}
+
 	public function calendar_event($id) {
 		$data['booking'] = Bookings::find($id);
 		return view("bookings.event", $data);
@@ -571,6 +587,7 @@ class BookingsController extends Controller {
 		}
 
 		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['vehicle_types'] = DB::table('vehicle_types')->where('isenable', 1)->whereNull('deleted_at')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
 		$data['settings'] = Settings::all();
 		return view("bookings.create", $data);

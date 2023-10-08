@@ -31,7 +31,7 @@
 @endsection
 @section('content')
 <div class="row">
-    <div class="col-xs-12 col-sm-6">
+    <div class="col-xs-12">
         <div class="card card-info">
             <div class="card-header with-border">
                 <h3 class="card-title">
@@ -39,37 +39,56 @@
                 </h3>
             </div>
             <div class="card-body">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label class="form-label">@lang('fleet.name')</label>
-                        <input type="text" class="form-control" placeholder="@lang('fleet.name')" id="name" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">@lang('fleet.email')</label>
-                        <input type="email" placeholder="@lang('fleet.email')" id="email" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">@lang('fleet.phone')</label>
-                        <input type="text" id="phone" class="form-control" placeholder="@lang('fleet.phone')" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">@lang('fleet.address')</label>
-                        <input type="text" id="address" class="form-control" placeholder="@lang('fleet.address')" />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">@lang('fleet.location')</label>
-                        <input type="text" id="location" class="form-control" placeholder="@lang('fleet.location')" />
-                    </div>
-                    <div>
-                        <button class="btn btn-success" onclick="create()">
-                            <i class="fa fa-plus"></i>
-                            Create
-                        </button>
-                        <a class="btn btn-danger" href="{{url('admin/crm-corporate-accounts')}}">
-                            <i class="fa fa-share"></i>
-                            Return
-                        </a>
-                    </div>
+                <div class="row">
+                  <div class="col-md-12" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <img src="{{asset('uploads/avatars/default.jpg')}}" style="width: 100px; height: 100%; border-radius: 50%;" id="selected_img" />
+                    <button class="btn btn-sm btn-success my-4" id="select_button">Browse...</button>
+                    <input type="file" id="select_img" style="display: none;">
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.name')</label>
+                      <input type="text" class="form-control" placeholder="@lang('fleet.name')" id="name" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.email')</label>
+                      <input type="email" placeholder="@lang('fleet.email')" id="email" class="form-control" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label class="form-label">@lang('fleet.gender')</label>
+                    <select id="gender" class="form-control">
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.phone')</label>
+                      <input type="text" id="phone" class="form-control" placeholder="@lang('fleet.phone')" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.address')</label>
+                      <input type="text" id="address" class="form-control" placeholder="@lang('fleet.address')" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                      <label class="form-label">@lang('fleet.location')</label>
+                      <input type="text" id="location" class="form-control" placeholder="@lang('fleet.location')" />
+                  </div>
+                  <div class="form-group col-md-6 col-xs-12">
+                    <label class="form-label">@lang('fleet.customer_type')</label>
+                    <select id="customer_type" class="form-control">
+                      <option value="I">Individual</option>
+                      <option value="C">Corporate</option>
+                    </select>
+                  </div>
+                  <div class="col-md-12">
+                      <button class="btn btn-success" onclick="create()">
+                          <i class="fa fa-plus"></i>
+                          Create
+                      </button>
+                      <a class="btn btn-danger" href="{{url('admin/crm-corporate-accounts')}}">
+                          <i class="fa fa-share"></i>
+                          Return
+                      </a>
+                  </div>
                 </div>
             </div>
         </div>
@@ -100,12 +119,36 @@ function initMap() {
 
     var file;
 
+    $(document).ready(function() {
+      $("#select_img").change(function(e) {
+        file = $(this).get(0).files[0];
+        if(file)
+        {
+          var reader = new FileReader();
+          reader.onload = function(){
+              $("#selected_img").attr('src', reader.result);
+          };
+          reader.readAsDataURL(e.target.files[0]);
+        }
+        if(file)
+          $("#selected_img").attr('src', reader.result);
+        else
+          $("#selected_img").attr('src', '{{asset('uploads/avatars/default.jpg')}}');
+      })
+
+      $("#select_button").click(function(){
+        $("#select_img").click();
+      })
+    })
+
     function create() {
         var name = $("#name").val();
         var email = $("#email").val();
         var phone = $("#phone").val();
         var address = $("#address").val();
         var location = $("#location").val();
+        var gender = $("#gender").val();
+        var customer_type = $("#customer_type").val();
 
         if(name == ''){
             new PNotify({
@@ -158,6 +201,9 @@ function initMap() {
         formData.append('phone', phone);
         formData.append('address', address);
         formData.append('location', location);
+        formData.append('gender', gender);
+        formData.append('customer_type', customer_type);
+        formData.append('avatar', file);
 
         $.ajax({
             url: "{{url('admin/crm-corporate-accounts/create')}}",
@@ -179,7 +225,8 @@ function initMap() {
                     text: "@lang('fleet.created_successfully')",
                     type: 'success'
                 });
-                setTimeout(function(){ window.location.reload(''); }, 1000);
+                // setTimeout(function(){ window.location.reload(''); }, 1000);
+                console.log(res);
             }
       });
     }
