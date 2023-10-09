@@ -96,7 +96,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group">
-							<form id="searchForm" method="GET" action="{{ url('admin/crm-corporate-accounts') }}">
+							<form id="searchForm" method="GET" action="{{ url('admin/logs') }}">
 								<div class="search_form">
 									<div class="form-group">
 										<label class="form-label">Search:</label>

@@ -89,8 +89,8 @@ class CRMController extends Controller {
 
     public function edit_corporate_account(Request $request, $id) {
         if($request->isMethod('get')) {
-            $data['account'] = User::where('id', $id)->first();
-            if($data['account']) {
+            $data['data'] = User::where('id', $id)->first();
+            if($data['data']) {
                 Log::activity($request, 'View Edit Corporate Account page');
                 return view('crm.corporate_accounts.edit', $data);
             } else {

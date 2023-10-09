@@ -140,7 +140,7 @@
                                             <td>{{ $document->c_name }}</td>
 											<td>{{ $document->created_at ? (new DateTime($document->created_at))->format('Y-m-d') : '' }}</td>
 											<td>
-                                                <a class="btn btn-sm btn-info" href="{{asset('uploads/corporate_documents/').$document->attach}}" download>
+                                                <a class="btn btn-sm btn-info" href="{{asset('uploads/corporate_documents/').'/'.$document->attach}}" download>
                                                     <i class="fa fa-download"></i>
                                                 </a>
 												<button class="btn btn-sm btn-success" onclick="edit({{$document->id}})">
