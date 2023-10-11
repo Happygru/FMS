@@ -25,7 +25,7 @@ class AddonController extends Controller {
   }
 
   public function index() {
-    $data['addon_list'] = AddonModel::where('deleted', 0)->get();
+    $data['addon_list'] = AddonModel::all();
     return view('addon.index', $data);
   }
 
@@ -44,32 +44,20 @@ class AddonController extends Controller {
   }
 
   public function add_create(Request $request) {
-      // Get the file from the request
-      $file = $request->file('image');
-
-      // Generate a new filename
-      $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
-
       // Check if a record with the same name already exists
-      $existingService = AddonModel::firstWhere('name', $request->input('name'));
+      $existingService = AddonModel::firstWhere('description', $request->input('description'));
       if ($existingService) {
           // Return a response indicating that the name is already taken
           return response()->json(['success' => false, 'code' => 402]);
       }
-
-      // Store the file in the 'uploads' disk, in the 'uploads' directory
-      $uploads_dir = 'uploads/addons';
-      $file->move($uploads_dir, $newFileName);
-
       // Create a new BookingService
       $addon = new AddonModel;
 
       // Set the properties
-      $addon->image = $newFileName;  // Store the path of the uploaded file
-      $addon->name = $request->input('name');
       $addon->description = $request->input('description');
-      $addon->price = $request->input('price');
-      $addon->type = $request->input('type');
+      $addon->amount = $request->input('amount');
+      $addon->addtototal = $request->input('addtototal');
+      $addon->notes = $request->input('notes');
 
       // Save the new BookingService
       $addon->save();
@@ -86,21 +74,10 @@ class AddonController extends Controller {
         return response()->json(['success' => false, 'code' => 402]);
     }
 
-    // Get the file from the request
-    $file = $request->file('image');
-
-    if ($file) {
-        // If a file was provided, generate a new filename and store the file
-        $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
-        $path = $file->move('uploads/addons/', $newFileName);
-
-        $addon->image = $newFileName;
-    }
-
-    $addon->name = $request->input('name');
     $addon->description = $request->input('description');
-    $addon->price = $request->input('price');
-    $addon->type = $request->input('type');
+    $addon->amount = $request->input('amount');
+    $addon->addtototal = $request->input('addtototal');
+    $addon->notes = $request->input('notes');
 
     $addon->save();
 
@@ -110,5 +87,11 @@ class AddonController extends Controller {
   public function get_addon_list(Request $request) {
     $data = AddonModel::where('type', $request->type)->get();
     return response()->json(['success' => true, 'data' => $data]);
+  }
+
+  public function addon_delete(Request $request) {
+    $addon = AddonModel::find($request->id);
+    $addon->delete();
+    return response()->json(['success' => true]);
   }
 }

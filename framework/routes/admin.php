@@ -163,6 +163,7 @@ Route::namespace ('Admin')->group(function () {
         Route::resource('addon', 'AddonController');
         Route::post('/addon-create', 'AddonController@addon_create');
         Route::post('/addon-update', 'AddonController@addon_update');
+        Route::post('/addon-delete', 'AddonController@addon_delete');
         Route::post('/get-addon-list', 'AddonController@get_addon_list');
 
         Route::get('reports/income', 'ReportsController@income');

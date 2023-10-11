@@ -8,14 +8,12 @@ class AddonModel extends Model
 {
     protected $table = 'addon';
     protected $primaryKey = 'id';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
-        'name',
-        'type',
         'description',
-        'price',
-        'image',
-        'deleted'
+        'amount',
+        'addtototal',
+        'notes'
     ];
 }

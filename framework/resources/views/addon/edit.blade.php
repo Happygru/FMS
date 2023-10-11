@@ -1,22 +1,10 @@
 @extends('layouts.app')
 
 @section('extra_css')
-<style>
-  .icon_file_select_form {
-    display: flex;
-  }
 
-  .icon_file_select_form > a {
-    padding: 8px 12px;
-  }
-
-  .icon_file_select_form > input {
-    cursor: not-allowed;
-  }
-</style>
 @endsection
 @section("breadcrumb")
-<li class="breadcrumb-item "><a href="{{ route('booking-services.index') }}">@lang('menu.add_ons')</a></li>
+<li class="breadcrumb-item "><a href="{{ route('addon.index') }}">@lang('menu.add_ons')</a></li>
 <li class="breadcrumb-item active">@lang('fleet.edit_add_on')</li>
 @endsection
 @section('content')
@@ -31,36 +19,26 @@
 			<div class="card-body">
 				<div class="col-md-12">
           <div class="form-group">
-            <label class="form-label">@lang('fleet.name')</label>
-            <input type="text" class="form-control" placeholder="@lang('fleet.name')" id="name" value="{{$addon->name}}" />
+            <label class="form-label">@lang('fleet.description')</label>
+            <input type="text" class="form-control" placeholder="@lang('fleet.description')" id="description" value="{{$addon->description}}" />
           </div>
           <div class="form-group">
-            <label class="form-label">@lang('fleet.price')</label>
-            <input type="text" class="form-control" placeholder="@lang('fleet.price')" id="price" value="{{$addon->price}}" />
+            <label class="form-label">@lang('fleet.amount')</label>
+            <input type="number" class="form-control" placeholder="@lang('fleet.amount')" id="amount" value="{{$addon->amount}}" />
           </div>
           <div class="form-group">
-            <label class="form-label">@lang('fleet.vendor_type')</label>
-            <select class="form-control" id="type">
-              <option value="Tours" @if($addon->type == 'Tours') selected @endif>Tours</option>
-              <option value="Extras" @if($addon->type == 'Extras') selected @endif>Extras</option>
-              <option value="Amenities" @if($addon->type == 'Amenities') selected @endif>Amenities</option>
+            <label class="form-label">@lang('fleet.addtototal')</label>
+            <select id="addtototal" class="form-control">
+              <option value="Y" @if($addon->addtototal == 'Y') selected @endif>Yes</option>
+              <option value="N" @if($addon->addtototal == 'N') selected @endif>No</option>
             </select>
           </div>
-          <div class="form-group" style="text-align:center;">
-            <label class="form-label" style="text-align:left; width: 100%;">@lang('fleet.image')</label>
-            <div class="icon_file_select_form">
-              <input type="text" class="form-control" placeholder="@lang('fleet.image')" id="select_addon_img" value="{{$addon->image}}" disabled />
-              <button class='btn btn-info btn-sm'>...</button>
-            </div>
-            <img src="{{asset('uploads/addons/')}}/{{$addon->image}}" style="margin:auto; width: 80%;margin-top: 10px;" id="addon_img" />
-            <input type="file" style="display: none" accept=".jpg, .png, .bmp, .gif" id="select_file" />
+          <div class="form-group">
+            <label class="form-label">@lang('fleet.notes')</label>
+            <textarea id="notes" rows="10" class="form-control">{{$addon->notes}}</textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">@lang('fleet.description')</label>
-            <textarea id="description" rows="10" class="form-control">{{$addon->description}}</textarea>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary" id="submit_btn"> <i class="fa fa-paper-plane"></i> Submit</button>
+            <button class="btn btn-primary" id="submit_btn"> <i class="fa fa-save"></i> Save</button>
             <a href="{{ route('addon.index')}}" class="btn btn-danger"><i class="fa fa-share"></i> Return</a>
           </div>
         </div>
@@ -71,70 +49,44 @@
 @endsection
 @section("script")
 <script>
-    let icon;
-    $("#select_file").change(function(e) {
-      icon = $(this).get(0).files[0];
-      if(icon)
-      {
-        var reader = new FileReader();
-        reader.onload = function(){
-            $("#addon_img").attr('src', reader.result);
-        };
-        reader.readAsDataURL(e.target.files[0]);
-
-        if(icon)
-          $("#select_addon_img").val(icon.name);
-        else
-          $("#select_addon_img").val('');
-      } else {
-        $("#addon_img").attr('src', "");
-        $("#select_addon_img").val("");
-      }
-    })
-
-    $("#select_addon_img + button").click(function(){
-      $("#select_file").click();
-    })
-
     $("#submit_btn").click(function(){
-      const name = $("#name").val();
-      const price = $("#price").val();
-      const type = $("#type").val();
       const description = $("#description").val();
-      const image = icon;
-      if(name == '')
-      {
-        new PNotify({
-          title: 'Warning',
-          text: "@lang('fleet.input_name')",
-          type: 'warning'
-        });
-        return;
-      }
+      const amount = $("#amount").val();
+      const addtototal = $("#addtototal").val();
+      const notes = $("#notes").val();
       if(description == '')
       {
         new PNotify({
           title: 'Warning',
-          text: "@lang('fleet.input_description')",
+          text: "@lang('fleet.description') @lang('fleet.is_not_empty')",
           type: 'warning'
         });
         return;
       }
-      if($("#select_addon_img").val() == '') {
+      if(amount == '')
+      {
         new PNotify({
           title: 'Warning',
-          text: "@lang('fleet.input_file')",
+          text: "@lang('fleet.amount') @lang('fleet.is_not_empty')",
+          type: 'warning'
+        });
+        return;
+      }
+      if(notes == '')
+      {
+        new PNotify({
+          title: 'Warning',
+          text: "@lang('fleet.notes') @lang('fleet.is_not_empty')",
           type: 'warning'
         });
         return;
       }
       const formData = new FormData();
       formData.append('id', "{{ $addon->id }}");
-      formData.append('name', name);
       formData.append('description', description);
-      formData.append('image', image);
-      formData.append('type', type);
-      formData.append('price', price);
+      formData.append('amount', amount);
+      formData.append('addtototal', addtototal);
+      formData.append('notes', notes);
 
       $.ajax({
         url: "{{url('admin/addon-update')}}",

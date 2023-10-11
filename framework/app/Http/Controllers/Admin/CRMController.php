@@ -289,6 +289,26 @@ class CRMController extends Controller {
         }
     }
 
+    public function leads(Request $request) {
+        $validPerPage = [10, 20, 50, 100];
+        $data = $request->query();
+        $searchkey =  isset($data['searchkey']) ? $data['searchkey'] : '';
+        $perPage = isset($data['perPage']) && in_array($data['perPage'], $validPerPage) ? $data['perPage'] : 10;
+
+        $leads = 
+
+        if (!empty($searchkey)) {
+            $documents->where('d.name', 'LIKE', "%{$searchkey}%")->orWhere('c.name', 'LIKE', "%{$searchkey}%")
+            ->orWhere('d.description', 'LIKE', "%{$searchkey}%");
+        }
+
+        $documents->orderBy('updated_at', 'desc');
+
+        $documents = $documents->paginate($perPage);
+        Log::activity($request, 'View Lead Management Page');
+        return view('crm.leads.index');
+    }
+
     public function delete_contact(Request $request) {
         $contact = ContactsModel::find($request->id);
         $contact->delete();

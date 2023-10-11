@@ -64,6 +64,7 @@ return [
     'not_found_addon' => 'Not Found Add-On',
     'edit_booking_service' => 'Edit Booking Service',
     'edit_add_on' => 'Edit Add-On',
+    'add_add_on' => 'Add Add-On',
     'image' => 'Image',
     'addon_already_exist' => 'Add-On is already exists',
     'general_information' => 'General Information',
@@ -136,6 +137,8 @@ return [
     'add_customer' => 'Add Customer',
     'update_failed' => "Updated Failed",
     'vehicle' => 'Vehicle',
+    'addtototal' => 'Add To Total',
+    'no' => 'No',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',
