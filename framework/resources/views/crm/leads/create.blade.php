@@ -10,7 +10,7 @@
 @endsection
 @section('content')
 <div class="row">
-    <div class="col-xs-12 col-sm-6">
+    <div class="col-xs-12">
         <div class="card card-info">
             <div class="card-header with-border">
                 <h3 class="card-title">
