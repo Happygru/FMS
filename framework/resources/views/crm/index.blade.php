@@ -48,7 +48,7 @@
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">🎯</span>
-      <a href="#">Lead Management</a>
+      <a href="{{url('admin/crm-leads')}}">Lead Management</a>
     </div>
     <div class="crm_card">
       <span class="crm_logo icon">📞</span>

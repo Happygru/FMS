@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Model\ContactsModel;
 use App\Model\DocumentsModel;
+use App\Model\LeadsModel;
 use App\Model\User;
 use App\Model\Log;
 use Illuminate\Http\Request;
@@ -295,18 +296,99 @@ class CRMController extends Controller {
         $searchkey =  isset($data['searchkey']) ? $data['searchkey'] : '';
         $perPage = isset($data['perPage']) && in_array($data['perPage'], $validPerPage) ? $data['perPage'] : 10;
 
-        $leads = 
+        $leads = DB::table('users as d')->where('user_type', 'L');
 
         if (!empty($searchkey)) {
-            $documents->where('d.name', 'LIKE', "%{$searchkey}%")->orWhere('c.name', 'LIKE', "%{$searchkey}%")
-            ->orWhere('d.description', 'LIKE', "%{$searchkey}%");
+            $leads->where('d.name', 'LIKE', "%{$searchkey}%")->orWhere('d.phone', 'LIKE', "%{$searchkey}%")
+            ->orWhere('d.email', 'LIKE', "%{$searchkey}%");
         }
 
-        $documents->orderBy('updated_at', 'desc');
+        $leads->orderBy('updated_at', 'desc');
 
-        $documents = $documents->paginate($perPage);
+        $leads = $leads->paginate($perPage);
         Log::activity($request, 'View Lead Management Page');
-        return view('crm.leads.index');
+        return view('crm.leads.index', compact('leads'));
+    }
+
+    public function create_lead(Request $request) {
+        if($request->isMethod('get')){
+            Log::activity($request, 'View create lead page');
+            $data['managers'] = User::where('user_type', '!=', 'C')->get();
+            return view('crm.leads.create', $data);
+        } else if($request->isMethod('post')) {
+            $existingService = User::firstWhere('email', $request->input('email'));
+            if ($existingService) {
+                // Return a response indicating that the name is already taken
+                return response()->json(['success' => false, 'code' => 402]);
+            }
+
+
+            $corporate = new User;
+
+            if($request->hasFile('avatar')) {
+                // Generate a new filename
+                // Store the file in the 'uploads' disk, in the 'uploads' directory
+                $uploads_dir = 'uploads/avatars';
+                $file = $request->file('avatar');
+                $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+                $file->move($uploads_dir, $newFileName);
+                $corporate->avatar = $newFileName;  // Store the path of the uploaded file
+            }
+
+            // Set the properties
+            $corporate->name = $request->input('name');
+            $corporate->email = $request->input('email');
+            $corporate->gender = $request->input('gender');
+            $corporate->phone = $request->input('phone');
+            $corporate->addr = $request->input('address');
+            $corporate->location = $request->input('location');
+            $corporate->customer_type = $request->input('customer_type');
+            $corporate->user_type = 'L';
+
+            // Save the new BookingService
+            $corporate->save();
+            Log::activity($request, 'Create a customer account');
+            return response()->json(['success' => true]);
+        }
+    }
+
+    public function edit_lead(Request $request) {
+        if($request->isMethod('get')) {
+            Log::activity($request, 'View edit lead page');
+            $index['data'] = User::where('id', $request->id)->first();
+            if($index['data']){
+                return view('crm.leads.edit', $index);
+            }
+            else
+                return redirect()->back()->with('error', 'No user found with the specified id.');
+        } else if($request->isMethod('post')) {
+            $corporate = User::find($request->id);
+            if (!$corporate) {
+                // Return a response indicating that the name is already taken
+                return response()->json(['success' => false, 'code' => 402]);
+            }
+    
+            // Set the properties
+            $corporate->name = $request->input('name');
+            $corporate->email = $request->input('email');
+            $corporate->gender = $request->input('gender');
+            $corporate->phone = $request->input('phone');
+            $corporate->addr = $request->input('address');
+            $corporate->location = $request->input('location');
+            $corporate->customer_type = $request->input('customer_type');
+            
+            // Save the new BookingService
+            $corporate->save();
+            Log::activity($request, 'Update a Lead');
+            return response()->json(['success' => true]);
+        }
+    }
+
+    public function convertcustomer(Request $request) {
+        $lead = User::find($request->id);
+        $lead->user_type = 'C';
+        $lead->save();
+        return response()->json(['success' => true]);
     }
 
     public function delete_contact(Request $request) {

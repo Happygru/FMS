@@ -47,6 +47,13 @@ Route::namespace ('Admin')->group(function () {
         Route::post('crm-documents/edit', 'CRMController@edit_document');
         Route::post('crm-documents/delete', 'CRMController@delete_document');
 
+        Route::get('crm-leads', 'CRMController@leads');
+        Route::get('crm-leads/delete', 'CRMController@delete_lead');
+        Route::get('crm-leads/create', 'CRMController@create_lead');
+        Route::get('crm-leads/edit/{id}', 'CRMController@edit_lead');
+        Route::post('crm-leads/edit', 'CRMController@edit_lead');
+        Route::post('crm-leads/convertcustomer', 'CRMController@convertcustomer');
+
         Route::get('crm-contacts', 'CRMController@contacts');
         Route::get('crm-contacts/create', 'CRMController@create_contact');
         Route::post('crm-contacts/create', 'CRMController@create_contact');
