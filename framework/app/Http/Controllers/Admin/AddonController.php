@@ -2,12 +2,9 @@
 
 /*
   @copyright
-
   Fleet Manager v6.4
-
   Copyright (C) 2017-2023 Hyvikk Solutions <https://hyvikk.com/> All rights reserved.
   Design and developed by Hyvikk Solutions <https://hyvikk.com/>
-
 */
 
 namespace App\Http\Controllers\Admin;
@@ -17,15 +14,14 @@ use App\Model\AddonModel;
 use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Response;
 
 class AddonController extends Controller {
   public function __construct() {
-    
+
   }
 
   public function index() {
-    $data['addon_list'] = AddonModel::all();
+    $data['addon_list'] = AddonModel::where('deleted', 0)->get();
     return view('addon.index', $data);
   }
 
@@ -43,21 +39,33 @@ class AddonController extends Controller {
     }
   }
 
-  public function add_create(Request $request) {
+  public function addon_create(Request $request) {
+      // Get the file from the request
+      $file = $request->file('image');
+
+      // Generate a new filename
+      $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+
       // Check if a record with the same name already exists
-      $existingService = AddonModel::firstWhere('description', $request->input('description'));
+      $existingService = AddonModel::firstWhere('name', $request->input('name'));
       if ($existingService) {
           // Return a response indicating that the name is already taken
           return response()->json(['success' => false, 'code' => 402]);
       }
+
+      // Store the file in the 'uploads' disk, in the 'uploads' directory
+      $uploads_dir = 'uploads/addons';
+      $file->move($uploads_dir, $newFileName);
+
       // Create a new BookingService
       $addon = new AddonModel;
 
       // Set the properties
+      $addon->image = $newFileName;  // Store the path of the uploaded file
+      $addon->name = $request->input('name');
       $addon->description = $request->input('description');
-      $addon->amount = $request->input('amount');
-      $addon->addtototal = $request->input('addtototal');
-      $addon->notes = $request->input('notes');
+      $addon->price = $request->input('price');
+      $addon->type = $request->input('type');
 
       // Save the new BookingService
       $addon->save();
@@ -74,24 +82,24 @@ class AddonController extends Controller {
         return response()->json(['success' => false, 'code' => 402]);
     }
 
+    // Get the file from the request
+    $file = $request->file('image');
+
+    if ($file) {
+        // If a file was provided, generate a new filename and store the file
+        $newFileName = md5($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
+        $path = $file->move('uploads/addons/', $newFileName);
+
+        $addon->image = $newFileName;
+    }
+
+    $addon->name = $request->input('name');
     $addon->description = $request->input('description');
-    $addon->amount = $request->input('amount');
-    $addon->addtototal = $request->input('addtototal');
-    $addon->notes = $request->input('notes');
+    $addon->price = $request->input('price');
+    $addon->type = $request->input('type');
 
     $addon->save();
 
     return response()->json(['success' => true, 'code' => 200]);
-  }
-
-  public function get_addon_list(Request $request) {
-    $data = AddonModel::where('type', $request->type)->get();
-    return response()->json(['success' => true, 'data' => $data]);
-  }
-
-  public function addon_delete(Request $request) {
-    $addon = AddonModel::find($request->id);
-    $addon->delete();
-    return response()->json(['success' => true]);
   }
 }

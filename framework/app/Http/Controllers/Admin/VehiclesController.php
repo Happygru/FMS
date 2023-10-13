@@ -821,7 +821,93 @@ class VehiclesController extends Controller {
 		$vehicle->in_service = 0;
 		$vehicle->save();
 		return redirect()->back();
-
 	}
 
+	public function thirdvehicles() {
+		return view("thirdvehicles.index");			
+	}
+
+	public function third_fetch_data(Request $request) {
+		if ($request->ajax()) {
+
+			$user = Auth::user();
+			if ($user->group_id == null || $user->user_type == "S") {
+				$vehicles = VehicleModel::select('vehicles.*', 'users.name as name')->where('vehicles.user_id', $user->id);
+			} else {
+				$vehicles = VehicleModel::select('vehicles.*')->where('vehicles.group_id', $user->group_id)->where('vehicles.user_id', $user->id);
+			}
+			$vehicles = $vehicles
+				->leftJoin('driver_vehicle', 'driver_vehicle.vehicle_id', '=', 'vehicles.id')
+				->leftJoin('users', 'users.id', '=', 'driver_vehicle.driver_id')
+				->leftJoin('users_meta', 'users_meta.id', '=', 'users.id')
+				->groupBy('vehicles.id');
+
+			$vehicles->with(['group', 'types', 'drivers']);
+
+			return DataTables::eloquent($vehicles)
+				->addColumn('check', function ($vehicle) {
+					$tag = '<input type="checkbox" name="ids[]" value="' . $vehicle->id . '" class="checkbox" id="chk' . $vehicle->id . '" onclick=\'checkcheckbox();\'>';
+
+					return $tag;
+				})
+				->editColumn('vehicle_image', function ($vehicle) {
+					$src = ($vehicle->vehicle_image != null)?asset('uploads/vehicles/' . $vehicle->vehicle_image): asset('assets/images/vehicle.jpeg');
+
+					return '<img src="' . $src . '" height="70px" width="90px">';
+				})
+				->addColumn('make', function ($vehicle) {
+					return ($vehicle->make_name) ? $vehicle->make_name : '';
+				})
+				->addColumn('model', function ($vehicle) {
+					return ($vehicle->model_name) ? $vehicle->model_name : '';
+				})
+				->addColumn('displayname', function ($vehicle) {
+					return ($vehicle->type_id) ? $vehicle->types->displayname : '';
+				})
+				->addColumn('color', function ($vehicle) {
+					return ($vehicle->color_name) ? $vehicle->color_name : '';
+				})
+				->editColumn('license_plate', function ($vehicle) {
+					return $vehicle->license_plate;
+				})
+				->addColumn('group', function ($vehicle) {
+					return ($vehicle->group_id) ? $vehicle->group->name : '';
+				})
+				->addColumn('LXBXH', function ($vehicle) {
+					$LBH = ($vehicle->length) ? $vehicle->length . ' X ' : '';
+					$LBH .= ($vehicle->breadth) ? $vehicle->breadth . ' X ' : '';
+					$LBH .= $vehicle->height;
+					return $LBH;
+				})
+				->addColumn('weight', function ($vehicle) {
+					return $vehicle->weight;
+				})
+				->addColumn('in_service', function ($vehicle) {
+					return ($vehicle->in_service) ? "YES" : "NO";
+				})
+				->filterColumn('in_service', function ($query, $keyword) {
+					$query->whereRaw("IF(in_service = 1, 'YES', 'NO') like ?", ["%{$keyword}%"]);
+				})
+				->addColumn('action', function ($vehicle) {
+					return view('vehicles.list-actions', ['row' => $vehicle]);
+				})
+				->addIndexColumn()
+				->rawColumns(['vehicle_image', 'action', 'check'])
+				->make(true);
+		}
+	}
+
+	public function create_thirdvehicle(Request $request) {
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$index['groups'] = VehicleGroupModel::all();
+		} else {
+			$index['groups'] = VehicleGroupModel::where('id', Auth::user()->group_id)->get();
+		}
+		// $index['types'] = VehicleTypeModel::all();
+		$index['types'] = VehicleTypeModel::where('isenable', 1)->get();
+		$index['makes'] = VehicleModel::groupBy('make_name')->get()->pluck('make_name')->toArray();
+		$index['models'] = VehicleModel::groupBy('model_name')->get()->pluck('model_name')->toArray();
+		$index['colors'] = VehicleModel::groupBy('color_name')->get()->pluck('color_name')->toArray();
+		return view("thirdvehicles.create", $index);		
+	}
 }

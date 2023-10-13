@@ -64,5 +64,4 @@ class VehicleModel extends Model {
 	public function types() {
 		return $this->hasOne("App\Model\VehicleTypeModel", "id", "type_id")->withTrashed();
 	}
-
 }

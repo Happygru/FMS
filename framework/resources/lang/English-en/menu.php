@@ -13,6 +13,7 @@ return [
 	'drivers' => 'Drivers',
 	'users' => 'Users',
 	'vehicles' => 'Vehicles',
+	'myvehicles' => 'My Vehicles',
 	'manageVehicles' => 'Manage Vehicles',
 	'acquisitionCategories' => 'Acquisition Categories',
 	'manageParts' => 'Manage Parts',

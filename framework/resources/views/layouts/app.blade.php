@@ -867,6 +867,36 @@ input:checked + .slider:before {
                 </ul>
               </li>
             @endcanany
+
+            @if(Request::is('admin/thirdvehicles*'))
+              @php($class="menu-open")
+              @php($active="active")
+
+              @else
+              @php($class="")
+              @php($active="")
+              @endif
+              <li class="nav-item has-treeview {{$class}}">
+               <a href="#" class="nav-link {{$active}}">
+                <i class="nav-icon fa fa-synagogue"></i>
+                <p>
+                  @lang('menu.myvehicles')
+                  <i class="right fa fa-angle-left"></i>
+                </p>
+               </a>
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ url('admin/thirdvehicles')}}"
+                      class="nav-link @if(Request::is('admin/thirdvehicles')) active @endif">
+                      <i class="fa fa-truck nav-icon "></i>
+                      <p>
+                        @lang('menu.manageVehicles')
+                      </p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
               @if((Request::is('admin/income')) || (Request::is('admin/expense')) || (Request::is('admin/transaction'))
               || (Request::is('admin/income_records')) || (Request::is('admin/expense_records')) )
               @php($class="menu-open")

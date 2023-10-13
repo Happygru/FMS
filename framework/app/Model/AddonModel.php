@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class AddonModel extends Model
 {
-    protected $table = 'addon';
+    protected $table = 'Addon';
     protected $primaryKey = 'id';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
+        'name',
+        'type',
         'description',
-        'amount',
-        'addtototal',
-        'notes'
+        'price',
+        'image',
+        'deleted'
     ];
 }

@@ -71,6 +71,10 @@ Route::namespace ('Admin')->group(function () {
         Route::post('transactions-fetch', 'BookingsController@transactions_fetch_data');
         Route::get('transactions', 'BookingsController@transactions');
 
+        Route::get('thirdvehicles', 'VehiclesController@thirdvehicles');
+        Route::post('/thirdvehicles-fetch', 'VehiclesController@third_fetch_data');
+        Route::get('thirdvehicles/create', 'VehiclesController@create_thirdvehicle');
+
         Route::get('get-models/{id}', 'VehiclesController@get_models');
 
         Route::post('vehicle-color-fetch', 'VehicleColorsController@fetch_data');
