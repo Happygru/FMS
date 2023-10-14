@@ -613,6 +613,8 @@
     }
 
     function set_vehicle_detail(data) {
+      if(!data)
+        return;
       $("#vehicle_img").attr("src", "{{asset('uploads/vehicles/')}}" + "/" + data.vehicle_image);
       $("#vehicle_seats").html(data.seats);
       $("#vehicle_doors").html(data.doors);
@@ -751,7 +753,7 @@
       }
 
       if(step == 4) {
-        if(parseInt($("#vehicle_list").val())) {
+        if(!(parseInt($("#vehicle_list").val()) > 0)) {
           new PNotify({
               title: 'Error',
               text: "@lang('fleet.vehicle') @lang('fleet.is_not_empty')",

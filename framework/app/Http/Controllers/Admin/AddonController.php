@@ -102,4 +102,9 @@ class AddonController extends Controller {
 
     return response()->json(['success' => true, 'code' => 200]);
   }
+
+  public function get_addon_list(Request $request) {
+    $data = AddonModel::where('type', $request->type)->get();
+    return response()->json(['success' => true, 'code' => 200, 'data' => $data]);
+  }
 }
