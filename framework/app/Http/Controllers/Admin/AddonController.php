@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Model\AddonModel;
 use App\Model\User;
+use App\Model\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +21,8 @@ class AddonController extends Controller {
 
   }
 
-  public function index() {
+  public function index(Request $request) {
+    Log::activity($request, 'View CRM page');
     $data['addon_list'] = AddonModel::where('deleted', 0)->get();
     return view('addon.index', $data);
   }
