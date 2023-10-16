@@ -982,7 +982,11 @@ class BookingsController extends Controller {
 		$api_key = Hyvikk::api('api_key');
 		$url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$origin&destinations=$destination&key=$api_key";
 		
-		$response = file_get_contents($url);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    $response = curl_exec($ch);
+    curl_close($ch);
 	
 		$data = json_decode($response);
 		if(!empty($data->rows[0]->elements[0]->distance)) {

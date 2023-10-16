@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AddonModel extends Model
 {
-    protected $table = 'addon';
+    protected $table = 'addon'; 
     protected $primaryKey = 'id';
     public $timestamps = false;
 

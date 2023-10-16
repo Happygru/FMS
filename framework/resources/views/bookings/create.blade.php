@@ -692,15 +692,6 @@
           return;
         }
 
-        if($("#note").val() == ""){
-          new PNotify({
-            title: 'Error',
-            text: "@lang('fleet.note_not_empty')",
-            type: 'error'
-          });
-          return;
-        }
-
         if($("#airport_pickup").val() == "Y" && $("#airport_detail").val() == "") {
           new PNotify({
             title: 'Error',
