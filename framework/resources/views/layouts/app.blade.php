@@ -718,7 +718,7 @@ input:checked + .slider:before {
               @if (!Auth::guest() && Auth::user()->user_type != "D" && Auth::user()->user_type != "C" )
            
               @if((Request::is('admin/drivers*')) || (Request::is('admin/users*')) || (Request::is('admin/customers*'))
-              || (Request::is('admin/chat')) )
+              || (Request::is('admin/chat')) || (Request::is('admin/thirdmanagers*')) )
               @php($class="menu-open")
               @php($active="active")
 
@@ -762,6 +762,15 @@ input:checked + .slider:before {
                     </a>
                   </li>
                   @endcan
+                  
+                  <li class="nav-item">
+                    <a href="{{ route('thirdmanagers.index')}}"
+                      class="nav-link @if(Request::is('admin/thirdmanagers*')) active @endif">
+                      <i class="fa fa-address-card nav-icon"></i>
+                      <p>@lang('fleet.users')@lang('fleet.third')</p>
+                    </a>
+                  </li>
+
                   @if (!empty(Hyvikk::chat('pusher_app_id')) && !empty(Hyvikk::chat ('pusher_app_key')) &&
                   !empty(Hyvikk::chat('pusher_app_secret')) && !empty(Hyvikk::chat('pusher_app_cluster')))
 

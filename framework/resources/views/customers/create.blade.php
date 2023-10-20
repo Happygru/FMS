@@ -223,8 +223,7 @@ function initMap() {
                     text: "@lang('fleet.created_successfully')",
                     type: 'success'
                 });
-                // setTimeout(function(){ window.location.reload(''); }, 1000);
-                console.log(res);
+                setTimeout(function(){ window.location.reload(''); }, 1000);
             }
       });
     }

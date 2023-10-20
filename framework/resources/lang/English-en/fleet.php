@@ -149,6 +149,7 @@ return [
     'confirm_update' => 'Are you sure you want to update this lead?',
     'lead_type' => 'Lead Type',
     'my_vehicles' => 'My Vehicles',
+    'third' => '(Third)',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

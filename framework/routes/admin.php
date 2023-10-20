@@ -61,11 +61,16 @@ Route::namespace ('Admin')->group(function () {
         Route::post('crm-contacts/edit', 'CRMController@edit_contact');
         Route::post('crm-contacts/delete', 'CRMController@delete_contact');
 
+        Route::resource('/thirdmanagers', 'ThirdManagersController');
+        Route::post('/thirdmanagers-fetch', 'ThirdManagersController@fetch_data');
+        Route::post('/thirdmanagers/ajax_update', 'ThirdManagersController@ajax_update')->name('thirdmanagers.ajax_update');
+        Route::post('/thirdmanagers/ajax_store', 'ThirdManagersController@ajax_store')->name('thirdmanagers.ajax_store');
+        Route::post('/thirdmanagers-vehicle-fetch', 'ThirdManagersController@fetch_vehicle_data');
+
         Route::get('/vehicles-track/{id?}','TrackerController@vehicles_track');
         Route::get('/track/{id?}','TrackerController@track');
         Route::get('/traccar-settings','TrackerController@traccar_settings')->name('traccar.settings');
         Route::post('/traccar-settings','TrackerController@traccar_settings_store')->name('traccar_settings.store');
-
 
         Route::get('get-driver-index', 'DriversController@get_driver_index');
         Route::post('transactions-fetch', 'BookingsController@transactions_fetch_data');
