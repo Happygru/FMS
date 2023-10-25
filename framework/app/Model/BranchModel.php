@@ -24,7 +24,6 @@ class BranchModel extends Model
     protected $fillable = [
         'name',
         'code',
-        'rate',
         'gps',
         'manager',
         'commission',

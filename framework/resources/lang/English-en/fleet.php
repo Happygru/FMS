@@ -150,6 +150,14 @@ return [
     'lead_type' => 'Lead Type',
     'my_vehicles' => 'My Vehicles',
     'third' => '(Third)',
+    'partners' => 'Partners',
+    'partner' => 'Partner',
+    'manage_partners' => 'Manage Partners',
+    'aircondition' => 'Air Condition',
+    'transmission' => 'Transmission',
+    'seaters' => 'Seaters',
+    'doors' => 'Doors',
+    'luggages' => 'Luggages',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',
@@ -161,7 +169,6 @@ return [
     'paystack' => 'Paystack',
     'paystack_secret' => 'Paystack Secret Key',
     'dark_mode' => 'Enable Dark Mode',
-
     ////////////////////////////////////////////////////////////////
     'pdf' => 'PDF',
     'excel' => 'Excel',

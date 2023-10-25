@@ -8,6 +8,11 @@
 .custom .nav-link.active {
     background-color: #21bc6c !important;
 }
+
+.branch_list .nav-link.active {
+  background-color: #21bc6c !important;
+}
+
 .rate_type_list {
   margin-top: 20px;
 }
@@ -24,6 +29,10 @@
 
 #daily_content tr > th {
   width: 16%;
+}
+
+.branch_list {
+  margin-top: 20px;
 }
 
 </style>
@@ -43,6 +52,13 @@
 						<li class="nav-item"><a href="#{{strtolower(str_replace(' ','',$type))}}" data-toggle="tab"  onclick="onChangeType({{ $type->id }})" class="nav-link text-uppercase @if(reset($types) == $type) active @endif"> {{$type->vehicletype}} <i class="fa"></i></a></li>
 					@endforeach
 					</ul>
+          <ul class="nav nav-pills branch_list">
+            @foreach($branches as $key => $branch)
+              <li class="nav-item">
+                <a href="javascript:;" data-toggle="tab" class="nav-link text-uppercase @if($key == 0) active @endif " onclick="onChangeBranch({{ $branch->id }})">{{$branch->name}}</a>
+              </li>
+            @endforeach
+          </ul>
 					<ul class="nav nav-pills rate_type_list">
 						<li class="nav-item">
 							<a href="#hourly_content" data-toggle="tab" class="nav-link text-uppercase active btn-sm"> Hourly rate <i class="fa"></i></a>
@@ -238,7 +254,10 @@
     if(active_id == id)
       return;
     active_id = id;
-    $.post("{{url('/admin/fare-fetch')}}", { id }, function(data) {
+  }
+
+  function fetch_fare(id, branch_id) {
+    $.post("{{url('/admin/fare-fetch')}}", { id, branch_id }, function(data) {
       setInitialize(data);
     })
   }

@@ -386,6 +386,10 @@
                 <label class="form-label">@lang('fleet.quantity')</label>
                 <input type="number" id="addon_quantity" class="form-control" value="{{$booking_detail->addon_quantity}}" min="1" />
               </div>
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.price')</label>
+                <p id="price"></p>
+              </div>
             </div>
             <div class="col-md-4">
               <img src="" style="width: 100%;" alt="addon_img" id="addon_img" />
@@ -455,6 +459,7 @@
     let vehicle_amount;
     let track_time = new Date();
     let tax_charge;
+    let selected_price;
 
     $(document).ready(function() {
       set_datetime();
@@ -532,7 +537,14 @@
       $("#addon_type").change(function() {
         get_addon_list($(this).val())
       })
-      
+
+      $("#vehicle_types").change(function() {
+        get_vehicle_list($(this).val());
+      })
+
+      $("#addon_quantity").change(function() {
+        set_tour_price(selected_price, $(this).val());
+      })      
     })
 
     function set_datetime() {
@@ -553,6 +565,12 @@
           str += `<option value="${item.id}">${item.name}</option>`;
         })
         $("#addon_list").html(str);
+        set_tour_price(addon_list[0].price, $("#addon_quantity").val());
+        selected_price = addon_list[0].price;
+        $("#addon_list").change(function() {
+          selected_price = $(this).attr('price');
+          set_tour_price(selected_price, $("#addon_quantity").val());
+        })
         $("#addon_img").attr("src", "{{asset('uploads/addons')}}" + "/" + addon_list[addon_key].image);
         $("#addon_description").text(addon_list[addon_key].description);
         $("#addon_list").change(function(){

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section("breadcrumb")
-<li class="breadcrumb-item active">@lang('fleet.users')@lang('fleet.third')</li>
+<li class="breadcrumb-item active">@lang('partners')</li>
 @endsection
 @section('extra_css')
 <style type="text/css">
@@ -29,8 +29,8 @@
     @endif
     <div class="card card-info">
       <div class="card-header">
-        <div style="width: 100%; display: flex; justify-content: space-between;">
-          <h3 class="card-title">@lang('fleet.manageUsers')@lang('fleet.third')
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+          <h3 class="card-title">@lang('fleet.manage_partners')
           </h3>
           <a href="{{route('thirdmanagers.create')}}" class="btn btn-success btn-sm" title="@lang('fleet.add')">
             <i class="fa fa-plus"></i>

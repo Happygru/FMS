@@ -24,11 +24,10 @@
                     <table class="table table-responsive" id="branch_list" style="min-width: max-content; width: 100%;">
                         <thead class="thead-inverse">
 							<tr>
-								<th style="width:40%">Branch</th>
+								<th style="width:50%">Branch</th>
 								<th style="width:15%">Code</th>
-								<th style="width:10%">Rate</th>
 								<th style="width:10%">Commission</th>
-								<th style="width:20%">Manager</th>
+								<th style="width:25%">Manager</th>
 								<th style="width:10%">Actions</th>
 							</tr>
                         </thead>
@@ -37,7 +36,6 @@
 								<tr>
 									<td>{{ $branch->name }}</td>
 									<td>{{ $branch->code }}</td>
-									<td>{{ $branch->rate }}</td>
 									<td>{{ $branch->commission }}</td>
 									<td>{{ $branch->username }}</td>
 									<td>

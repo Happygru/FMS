@@ -32,10 +32,6 @@
               <input type="text" class="form-control" id="code" placeholder="@lang('fleet.code')">
             </div>
             <div class="form-group">
-              <label class="form-label">@lang('fleet.rate')</label>
-              <input type="number" class="form-control" name="phone" placeholder="@lang('fleet.rate')" id="rate">
-            </div>
-            <div class="form-group">
               <label class="form-label">@lang('fleet.commission')</label>
               <input type="number" class="form-control" name="phone" placeholder="@lang('fleet.commission')" id="commission">
             </div>
@@ -67,7 +63,6 @@
   $("#submit_btn").click(function() {
     var name = $("#name").val();
     var code = $("#code").val();
-    var rate = $("#rate").val();
     var commission = $("#commission").val();
     var manager = $("#manager").val();
 
@@ -89,15 +84,6 @@
       return;
     }
     
-    if (rate == "" || rate < 0) {
-      new PNotify({
-        title: 'Warning',
-        text: "@lang('fleet.input_rate')",
-        type: 'warning'
-      });
-      return;
-    }
-    
     if (commission == "" || commission < 0) {
       new PNotify({
         title: 'Warning',
@@ -108,7 +94,7 @@
     }
 
     var postData = {
-      name, code, rate, commission, manager, deleted: 0
+      name, code, commission, manager, deleted: 0
     }
 
     $.ajax({

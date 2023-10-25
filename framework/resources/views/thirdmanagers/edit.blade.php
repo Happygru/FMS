@@ -24,8 +24,8 @@
 </style>
 @endsection
 @section("breadcrumb")
-<li class="breadcrumb-item"><a href="{{ route('customers.index')}}">@lang('fleet.users')@lang('fleet.third')</a></li>
-<li class="breadcrumb-item active"> @lang('fleet.editUser')@lang('fleet.third')</li>
+<li class="breadcrumb-item"><a href="{{ route('thirdmanagers.index')}}">@lang('partners')</a></li>
+<li class="breadcrumb-item active"> @lang('fleet.edit') @lang('fleet.partner')</li>
 @endsection
 @section('content')
 <div class="row">
@@ -33,7 +33,7 @@
         <div class="card card-info">
             <div class="card-header with-border">
                 <h3 class="card-title">
-                  @lang('fleet.editUser')@lang('fleet.third')
+                  @lang('fleet.edit') @lang('fleet.partner')
                 </h3>
             </div>
             <div class="card-body">

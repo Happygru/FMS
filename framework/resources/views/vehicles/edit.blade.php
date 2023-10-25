@@ -225,6 +225,29 @@
                     {!! Form::text('int_mileage', $vehicle->int_mileage,['class' => 'form-control','required']) !!}
                   </div>
                 </div>
+
+                <div class="form-group">
+                  {!! Form::label('aircondition', __('fleet.aircondition'), ['class' => 'col-xs-5 control-label']) !!}
+
+                  <div class="col-xs-6">
+                    <select name="aircondition" class="form-control" required id="aircondition">
+                      <option value="Y" @if($vehicle->aircondition == 'Y') selected @endif>Yes</option>
+                      <option value="N" @if($vehicle->aircondition == 'N') selected @endif>No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {!! Form::label('transmission', __('fleet.transmission'), ['class' => 'col-xs-5 control-label']) !!}
+
+                  <div class="col-xs-6">
+                    <select name="transmission_type" class="form-control" required id="transmission_type">
+                      <option value="Automatic" @if($vehicle->transmission_type == 'Automatic') selected @endif>Automatic</option>
+                      <option value="Manual" @if($vehicle->transmission_type == 'Manual') selected @endif >Manual</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="form-group">
                   {!! Form::label('vehicle_image', __('fleet.vehicleImage'), ['class' => 'col-xs-5 control-label']) !!}
                   @if($vehicle->vehicle_image != null)
@@ -333,7 +356,28 @@
                     </select>
                   </div>
                 </div>
-                
+
+                <div class="form-group">
+                  {!! Form::label('seaters', __('fleet.seaters'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::number('seaters', $vehicle->seaters,['class' => 'form-control','required']) !!}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {!! Form::label('doors', __('fleet.doors'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::number('doors', $vehicle->doors,['class' => 'form-control','required']) !!}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {!! Form::label('luggages', __('fleet.luggages'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::number('luggages', $vehicle->luggage,['class' => 'form-control','required']) !!}
+                  </div>
+                </div>
+
                 <hr>
                 <div class="form-group">
                   {!! Form::label('udf1',__('fleet.add_udf'), ['class' => 'col-xs-5 control-label']) !!}

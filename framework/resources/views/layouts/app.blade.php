@@ -767,7 +767,7 @@ input:checked + .slider:before {
                     <a href="{{ route('thirdmanagers.index')}}"
                       class="nav-link @if(Request::is('admin/thirdmanagers*')) active @endif">
                       <i class="fa fa-address-card nav-icon"></i>
-                      <p>@lang('fleet.users')@lang('fleet.third')</p>
+                      <p>@lang('fleet.partners')</p>
                     </a>
                   </li>
 
@@ -877,7 +877,7 @@ input:checked + .slider:before {
               </li>
             @endcanany
 
-            @if(Request::is('admin/thirdvehicles*'))
+            <!-- @if(Request::is('admin/thirdvehicles*'))
               @php($class="menu-open")
               @php($active="active")
 
@@ -904,7 +904,7 @@ input:checked + .slider:before {
                     </a>
                   </li>
                 </ul>
-              </li>
+              </li> -->
 
               @if((Request::is('admin/income')) || (Request::is('admin/expense')) || (Request::is('admin/transaction'))
               || (Request::is('admin/income_records')) || (Request::is('admin/expense_records')) )

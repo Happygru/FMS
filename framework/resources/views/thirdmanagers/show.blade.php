@@ -29,7 +29,7 @@
     </style>
 @endsection
 @section('breadcrumb')
-    <li class="breadcrumb-item active">@lang('fleet.users')@lang('fleet.third')</li>
+    <li class="breadcrumb-item active">@lang('partners')</li>
 @endsection
 
 @section('content')
@@ -37,7 +37,7 @@
         <div class="col-md-12">
             <div class="card card-info">
               <div class="card-header with-border">
-                <h3 class="card-title w-100 d-flex justify-content-between align-items-center"> <span>@lang('fleet.user') @lang('fleet.details')@lang('fleet.third')</span>
+                <h3 class="card-title w-100 d-flex justify-content-between align-items-center"> <span>@lang('fleet.partner') @lang('fleet.details')</span>
                   <div class=" float-right">
                     <a href="{{ route('thirdmanagers.edit',$customer->id) }}" class="float-right btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
                   </div>
@@ -62,7 +62,7 @@
             <div class="card card-info">
                 <div class="card-header">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3 class="card-title">@lang('fleet.user') @lang('fleet.listVehicle')
+                        <h3 class="card-title">@lang('fleet.partner') @lang('fleet.listVehicle')
                         </h3>
                         <a href="{{ route('thirdmanagers.index') }}" class="btn btn-sm btn-danger" >
                             <i class="fa fa-share"></i> Return

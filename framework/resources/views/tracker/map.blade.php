@@ -12,8 +12,8 @@
     height: 20px;
   }
   .select{
-           width:35%;
-        }
+    width:35%;
+  }
 </style>
 @endsection
 @section('content')
@@ -106,14 +106,14 @@ align-items: center;
                                  @if(!isset($error_exist) && !isset($message_traccar_fail) && $message == null)
                                  @if($vehicle_data != null)
                                     @foreach($vehicle_data as $v)
-                                          var myLatlng{{$v->id}} = new google.maps.LatLng({{$v->position['latitude']}},{{$v->position['longitude']}});
+                                          var myLatlng{{$v->id}} = new google.maps.LatLng({{$v->position->latitude}},{{$v->position->longitude}});
                                                         var marker = new google.maps.Marker({
                                                             position: myLatlng{{$v->id}},
                                                             map: map,
                                                             icon: carIcon,
                                                             title: '{{$v->model_name}}'
                                                         });
-                                          $('table thead').after("<tbody><tr><td>{{$v->model_name}}</td><td>{{$v->position['speed']}}</td><td>{{$v->bookings->pickup ?? '-'}}</td><td>{{$v->bookings->driver->name ?? '-'}}</td></tr></tbody></table>");
+                                          $('table thead').after("<tbody><tr><td>{{$v->model_name}}</td><td>{{$v->position->speed}}</td><td>{{$v->bookings->pickup ?? '-'}}</td><td>{{$v->bookings->driver->name ?? '-'}}</td></tr></tbody></table>");
                                           markers[{{$v->id}}] = marker;
                                           console.log(markers[{{$v->id}}]);
                                     @endforeach

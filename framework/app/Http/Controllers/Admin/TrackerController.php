@@ -82,7 +82,7 @@ class TrackerController extends Controller
             $positions = json_decode($response->getBody()->getContents());
             if ($id != null) {
                 foreach ($positions as $position) {
-                    if ($position['deviceId'] == $vehicles->getMeta('traccar_device_id')) {
+                    if ($position->deviceId == $vehicles->getMeta('traccar_device_id')) {
                         $bookings = Bookings::where('vehicle_id', $vehicles->id)
                             ->where('pickup', '<=', $currentTime)
                             ->where('dropoff', '>=', $currentTime)
@@ -140,23 +140,26 @@ class TrackerController extends Controller
         Settings::where('name', 'traccar_map_key')->update(['value' => $request->traccar_map_key]);
         return redirect()->route('traccar.settings')->with('message','Traccar Settings Updated!');
     }
-    public function vehicles_track($id = null)
+    public function vehicles_track($id = 2)
     {
         $data = $this->traccar_location($id);
         if (array_key_exists('error', $data)) {
             $response['error_exist'] = $data['error'];
         }
         else{
-        if (array_key_exists('message_traccar_fail', $data)) {
-            $response['message_traccar_fail'] = $data['message_traccar_fail'];
+            if (array_key_exists('message_traccar_fail', $data)) {
+                $response['message_traccar_fail'] = $data['message_traccar_fail'];
+            }
+            else{
+                if(count($data['vehicle_data'])==0){
+                    $response['message'] = 'Please Check Traccar Device Id Again For Vehicle No Location Found!';
+                } else {
+                    $response['vehicle_data'] = $data['vehicle_data'];
+                    $response['active_vehicle'] = $data['active_vehicle'];
+                    $response['message'] = null;
+                }
+            }
         }
-        else{
-           
-        if(count($data['vehicle_data'])==0){
-            $response['message'] = 'Please Check Traccar Device Id Again For Vehicle No Location Found!';
-        }
-    }
-    }
         return view('tracker.map')->with($response);
     }
     public function track($id = null)
@@ -166,15 +169,15 @@ class TrackerController extends Controller
             $response['error_exist'] = $data['error'];
         }
         else{
-        if (array_key_exists('message_traccar_fail', $data)) {
-            $response['message_traccar_fail'] = $data['message_traccar_fail'];
+            if (array_key_exists('message_traccar_fail', $data)) {
+                $response['message_traccar_fail'] = $data['message_traccar_fail'];
+            }
+            else{
+                if(count($data['vehicle_data'])==0){
+                    $response['message'] = 'Please Check Traccar Device Id Again For Vehicle No Location Found!';
+                }
+            }
         }
-        else{
-        if(count($data['vehicle_data'])==0){
-            $response['message'] = 'Please Check Traccar Device Id Again For Vehicle No Location Found!';
-        }
-    }
-    }
         return response()->json($data['vehicle_data']);
     }
 }

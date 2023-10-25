@@ -61,6 +61,7 @@ use App\Model\Vendor;
 use App\Model\WorkOrderLogs;
 use App\Model\WorkOrders;
 use App\Model\RateModel;
+use App\Model\BranchModel;
 use Auth;
 use DB;
 use Edujugon\PushNotification\PushNotification;
@@ -309,6 +310,7 @@ class SettingsController extends Controller {
 
 	public function fare_settings() {
 		$data['settings'] = FareSettings::all();
+		$data['branches'] = BranchModel::all();
 		$vehicle_types = VehicleTypeModel::get();
 		$all = array();
 		foreach ($vehicle_types as $type) {
@@ -320,6 +322,7 @@ class SettingsController extends Controller {
 
 	public function fare_fetch_data(Request $request) {
 		$rate = RateModel::where('category', $request->id)->first();
+		$rate
     return response()->json(['success' => true, 'data' => $rate, 'code' => 200]);
 	}
 

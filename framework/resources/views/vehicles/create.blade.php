@@ -202,9 +202,24 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  {!! Form::label('vehicle_image', __('fleet.vehicleImage'), ['class' => 'col-xs-5 control-label']) !!}
+                  {!! Form::label('aircondition', __('fleet.aircondition'), ['class' => 'col-xs-5 control-label']) !!}
+
                   <div class="col-xs-6">
-                    {!! Form::file('vehicle_image',null,['class' => 'form-control']) !!}
+                    <select name="aircondition" class="form-control" required id="aircondition">
+                      <option value="Y" selected>Yes</option>
+                      <option value="N">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {!! Form::label('transmission', __('fleet.transmission'), ['class' => 'col-xs-5 control-label']) !!}
+
+                  <div class="col-xs-6">
+                    <select name="transmission" class="form-control" required id="transmission">
+                      <option value="Automatic" selected>Automatic</option>
+                      <option value="Manual">Manual</option>
+                    </select>
                   </div>
                 </div>
 
@@ -219,6 +234,14 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  {!! Form::label('vehicle_image', __('fleet.vehicleImage'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::file('vehicle_image',null,['class' => 'form-control']) !!}
+                  </div>
+                </div>
+
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-6">
@@ -233,7 +256,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="col-md-6">
                 <div class="form-group">
                   {!! Form::label('color_name', __('fleet.SelectVehicleColor'), ['class' => 'col-xs-5 control-label']) !!}
@@ -304,6 +326,28 @@
                     </select>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  {!! Form::label('seaters', __('fleet.seaters'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::number('seaters', null,['class' => 'form-control','required']) !!}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {!! Form::label('doors', __('fleet.doors'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::number('doors', null,['class' => 'form-control','required']) !!}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  {!! Form::label('luggages', __('fleet.luggages'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    {!! Form::number('luggages', null,['class' => 'form-control','required']) !!}
+                  </div>
+                </div>
+
                 <hr>
                 <div class="form-group">
                   {!! Form::label('udf1',__('fleet.add_udf'), ['class' => 'col-xs-5 control-label']) !!}
