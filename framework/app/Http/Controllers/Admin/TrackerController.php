@@ -47,12 +47,12 @@ class TrackerController extends Controller
         }
         foreach (json_decode($response_active_device->getBody()->getContents()) as $response_active_device) {
             foreach ($all_vehicles as $a) {
-                if ($response_active_device->status == 'active') {
+                // if ($response_active_device->status == 'active') {
                     if ($response_active_device->id == $a->traccar_device_id) {
                         $active_vehicle_id[] = $a->id;
                         $active_vehicle[] = $a;
                     }
-                }
+                // }
             }
         }
             if ($id != null) {
@@ -96,7 +96,7 @@ class TrackerController extends Controller
             } else {
                 foreach ($vehicles as $vehicle) {
                     foreach ($positions as $position) {
-                        if ($position['deviceId'] == $vehicle->getMeta('traccar_device_id')) {
+                        if ($position->deviceId == $vehicle->getMeta('traccar_device_id')) {
                             $vehicle['position'] = $position;
                             $bookings = Bookings::where('vehicle_id', $vehicle->id)
                                 ->where('pickup', '<=', $currentTime)
@@ -140,7 +140,7 @@ class TrackerController extends Controller
         Settings::where('name', 'traccar_map_key')->update(['value' => $request->traccar_map_key]);
         return redirect()->route('traccar.settings')->with('message','Traccar Settings Updated!');
     }
-    public function vehicles_track($id = 2)
+    public function vehicles_track($id = null)
     {
         $data = $this->traccar_location($id);
         if (array_key_exists('error', $data)) {
@@ -154,9 +154,7 @@ class TrackerController extends Controller
                 if(count($data['vehicle_data'])==0){
                     $response['message'] = 'Please Check Traccar Device Id Again For Vehicle No Location Found!';
                 } else {
-                    $response['vehicle_data'] = $data['vehicle_data'];
-                    $response['active_vehicle'] = $data['active_vehicle'];
-                    $response['message'] = null;
+                    $response = $data;
                 }
             }
         }
