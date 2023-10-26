@@ -93,7 +93,11 @@
         <div class="form-group">
           {!! Form::hidden('cancel_id',null,['id'=>'cancel_id']) !!}
           {!! Form::label('reason',__('fleet.addReason'),['class'=>"form-label"]) !!}
-          {!! Form::text('reason',null,['class'=>"form-control",'required']) !!}
+          <select name="reason" class="form-control">
+            @foreach($reasons as $reason)
+              <option value="{{$reason->reason}}">{{$reason->reason}}</option>
+            @endforeach
+          </select>
         </div>
       </div>
       <div class="modal-footer">

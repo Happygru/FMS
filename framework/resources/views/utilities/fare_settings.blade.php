@@ -69,6 +69,9 @@
             <li class="nav-item">
               <a href="#insurance_content" data-toggle="tab" class="nav-link text-uppercase btn-sm">Insurance rate <i class="fa"></i></a>
             </li>
+            <li class="nav-item">
+              <a href="#airport_content" data-toggle="tab" class="nav-link text-uppercase btn-sm">Airport rate <i class="fa"></i></a>
+            </li>
 					</ul>
 				</div>
 				<div class="row">
@@ -231,6 +234,35 @@
                   </table>
                 </div>
               </div>
+              <div class="tab-pane" id="airport_content">
+                <div class="table-responsive">
+                  <table class="table table-responsive">
+                    <thead class="thead-inverse">
+                      <tr>
+                        <th>Airport Rate</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                      </tr>   
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="form-group">
+                            <input type="number" class="form-control" id="airport_rate">
+                          </div>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
               <a href="javascript:;" class="btn btn-success btn-sm update_btn" onclick="update()">@lang('fleet.update')</a>
 						</div>
 					</div>
@@ -244,16 +276,23 @@
 @section('script')
 <script type="text/javascript">
   var active_id = {{$types[0]->id}};
+  var active_branch_id = {{ $branches[0]->id }}
 	$(document).ready(function() {
-    $.post("{{url('/admin/fare-fetch')}}", { id: active_id }, function(data) {
-      setInitialize(data);
-    })
+    fetch_fare(active_id, active_branch_id);
 	});
 
   function onChangeType(id) {
     if(active_id == id)
       return;
     active_id = id;
+    fetch_fare(active_id, active_branch_id);
+  }
+
+  function onChangeBranch(id) {
+    if(active_branch_id == id)
+      return;
+    active_branch_id = id;
+    fetch_fare(active_id, active_branch_id);
   }
 
   function fetch_fare(id, branch_id) {
@@ -275,6 +314,7 @@
   function update() {
     let fleetData = {
       id: active_id,
+      branch_id: active_branch_id,
       hourly: $('#hourly').val() || 0,
       hourly_2: $('#hourly_2').val() || 0,
       hourly_3: $('#hourly_3').val() || 0,
@@ -295,6 +335,7 @@
       ins_3_6: $('#ins_3_6').val() || 0,
       ins_7_15: $('#ins_7_15').val() || 0,
       ins_16_30: $('#ins_16_30').val() || 0,
+      airport_rate: $("#airport_date").val() || 0
     };
 
     $.post("{{url('/admin/fare-update')}}", fleetData, function (data) {

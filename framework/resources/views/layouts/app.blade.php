@@ -940,7 +940,43 @@ input:checked + .slider:before {
                     </a>
                   </li>
                 </ul>
-              </li> @endcan
+              </li>
+              @endcan
+
+              @if((Request::is('admin/thirdparty_income')) || (Request::is('admin/thirdparty_expense')) || (Request::is('admin/thirdparty_transaction'))
+              || (Request::is('admin/thirdparty_income_records')) || (Request::is('admin/thirdparty_expense_records')) )
+              @php($class="menu-open")
+              @php($active="active")
+
+              @else
+              @php($class="")
+              @php($active="")
+              @endif
+              <li class="nav-item has-treeview {{$class}}">
+                <a href="#" class="nav-link {{$active}}">
+                  <i class="nav-icon fa fa-money-bill-alt"></i>
+                  <p>
+                    @lang('menu.transactions')@lang('fleet.third')
+                    <i class="right fa fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{ route('income.thirdparty')}}"
+                      class="nav-link @if((Request::is('admin/thirdparty_income'))|| (Request::is('admin/thirdparty_income_records'))) active @endif">
+                      <i class="fa fa-newspaper nav-icon"></i>
+                      <p>@lang('fleet.manage_income')</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('expense.thirdparty')}}"
+                      class="nav-link @if((Request::is('admin/thirdparty_expense')) || (Request::is('admin/thirdparty_expense_records'))) active @endif">
+                      <i class="fa fa-newspaper nav-icon"></i>
+                      <p>@lang('fleet.manage_expense')</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
 
               @if((Request::is('admin/transactions*')) || (Request::is('admin/bookings*')) ||(Request::is('admin/bookings_calendar')) || (Request::is('admin/booking-quotation*')))
               @php($class="menu-open")

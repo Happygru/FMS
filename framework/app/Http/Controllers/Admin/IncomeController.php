@@ -133,4 +133,61 @@ class IncomeController extends Controller {
 		return redirect('admin/income');
 	}
 
+
+	public function thirdparty(Request $request) {
+		$data['date1'] = null;
+		$data['date2'] = null;
+		$user = Auth::user();
+		if ($user->user_type == "D") {
+			// $v = DriverLogsModel::where('driver_id',Auth::user()->id)->get();
+			// $vehicle_ids = $v->pluck('vehicle_id')->toArray();
+			// $data['vehicels'] = VehicleModel::whereId($v->pluck('vehicle_id'))->whereIn_service(1)->get();
+
+			$vehicle_ids = auth()->user()->vehicles()->pluck('vehicle_id')->toArray();
+			$data['vehicels'] = auth()->user()->vehicles()->with(['maker', 'vehiclemodel'])->whereIn_service(1)->get();
+		} else {
+			if ($user->group_id == null || $user->user_type == "S") {
+				$data['vehicels'] = VehicleModel::whereIn_service(1)->where('group_id', 2)->get();
+				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
+			} else {
+				$data['vehicels'] = VehicleModel::whereIn_service(1)->where('group_id', $user->group_id)->get();
+				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
+			}
+		}
+		$data['types'] = IncCats::get();
+		$income = IncomeModel::with(['category'])->whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'));
+		$data['today'] = $income->get();
+		$data['total'] = $income->sum('amount');
+		return view("income.thirdparty", $data);
+	}
+
+	public function thirdparty_income_records(Request $request) {
+		$data['date1'] = $request->date1;
+		$data['date2'] = $request->date2;
+		$user = Auth::user();
+		if ($user->user_type == "D") {
+			// $v = DriverLogsModel::where('driver_id',Auth::user()->id)->get();
+			// $vehicle_ids = $v->pluck('vehicle_id')->toArray();
+			// $data['vehicels'] = VehicleModel::with(['metas','maker','vehiclemodel'])
+			// ->whereId($v->pluck('vehicle_id'))->whereIn_service(1)->get();
+			$vehicle_ids = auth()->user()->vehicles()->pluck('vehicle_id')->toArray();
+			$data['vehicels'] = auth()->user()->vehicles()->with(['maker', 'vehiclemodel'])->whereIn_service(1)->get();
+		} else {
+			if ($user->group_id == null || $user->user_type == "S") {
+				$data['vehicels'] = VehicleModel::with(['metas'])
+					->whereIn_service(1)->where('group_id', 2)->get();
+				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
+			} else {
+				$data['vehicels'] = VehicleModel::with(['metas'])
+					->whereIn_service(1)->where('group_id', $user->group_id)->get();
+				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
+			}
+		}
+
+		$data['types'] = IncCats::get();
+		$data['today'] = IncomeModel::with(['category'])->whereIn('vehicle_id', $vehicle_ids)->whereBetween('date', [$request->get('date1'), $request->get('date2')])->get();
+		$data['total'] = IncomeModel::whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'))->sum('amount');
+
+		return view("income.thirdparty", $data);		
+	}
 }

@@ -321,23 +321,24 @@ class SettingsController extends Controller {
 	}
 
 	public function fare_fetch_data(Request $request) {
-		$rate = RateModel::where('category', $request->id)->first();
-		$rate
-    return response()->json(['success' => true, 'data' => $rate, 'code' => 200]);
+		$rate = RateModel::where('category', $request->id)->where('branch_id', $request->branch_id)->first();
+    	return response()->json(['success' => true, 'data' => $rate, 'code' => 200]);
 	}
 
-  public function fare_update_data(Request $request) {
-    $data = $request->all();
-    $rate = RateModel::find($data['id']);
+	public function fare_update_data(Request $request) {
+		$data = $request->all();
+		$rate = RateModel::where('category', $data['id'])
+			->where('branch_id', $data['branch_id'])
+			->first();
 
-    if($rate) {
-      $rate->update($data);
-      return response()->json(['success' => true, 'code' => 200]);
-    }
-    else {
-      return response()->json(['success' => false, 'code' => 400]);
-    }
-  }
+		if($rate) {
+			$rate->update($data);
+			return response()->json(['success' => true, 'code' => 200]);
+		}
+		else {
+			return response()->json(['success' => false, 'code' => 400]);
+		}
+	}
 
 	public function store_fareSettings(Request $request) {
 		foreach ($request->get('name') as $key => $val) {

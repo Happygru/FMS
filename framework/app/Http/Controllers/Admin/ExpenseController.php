@@ -132,4 +132,34 @@ class ExpenseController extends Controller {
 		return redirect('admin/expense');
 	}
 
+	public function thirdparty(Request $request) {
+		$user = Auth::user();
+		if ($user->user_type == "D") {
+			// $v = DriverLogsModel::where('driver_id',Auth::user()->id)->get();
+			// $vehicle_ids = $v->pluck('vehicle_id')->toArray();
+			// $data['vehicels'] = VehicleModel::whereId($vehicle_ids)->whereIn_service(1)->get();
+
+			$vehicle_ids = auth()->user()->vehicles()->pluck('vehicle_id')->toArray();
+			$data['vehicels'] = auth()->user()->vehicles()->whereIn_service(1)->get();
+		} else {
+			if ($user->group_id == null || $user->user_type == "S") {
+				$data['vehicels'] = VehicleModel::whereIn_service(1)->where('group_id', 2)->get();
+				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
+			} else {
+				$data['vehicels'] = VehicleModel::whereIn_service(1)->where('group_id', $user->group_id)->get();
+				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
+
+			}
+		}
+
+		$data['types'] = ExpCats::get();
+		$data['service_items'] = ServiceItemsModel::get();
+
+		$data['total'] = Expense::whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'))->sum('amount');
+		$data['today'] = Expense::whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'))->get();
+		$data['vendors'] = Vendor::get();
+		$data['date1'] = null;
+		$data['date2'] = null;
+		return view("expense.thirdparty", $data);		
+	}
 }

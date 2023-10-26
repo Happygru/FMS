@@ -31,6 +31,7 @@ use App\Model\Settings;
 use App\Model\User;
 use App\Model\VehicleModel;
 use App\Model\VehicleTypeModel;
+use App\Model\ReasonsModel;
 use Auth;
 use Carbon\Carbon;
 use DataTables;
@@ -94,7 +95,7 @@ class BookingsController extends Controller {
 	public function index() {
 
 		$data['types'] = IncCats::get();
-
+		$data['reasons'] = ReasonsModel::all();
 		return view("bookings.index", $data);
 	}
 
@@ -486,6 +487,7 @@ class BookingsController extends Controller {
 		$query = DB::table('vehicles as v')
 		->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
 		->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+		->where('r.branch_id', $request->branch_id)
 		->where('v.in_service', '1')
 		->where('v.type_id', $request->id);
 
@@ -982,11 +984,11 @@ class BookingsController extends Controller {
 		$api_key = Hyvikk::api('api_key');
 		$url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$origin&destinations=$destination&key=$api_key";
 		
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    $response = curl_exec($ch);
-    curl_close($ch);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		$response = curl_exec($ch);
+		curl_close($ch);
 	
 		$data = json_decode($response);
 		if(!empty($data->rows[0]->elements[0]->distance)) {

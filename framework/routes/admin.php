@@ -269,11 +269,13 @@ Route::namespace ('Admin')->group(function () {
         Route::get('print/{id}', 'BookingsController@print');
         Route::resource('/acquisition', 'AcquisitionController');
         Route::resource('/income', 'IncomeController');
+        Route::get('/thirdparty_income', 'IncomeController@thirdparty')->name('income.thirdparty');
         Route::resource('/settings', 'SettingsController');
         Route::get('/logs', 'SettingsController@logs');
         Route::post('/customers-fetch', 'CustomersController@fetch_data');
         Route::resource('/customers', 'CustomersController');
         Route::resource('/expense', 'ExpenseController');
+        Route::get('/thirdparty_expense', 'ExpenseController@thirdparty')->name('expense.thirdparty');
         Route::resource('/expensecategories', 'ExpenseCategories');
         Route::resource('/incomecategories', 'IncomeCategories');
         Route::get('/bookings/complete/{id}', 'BookingsController@complete');
@@ -370,11 +372,13 @@ Route::namespace ('Admin')->group(function () {
 //vehicle Expense
         Route::resource('/expense', 'ExpenseController');
         Route::post('/expense_records', 'ExpenseController@expense_records');
+        Route::post('/thirdparty_expense_records', 'ExpenseControllers@thirdparty_expense_records');
         Route::post('delete-expense', 'ExpenseController@bulk_delete');
 //vehicle income
         Route::resource('/income', 'IncomeController');
         Route::post('delete-income', 'IncomeController@bulk_delete');
         Route::post('/income_records', 'IncomeController@income_records');
+        Route::post('/thirdparty_income_records', 'IncomeController@thirdparty_income_records');
 // driver reports
         Route::get("/driver-reports/yearly", "DriversController@yearly")->name("dreports.yearly");
         Route::post("/driver-reports/yearly", "DriversController@yearly_post")->name("dreports.yearly");

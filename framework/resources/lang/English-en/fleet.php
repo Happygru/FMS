@@ -158,6 +158,9 @@ return [
     'seaters' => 'Seaters',
     'doors' => 'Doors',
     'luggages' => 'Luggages',
+    'confirm_save_booking' => 'Are you sure to save this booking?',
+    'thirdparty_report' => 'Thirdparty Report',
+    'select_partner' => 'Select Partner',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

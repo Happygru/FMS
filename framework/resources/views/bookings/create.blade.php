@@ -387,24 +387,41 @@
                 <label class="form-label">@lang('fleet.quantity')</label>
                 <input type="number" id="addon_quantity" class="form-control" value="1" min="1" />
               </div>
-              <div class="form-group">
-                <label class="form-label">@lang('fleet.price')</label>
-                <p id="price"></p>
-              </div>
             </div>
             <div class="col-md-4">
               <img src="" style="width: 100%;" alt="addon_img" id="addon_img" />
             </div>
             <div class="col-md-4">
+              <h4 id="price" style="font-weight: bold;"></h4>
               <h4>@lang('fleet.description')</h4>
               <p id="addon_description"></p>
             </div>
           </div>
           <div class="row step_button_group">
             <button class="btn btn-info" onclick="gostep(3)"><i class="fa fa-angle-left"></i> @lang('fleet.prev') </button>
-            <button class="btn btn-info" onclick="save_booking()"><i class="fa fa-save"></i> @lang('fleet.save_booking') </button>
+            <button class="btn btn-info" onclick="submitBooking()"><i class="fa fa-save"></i> @lang('fleet.save_booking') </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="saveConfirmModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@lang('fleet.save_booking')</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>@lang('fleet.confirm_save_booking')</p>
+        <h5><b>@lang('fleet.vehicle') @lang('total_cost')</b>: <span id="confirm_vehicle_total_cost"></span></h5>
+        <h5><b>@lang('fleet.addon') @lang('total_cost')</b>: <span id="confirm_addon_total_cost"></span></h5>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-success" href="javascript:;" onclick="save_booking()">@lang('fleet.submit')</a>
+        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('fleet.close')</button>
       </div>
     </div>
   </div>
@@ -461,6 +478,7 @@
     let track_time = new Date();
     let tax_charge;
     let selected_price;
+    let addon_amount;
 
     $(document).ready(function() {
       set_datetime();
@@ -548,7 +566,7 @@
     })
 
     function get_vehicle_list(id) {
-      $.post("{{url('admin/fetch-vehicle-list-by-type')}}", { id }, function(res) {
+      $.post("{{url('admin/fetch-vehicle-list-by-type')}}", { id, branch_id: $("#branch").val() }, function(res) {
         vehicle_list = res.data;
         let str = '';
         vehicle_list.map((item) => {
@@ -558,6 +576,7 @@
           str = '<option value="-1">No Data</option>';
         }
         $("#vehicle_list").html(str);
+        set_vehicle_detail(vehicle_list[0]);
       })
     }
 
@@ -567,6 +586,9 @@
 
     function set_tour_price(price, quantity) {
       $("#price").text(price * quantity + "GHS");
+      addon_tax_charge = (price * quantity * tax / 100).toFixed(2);
+      tax_charge += addon_tax_charge;
+      addon_amount = price * quantity * 1 + addon_tax_charge * 1;
     }
 
     function get_addon_list(type) {
@@ -645,6 +667,7 @@
       let diff_days = get_difference_days(pickup_date, dropoff_date);
       $("#estimated_km_to").text(distance_between_two_points - data.wdwa_dka * diff_days > 0 ? distance_between_two_points - data.wdwa_dka * diff_days : 0);
       $("#total_km_allowance").text(distance_between_two_points);
+      airport_rate = data['airport_rate'];
       if($("#reservation_list").val() == 1){
         let hours = $("#number_hours").val();
         let hourly_rate = 0;
@@ -658,6 +681,8 @@
         // Get the corresponding value from the data object
         hourly_rate = data[property];
         let fixed_amount = hourly_rate * hours;
+        if($("#airport_pickup").val() == 'Y')
+          fixed_amount += airport_rate;
         tax_charge = (fixed_amount * tax / 100).toFixed(2);
         vehicle_amount = tax_charge + fixed_amount;
         $("#total_amount").text(vehicle_amount + "GH₵");
@@ -679,20 +704,22 @@
         else
           daily_cost = data['wdwa_16_30' + suffix];
         $("#estimated_amount").text(daily_cost + "GH₵");
-        vehicle_amount = daily_cost * diff_days * (parseInt((100 + tax)/100))
         let fixed_amount = daily_cost * diff_days;
+        if($("#airport_rate").val() == 'Y')
+          fixed_amount += airport_rate;
         if(distance_between_two_points > data.wdwa_dka * diff_days){
           let diff_kms = distance_between_two_points - data.wdwa_dka * diff_days;
           fixed_amount += data.wdwa_dkr * diff_kms;
         }
         tax_charge = (fixed_amount * tax / 100).toFixed(2);
-        tax_total = tax_charge + fixed_amount;
+        vehicle_amount = tax_charge + fixed_amount;
         $("#total_amount").text(vehicle_amount + "GH₵");
       }
     }
 
     async function gostep(step) {
       if(step == 3) {
+        get_vehicle_list($("#vehicle_types").val());
         if($("#pickup_addr").val() == ""){
           new PNotify({
             title: 'Error',
@@ -799,6 +826,12 @@
       return differenceInDays;
     }
 
+    function submitBooking() {
+      $("#confirm_vehicle_total_cost").text(vehicle_amount);
+      $("#confirm_addon_total_cost").text(addon_amount);
+      $("#saveConfirmModal").modal('show');
+    }
+
     function save_booking() {
       const postData = new FormData();
       postData.append('customer_id', $("#customer_list").val());
@@ -825,7 +858,7 @@
       postData.append('final_destination', $("#final_destination").val());
       postData.append('destination_outside', $("#destination_outside").val());
       postData.append('tax_charge', tax_charge);
-      postData.append('tax_total', vehicle_amount);
+      postData.append('tax_total', vehicle_amount + addon_amount);
       postData.append('track_time', track_time);
       postData.append('tax_percent', tax)
       postData.append('status', 0);

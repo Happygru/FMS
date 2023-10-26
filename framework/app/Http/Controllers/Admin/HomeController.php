@@ -103,6 +103,8 @@ class HomeController extends Controller {
 
 	public function index() {
 		if (Auth::user()->user_type == "D") {
+			var_dump("1");
+			return;
 			// $drivers = User::where('user_type', 'D')->get();
 			// foreach ($drivers as $driver) {
 			//     $d = User::find($driver->id);
@@ -116,6 +118,8 @@ class HomeController extends Controller {
 			return view("drivers.profile", $index);
 
 		} elseif (Auth::user()->user_type == "C") {
+			var_dump("2");
+			return;
 			if (Hyvikk::frontend('enable') == 1) {
 				return redirect('/');
 			}
@@ -234,7 +238,6 @@ class HomeController extends Controller {
 				$vv[$key->id] = $key->make_name . "-" . $key->model_name . "-" . $key->license_plate;
 			}
 			$index['vehicle_name'] = $vv;
-
 			$index['expenses'] = Expense::select('vehicle_id', DB::raw('sum(amount) as expense'))->whereIn('vehicle_id', $vehicle_ids)->whereYear('date', date('Y'))->whereMonth('date', date('n'))->groupBy('vehicle_id')->get();
 			$index['income'] = IncomeModel::whereRaw('year(date) = ? and month(date)=?', [date("Y"), date("n")])->whereIn('vehicle_id', $vehicle_ids)->sum("amount");
 			// dd($vehicle_ids);
@@ -254,6 +257,7 @@ class HomeController extends Controller {
 			foreach ($all_dates as $key) {
 				$temp[$key] = 0;
 			}
+			
 			$income2 = array();
 			foreach ($inc as $income) {
 				$income2[$income->date] = $income->tot;
@@ -261,7 +265,6 @@ class HomeController extends Controller {
 			$inc_data = array_merge($temp, $income2);
 			ksort($inc_data);
 			$index['incomes'] = implode(",", array_slice($inc_data, -12, 12));
-
 			$expense2 = array();
 			foreach ($exp as $e) {
 				$expense2[$e->date] = $e->tot;
@@ -269,7 +272,6 @@ class HomeController extends Controller {
 			$expenses = array_merge($temp, $expense2);
 			ksort($expenses);
 			$index['expenses1'] = implode(",", array_slice($expenses, -12, 12));
-
 			return view('home', $index);
 		}
 	}
