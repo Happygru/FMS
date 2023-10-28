@@ -64,11 +64,18 @@
               @endforeach
             </select>
           </div>
-          <div class="col-md-4" style="margin-top: 5px;">
+          <div class="col-md-2" style="margin-top: 5px;">
             <div class="input-group">
               <div class="input-group-prepend">
               <span class="input-group-text">{{$currency}}</span></div>
               <input required="required" name="revenue" type="number" step="0.01" id="revenue" class="form-control">
+            </div>
+          </div>
+          <div class="col-md-2" style="margin-top: 5px;">
+            <div class="input-group">
+              <div class="input-group-prepend">
+              <span class="input-group-text">%</span></div>
+              <input required="required" name="thirdparty_percent" type="number" min="0" max="100"  step="0.01" id="thirdparty_percent" class="form-control">
             </div>
           </div>
           <div class="col-md-4" style="margin-top: 10px;">
@@ -138,6 +145,7 @@
                   <input type="checkbox" id="chk_all">
                 @endif
               </th>
+              <th>@lang('fleet.partner') @lang('fleet.name')</th>
               <th>@lang('fleet.make')</th>
               <th>@lang('fleet.model')</th>
               <th>@lang('fleet.licensePlate')</th>
@@ -145,6 +153,7 @@
               <th>@lang('fleet.vendor')</th>
               <th>@lang('fleet.date')</th>
               <th>@lang('fleet.amount')</th>
+              <th>@lang('fleet.amount')@lang('fleet.third')</th>
               <th>@lang('fleet.note')</th>
               <th>@lang('fleet.delete')</th>
             </tr>
@@ -155,6 +164,7 @@
               <td>
                 <input type="checkbox" name="ids[]" value="{{ $row->id }}" class="checkbox" id="chk{{ $row->id }}" onclick='checkcheckbox();'>
               </td>
+              <td>{{ $row->partner_name }}</td>
               <td>{{$row->vehicle->make_name}}</td>
               <td>{{$row->vehicle->model_name}}</td>
               <td>{{$row->vehicle->license_plate}}</td>
@@ -174,6 +184,7 @@
               <td>
               {{ $currency }}
               {{$row->amount}}</td>
+              <td>{{ $currency }} {{$row->thirdparty_amount}}</td>
               <td>{{$row->comment}}</td>
               <td>
               {!! Form::open(['url' => 'admin/expense/'.$row->id,'method'=>'DELETE','class'=>'form-horizontal del_form','id'=>'form_'.$row->id]) !!}
@@ -193,6 +204,7 @@
                 @can('Transactions delete')<button class="btn btn-danger" id="bulk_delete" data-toggle="modal" data-target="#bulkModal" disabled title="@lang('fleet.delete')"><i class="fa fa-trash"></i></button>@endcan
                 @endif
               </th>
+              <th>@lang('fleet.partner') @lang('fleet.name')</th>
               <th>@lang('fleet.make')</th>
               <th>@lang('fleet.model')</th>
               <th>@lang('fleet.licensePlate')</th>
@@ -200,6 +212,7 @@
               <th>@lang('fleet.vendor')</th>
               <th>@lang('fleet.date')</th>
               <th>@lang('fleet.amount')</th>
+              <th>@lang('fleet.amount')@lang('fleet.third')</th>
               <th>@lang('fleet.note')</th>
               <th>@lang('fleet.delete')</th>
             </tr>

@@ -1236,7 +1236,6 @@ input:checked + .slider:before {
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-
                   <li class="nav-item">
                     <a href="{{ url('admin/reports/income') }}"
                       class="nav-link @if(Request::is('admin/reports/income')) active @endif">
@@ -1249,6 +1248,20 @@ input:checked + .slider:before {
                       class="nav-link @if(Request::is('admin/reports/expense')) active @endif">
                       <i class="fa fa-money-bill-alt nav-icon"></i>
                       <p> @lang('fleet.expense') @lang('fleet.report')</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url('admin/reports/thirdparty_income') }}"
+                      class="nav-link @if(Request::is('admin/reports/thirdparty_income')) active @endif">
+                      <i class="fa fa-credit-card nav-icon"></i>
+                      <p> @lang('fleet.income') @lang('fleet.report')@lang('fleet.third')</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url('admin/reports/thirdparty_expense') }}"
+                      class="nav-link @if(Request::is('admin/reports/thirdparty_expense')) active @endif">
+                      <i class="fa fa-money-bill-alt nav-icon"></i>
+                      <p> @lang('fleet.expense') @lang('fleet.report')@lang('fleet.third')</p>
                     </a>
                   </li>
                   <li class="nav-item">

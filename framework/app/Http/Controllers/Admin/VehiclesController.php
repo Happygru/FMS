@@ -484,6 +484,7 @@ class VehiclesController extends Controller {
 	public function view_event($id) {
 
 		$data['vehicle'] = VehicleModel::with(['drivers.metas', 'types', 'metas'])->where('id', $id)->get()->first();
+		$data['thirdparty_owner'] = User::where('id', $data['vehicle']->user_id)->get()->first();
 		return view("vehicles.view_event", $data);
 	}
 

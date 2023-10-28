@@ -128,6 +128,95 @@ class ReportsController extends Controller {
 		return view('reports.print_expense', $data);
 	}
 
+	public function thirdparty_expense() {
+		$years = collect(DB::select("select distinct year(date) as years from expense where deleted_at is null order by years desc"))->toArray();
+
+		$y = array();
+		foreach ($years as $year) {
+			$y[$year->years] = $year->years;
+		}
+
+		if ($years == null) {
+			$y[date('Y')] = date('Y');
+		}
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$data['vehicles'] = VehicleModel::where('group_id', 2)->get();
+		} else {
+			$data['vehicles'] = VehicleModel::where('group_id', Auth::user()->group_id)->get();
+		}
+		$vehicle_ids = array(0);
+		foreach ($data['vehicles'] as $vehicle) {
+			$vehicle_ids[] = $vehicle['id'];
+		}
+
+		$data['vehicle_id'] = "";
+		$data['year_select'] = date("Y");
+		$data['month_select'] = date("n");
+		$data['years'] = $y;
+
+		$data['expense'] = Expense::whereIn('vehicle_id', $vehicle_ids)->whereYear("date", date("Y"))->whereMonth("date", date('m'))->get();
+		return view('reports.thirdparty_expense', $data);
+	}
+
+	public function thirdparty_expense_post(Request $request) {
+
+		$years = collect(DB::select("select distinct year(date) as years from expense where deleted_at is null order by years desc"))->toArray();
+
+		$y = array();
+		foreach ($years as $year) {
+			$y[$year->years] = $year->years;
+		}
+
+		if ($years == null) {
+			$y[date('Y')] = date('Y');
+		}
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$data['vehicles'] = VehicleModel::where('group_id', 2)->get();
+		} else {
+			$data['vehicles'] = VehicleModel::where('group_id', Auth::user()->group_id)->get();
+		}
+		$vehicle_ids = array(0);
+		foreach ($data['vehicles'] as $vehicle) {
+			$vehicle_ids[] = $vehicle['id'];
+		}
+
+		$data['vehicle_id'] = $request->vehicle_id;
+		$data['year_select'] = $request->year;
+		$data['month_select'] = $request->month;
+		$data['years'] = $y;
+
+		$records = Expense::whereIn('vehicle_id', $vehicle_ids)->whereYear("date", $request->year)->whereMonth("date", $request->month);
+		if ($request->vehicle_id != null) {
+			$data['expense'] = $records->where('vehicle_id', $request->vehicle_id)->get();
+		} else {
+			$data['expense'] = $records->get();
+		}
+		return view('reports.thirdparty_expense', $data);
+	}
+
+	public function thirdparty_expense_print(Request $request) {
+		$data['vehicle_id'] = $request->vehicle_id;
+		$data['year_select'] = $request->year;
+		$data['month_select'] = $request->month;
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$data['vehicles'] = VehicleModel::where('group_id', 2)->get()->toArray();
+		} else {
+
+			$data['vehicles'] = VehicleModel::where('group_id', Auth::user()->group_id)->get()->toArray();
+		}
+		$vehicle_ids = array(0);
+		foreach ($data['vehicles'] as $vehicle) {
+			$vehicle_ids[] = $vehicle['id'];
+		}
+		$records = Expense::whereIn('vehicle_id', $vehicle_ids)->whereYear("date", $request->year)->whereMonth("date", $request->month);
+		if ($request->vehicle_id != null) {
+			$data['expense'] = $records->where('vehicle_id', $request->vehicle_id)->get();
+		} else {
+			$data['expense'] = $records->get();
+		}
+		return view('reports.print_thirdparty_expense', $data);
+	}
+
 	public function income() {
 
 		$years = collect(DB::select("select distinct year(date) as years from income where deleted_at is null order by years desc"))->toArray();
@@ -215,6 +304,107 @@ class ReportsController extends Controller {
 			$data['income'] = $records->whereIn('vehicle_id', $vehicle_ids)->get();
 		}
 		return view('reports.print_income', $data);
+	}
+
+	public function thirdparty_income() {
+
+		$years = collect(DB::select("select distinct year(date) as years from income where deleted_at is null order by years desc"))->toArray();
+
+		$y = array();
+		foreach ($years as $year) {
+			$y[$year->years] = $year->years;
+		}
+
+		if ($years == null) {
+			$y[date('Y')] = date('Y');
+		}
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$data['vehicles'] = VehicleModel::where('group_id', 2)->get();
+		} else {
+			$data['vehicles'] = VehicleModel::where('group_id', Auth::user()->group_id)->get();
+		}
+		$vehicle_ids = array(0);
+		foreach ($data['vehicles'] as $vehicle) {
+			$vehicle_ids[] = $vehicle['id'];
+		}
+
+		$data['vehicle_id'] = "";
+		$data['year_select'] = date("Y");
+		$data['month_select'] = date("n");
+		$data['years'] = $y;
+
+		$data['income'] = IncomeModel::leftJoin('vehicles', 'vehicles.id', '=', 'income.vehicle_id')
+						->leftJoin('users', 'users.id', '=', 'vehicles.user_id')
+						->whereIn('vehicle_id', $vehicle_ids)
+						->whereYear("date", date("Y"))
+						->whereMonth("date", date('m'))
+						->select("*", "users.name as partner_name")
+						->get();
+		return view('reports.thirdparty_income', $data);
+	}
+
+	public function thirdparty_income_post(Request $request) {
+		$years = collect(DB::select("select distinct year(date) as years from income where deleted_at is null order by years desc"))->toArray();
+
+		$y = array();
+		foreach ($years as $year) {
+			$y[$year->years] = $year->years;
+		}
+
+		if ($years == null) {
+			$y[date('Y')] = date('Y');
+		}
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$data['vehicles'] = VehicleModel::where('group_id', 2)->get();
+		} else {
+			$data['vehicles'] = VehicleModel::where('group_id', Auth::user()->group_id)->get();
+		}
+		$vehicle_ids = array(0);
+		foreach ($data['vehicles'] as $vehicle) {
+			$vehicle_ids[] = $vehicle['id'];
+		}
+
+		$data['vehicle_id'] = $request->vehicle_id;
+		$data['year_select'] = $request->year;
+		$data['month_select'] = $request->month;
+		$data['years'] = $y;
+
+		$records = IncomeModel::leftJoin('vehicles', 'vehicles.id', '=', 'income.vehicle_id')
+						->leftJoin('users', 'users.id', '=', 'vehicles.user_id')
+						->whereYear("date", $request->year)
+						->whereMonth("date", $request->month);
+		if ($request->vehicle_id != null) {
+			$data['income'] = $records->where('vehicle_id', $request->vehicle_id)->select("*", "users.name as partner_name")->get();
+		} else {
+			$data['income'] = $records->whereIn('vehicle_id', $vehicle_ids)->select("*", "users.name as partner_name")->get();
+		}
+		return view('reports.thirdparty_income', $data);
+	}
+
+	public function thirdparty_income_print(Request $request) {
+		$data['vehicle_id'] = $request->vehicle_id;
+		$data['year_select'] = $request->year;
+		$data['month_select'] = $request->month;
+		if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
+			$data['vehicles'] = VehicleModel::where('group_id', 2)->get()->toArray();
+		} else {
+			$data['vehicles'] = VehicleModel::where('group_id', Auth::user()->group_id)->get()->toArray();
+		}
+		$vehicle_ids = array(0);
+		foreach ($data['vehicles'] as $vehicle) {
+			$vehicle_ids[] = $vehicle['id'];
+		}
+
+		$records = IncomeModel::leftJoin('vehicles', 'vehicles.id', '=', 'income.vehicle_id')
+						->leftJoin('users', 'users.id', '=', 'vehicles.user_id')
+						->whereYear("date", $request->year)
+						->whereMonth("date", $request->month);
+		if ($request->vehicle_id != null) {
+			$data['income'] = $records->where('vehicle_id', $request->vehicle_id)->select("*", "users.name as partner_name")->get();
+		} else {
+			$data['income'] = $records->whereIn('vehicle_id', $vehicle_ids)->select("*", "users.name as partner_name")->get();
+		}
+		return view('reports.print_thirdparty_income', $data);
 	}
 
 	public function monthly() {

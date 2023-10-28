@@ -305,6 +305,25 @@
   </div>
 </div>
 <!-- generate invoice modal -->
+
+<div id="makePaymentModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">@lang('fleet.transactions')</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>@lang('fleet.confirm_payment')</p>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" onclick="payWithPaystack()">@lang('fleet.submit')</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('fleet.close')</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section("script")
@@ -312,6 +331,7 @@
 <script src="{{ asset('assets/js/moment.js') }}"></script>
 <!-- bootstrap datepicker -->
 <script src="{{asset('assets/js/bootstrap-datepicker.min.js')}}"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <script type="text/javascript">
   @if(Session::get('msg'))
     new PNotify({
@@ -335,6 +355,8 @@
     var tax_charge = $(this).data('tax-charge');
     var tax_total = $(this).data('tax-total');
     var distance = $(this).data('distance');
+    var amount = 0, email = '';
+    var redirect_url = '';
 
     $(".fleet #bookingId").val(booking_id);
     $('#total_tax_charge').val(tax);
@@ -343,6 +365,33 @@
     $("#tax_total").val(tax_total + tax_charge);
     $('#mileage').val(distance);
   });
+
+  $(document).on("click", ".make_payment", function() {
+    amount = $(this).data('price');
+    email = $(this).data('email');
+  })
+
+  function payWithPaystack(){
+    let handler = PaystackPop.setup({
+      key: 'sk_live_8ef7396297ca6c9065fefc80ad0af52ead2aee8a', // Replace with your public key
+      email: email,
+      amount: amount,
+      ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+      // label: "Optional string that replaces customer email"
+      onClose: function(){
+        alert('Window closed.');
+      },
+      callback: function(response){
+        if (response.status == 'success') {
+          alert('Payment successful. Reference: ' + response.reference);
+          location.href = redirect_url;
+        } else {
+          alert('Payment failed. Error: ' + response.message);
+        }
+      }
+    });
+    handler.openIframe();
+  }
 
   $("#del_btn").on("click",function(){
     var id=$(this).data("submit");
@@ -376,7 +425,6 @@
         $('#bulk_delete').prop('disabled',true);
       } 
     } 
-    
   });
 
   $(function(){

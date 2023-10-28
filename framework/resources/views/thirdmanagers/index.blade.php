@@ -162,7 +162,30 @@
     </div>
   </div>
 </div>
+</div>
 <!-- Modal -->
+
+<div id="myModal2" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@lang('fleet.personal_info')</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="loader">
+                  Loading data...
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">
+                @lang('fleet.close')
+              </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @endsection
@@ -170,6 +193,27 @@
 @section("script")
 
 <script type="text/javascript">
+
+  $(document).on('click', '.openBtn', function() {
+      var id = $(this).attr("data-id");
+      $('#myModal2 .modal-body').html('<div id="loader">Loading data...</div>');
+      $('#myModal2').modal({
+          show: true
+      });
+      $.ajax({
+          url: '{{ url('admin/thirdmanagers/event') }}/' + id,
+          type: 'GET',
+          success: function(result) {
+              $('#myModal2 .modal-body').html(result);
+          },
+          error: function() {
+              $('#myModal2 .modal-body').html('Error loading data.');
+          },
+          complete: function() {
+              $('#loader').hide();
+          }
+      });
+  });
 
   $("#del_btn").on("click",function(){
     var id=$(this).data("submit");

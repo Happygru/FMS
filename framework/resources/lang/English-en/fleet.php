@@ -161,6 +161,9 @@ return [
     'confirm_save_booking' => 'Are you sure to save this booking?',
     'thirdparty_report' => 'Thirdparty Report',
     'select_partner' => 'Select Partner',
+    'thirdparty_owner' => 'Thirdparty Owner',
+    'earning_amount' => 'Earning Amount',
+    'confirm_payment' => 'Are you sure to pay for this?',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

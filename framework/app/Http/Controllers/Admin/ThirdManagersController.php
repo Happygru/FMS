@@ -17,9 +17,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\User;
 use App\Model\Log;
+use App\Model\VehicleModel;
 use DataTables;
 use Auth;
-use App\Model\VehicleModel;
 
 class ThirdManagersController extends Controller {
 
@@ -206,6 +206,11 @@ class ThirdManagersController extends Controller {
 		}
 	}
 
+	public function view_event(Request $request) {
+		$data['user_info'] = User::find($request->id);
+		$data['vehicles'] = VehicleModel::leftJoin('vehicle_types', 'vehicle_types.id', '=', 'type_id')->where('user_id', $request->id)->get();
+		return view('thirdmanagers.view_event', $data);
+	}
 }
 
 ?>

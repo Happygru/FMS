@@ -47,12 +47,12 @@ class TrackerController extends Controller
         }
         foreach (json_decode($response_active_device->getBody()->getContents()) as $response_active_device) {
             foreach ($all_vehicles as $a) {
-                // if ($response_active_device->status == 'active') {
+                if ($response_active_device->status == 'online') {
                     if ($response_active_device->id == $a->traccar_device_id) {
                         $active_vehicle_id[] = $a->id;
                         $active_vehicle[] = $a;
                     }
-                // }
+                }
             }
         }
             if ($id != null) {

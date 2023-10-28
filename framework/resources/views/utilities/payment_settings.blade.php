@@ -30,17 +30,16 @@
             @endphp
             <div class="form-group">
               {!! Form::label('payment_method', __('fleet.payment_method') , ['class' => 'form-label']) !!}<br>
-              <input type="checkbox" name="method[]" class="method" value="cash" disabled id="cash" @if(in_array("cash", $methods)) checked @endif> 
+              <!-- <input type="checkbox" name="method[]" class="method" value="cash" disabled id="cash" @if(in_array("cash", $methods)) checked @endif> 
               <label for="cash" class="font-weight-normal">@lang('fleet.cash')</label>&nbsp; &nbsp;
               <input type="checkbox" name="method[]" class="method" value="stripe" disabled id="stripe" @if(in_array("stripe", $methods)) checked @endif> 
               <label for="stripe" class="font-weight-normal">@lang('fleet.stripe')</label> &nbsp; &nbsp;
-              <input type="checkbox" name="method[]" class="method" value="razorpay" disabled id="razorpay" @if(in_array("razorpay", $methods)) checked @endif>               <label for="razorpay" class="font-weight-normal">@lang('fleet.razorpay') &nbsp; &nbsp; </label>
-              <input type="checkbox" name="method[]" class="method" value="paystack" id="paystack" @if(in_array("paystack", $methods)) checked @endif> 
+              <input type="checkbox" name="method[]" class="method" value="razorpay" disabled id="razorpay" @if(in_array("razorpay", $methods)) checked @endif>               <label for="razorpay" class="font-weight-normal">@lang('fleet.razorpay') &nbsp; &nbsp; </label> -->
+              <input type="checkbox" name="method[]" class="method" value="paystack" id="paystack" checked @if(in_array("paystack", $methods)) checked @endif> 
               <label for="paystack" class="font-weight-normal">@lang('fleet.paystack')</label>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="form-group">
+          <div class="col-md-6"> 
               {!! Form::label('currency_code', __('fleet.currency_code'), ['class' => 'form-label required']) !!}
               <br>
               {!! Form::select('currency_code',config('currency'),Hyvikk::payment('currency_code'),['class' => 'form-control','required','id'=>'currency_code','style'=>'width:100%']) !!}

@@ -1,3 +1,8 @@
+<style>
+	#thirdparty_owner tr > td:first-child {
+		font-weight: bold;
+	}
+</style>
 
 <div role="tabpanel">
     <ul class="nav nav-pills">
@@ -12,6 +17,12 @@
 
         <li class="nav-item"><a href="#reviews" data-toggle="tab" class="nav-link custom_padding"> @lang('fleet.vehicle_inspection') <i class="fa"></i></a>
         </li>
+
+		@if($vehicle->group_id == 2)
+			<li class="nav-item">
+				<a href="#thirdparty_owner" data-toggle="tab" class="nav-link custom_padding"> @lang('fleet.thirdparty_owner') </a>
+			</li>
+		@endif
     </ul>
 
 	<div class="tab-content">
@@ -75,7 +86,7 @@
 					<th>@lang('fleet.vehicleImage')</th>
 					<td>
 						@if($vehicle->vehicle_image != null)
-			            <a href="{{ asset('uploads/'.$vehicle->vehicle_image) }}" target="_blank" class="col-xs-3 control-label">View</a>
+			            <a href="{{ asset('uploads/vehicles/'.$vehicle->vehicle_image) }}" target="_blank" class="col-xs-3 control-label">View</a>
 			            @else
 						-
 						@endif
@@ -134,7 +145,34 @@
 						@endif
 					</td>
 				</tr>
-
+				<tr>
+					<th>@lang('fleet.passengers')</th>
+					<td>{{ $vehicle->seaters }}</td>
+				</tr>
+				<tr>
+					<th>@lang('fleet.luggages')</th>
+					<td>{{ $vehicle->luggage }}</td>
+				</tr>
+				<tr>
+					<th>@lang('fleet.doors')</th>
+					<td>{{ $vehicle->doors }}</td>
+				</tr>
+				<tr>
+					<th>@lang('fleet.aircondition')</th>
+					<td>
+						@if($vehicle->aircondition == 'Y')
+							Yes
+						@else
+							No
+						@endif
+					</td>
+				</tr>
+				<tr>
+					<th>@lang('fleet.transmission')</th>
+					<td>
+						{{ $vehicle->transmission_type }}
+					</td>
+				</tr>
 				{{-- <tr>
 					<th>@lang('fleet.assigned_driver')</th>
 					<td>
@@ -251,5 +289,37 @@
 			</div>
 		</div>
 		<!-- tab4 -->
+		@if($vehicle->group_id == 2)
+		<div class="tab-pane" id="thirdparty_owner">
+			<div class="card card-default">
+				<div class="card-bory">
+					<table class="table">
+						<tbody>
+							<tr>
+								<td>Username: </td>
+								<td>{{ $thirdparty_owner->name }}</td>
+							</tr>
+							<tr>
+								<td>Email: </td>
+								<td>{{ $thirdparty_owner->email }}</td>
+							</tr>
+							<tr>
+								<td>Phone: </td>
+								<td>{{ $thirdparty_owner->phone }}</td>
+							</tr>
+							<tr>
+								<td>Address: </td>
+								<td>{{ $thirdparty_owner->addr }}</td>
+							</tr>
+							<tr>
+								<td>Location: </td>
+								<td>{{ $thirdparty_owner->location }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		@endif
 	</div>
 </div>

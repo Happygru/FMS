@@ -60,6 +60,10 @@ class IncomeController extends Controller {
 	}
 
 	public function store(IncRequest $request) {
+		$thirdparty_amount = null;
+		if($request->get("thirdparty_percent")) {
+			$thirdparty_amount = ($request->get('thirdparty_percent') * $request->get("tax_total")) / 100;
+		}
 		IncomeModel::create([
 			"vehicle_id" => $request->get("vehicle_id"),
 			// "amount" => $request->get("revenue"),
@@ -70,6 +74,7 @@ class IncomeController extends Controller {
 			"income_cat" => $request->get("income_type"),
 			"tax_percent" => $request->tax_percent,
 			"tax_charge_rs" => $request->tax_charge_rs,
+			'thirdparty_amount' => $thirdparty_amount,
 		]);
 		$v = VehicleModel::find($request->get("vehicle_id"));
 
@@ -147,15 +152,29 @@ class IncomeController extends Controller {
 			$data['vehicels'] = auth()->user()->vehicles()->with(['maker', 'vehiclemodel'])->whereIn_service(1)->get();
 		} else {
 			if ($user->group_id == null || $user->user_type == "S") {
-				$data['vehicels'] = VehicleModel::whereIn_service(1)->where('group_id', 2)->get();
+				$data['vehicels'] = VehicleModel::leftJoin('users', 'vehicles.user_id', '=', 'users.id')
+									->whereIn_service(1)
+									->where('vehicles.group_id', 2)
+									->select('vehicles.*', 'users.name as partner_name')
+									->get();
 				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
 			} else {
-				$data['vehicels'] = VehicleModel::whereIn_service(1)->where('group_id', $user->group_id)->get();
+				$data['vehicels'] = VehicleModel::leftJoin('users', 'vehicles.user_id', '=', 'users.id')  // assumed 'vehicles' is the table name of VehicleModel
+				->whereIn_service(1)
+				->where('vehicles.group_id', $user->group_id)
+				->select('vehicles.*', 'users.name as partner_name')  // this will select all columns from vehicles and users both
+				->get();
 				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
 			}
 		}
 		$data['types'] = IncCats::get();
 		$income = IncomeModel::with(['category'])->whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'));
+		$data['today'] = IncomeModel::with(['category'])
+						->leftJoin('vehicles', 'vehicles.id', '=', 'income.vehicle_id')
+						->leftJoin('users', 'users.id', '=', 'vehicles.user_id')
+						->whereIn('income.vehicle_id', $vehicle_ids)
+						->whereBetween('income.date', [$request->get('date1'), $request->get('date2')])
+						->get();
 		$data['today'] = $income->get();
 		$data['total'] = $income->sum('amount');
 		return view("income.thirdparty", $data);
@@ -168,24 +187,36 @@ class IncomeController extends Controller {
 		if ($user->user_type == "D") {
 			// $v = DriverLogsModel::where('driver_id',Auth::user()->id)->get();
 			// $vehicle_ids = $v->pluck('vehicle_id')->toArray();
-			// $data['vehicels'] = VehicleModel::with(['metas','maker','vehiclemodel'])
-			// ->whereId($v->pluck('vehicle_id'))->whereIn_service(1)->get();
+			// $data['vehicels'] = VehicleModel::whereId($v->pluck('vehicle_id'))->whereIn_service(1)->get();
+
 			$vehicle_ids = auth()->user()->vehicles()->pluck('vehicle_id')->toArray();
 			$data['vehicels'] = auth()->user()->vehicles()->with(['maker', 'vehiclemodel'])->whereIn_service(1)->get();
 		} else {
 			if ($user->group_id == null || $user->user_type == "S") {
-				$data['vehicels'] = VehicleModel::with(['metas'])
-					->whereIn_service(1)->where('group_id', 2)->get();
+				$data['vehicels'] = VehicleModel::leftJoin('users', 'vehicles.user_id', '=', 'users.id')
+									->whereIn_service(1)
+									->where('vehicles.group_id', 2)
+									->select('vehicles.*', 'users.name as partner_name')
+									->get();
 				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
 			} else {
-				$data['vehicels'] = VehicleModel::with(['metas'])
-					->whereIn_service(1)->where('group_id', $user->group_id)->get();
+				$data['vehicels'] = VehicleModel::leftJoin('users', 'vehicles.user_id', '=', 'users.id')  // assumed 'vehicles' is the table name of VehicleModel
+				->whereIn_service(1)
+				->where('vehicles.group_id', $user->group_id)
+				->select('vehicles.*', 'users.name as partner_name')  // this will select all columns from vehicles and users both
+				->get();
 				$vehicle_ids = $data['vehicels']->pluck('id')->toArray();
 			}
 		}
 
 		$data['types'] = IncCats::get();
-		$data['today'] = IncomeModel::with(['category'])->whereIn('vehicle_id', $vehicle_ids)->whereBetween('date', [$request->get('date1'), $request->get('date2')])->get();
+		$data['today'] = IncomeModel::with(['category'])
+						->leftJoin('vehicles', 'vehicles.id', '=', 'income.vehicle_id')
+						->leftJoin('users', 'users.id', '=', 'vehicles.user_id')
+						->whereIn('income.vehicle_id', $vehicle_ids)
+						->whereBetween('income.date', [$request->get('date1'), $request->get('date2')])
+						->select("*", "users.name as partner_name")
+						->get();
 		$data['total'] = IncomeModel::whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'))->sum('amount');
 
 		return view("income.thirdparty", $data);		

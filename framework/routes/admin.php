@@ -66,6 +66,7 @@ Route::namespace ('Admin')->group(function () {
         Route::post('/thirdmanagers/ajax_update', 'ThirdManagersController@ajax_update')->name('thirdmanagers.ajax_update');
         Route::post('/thirdmanagers/ajax_store', 'ThirdManagersController@ajax_store')->name('thirdmanagers.ajax_store');
         Route::post('/thirdmanagers-vehicle-fetch', 'ThirdManagersController@fetch_vehicle_data');
+        Route::get('/thirdmanagers/event/{id}', 'ThirdManagersController@view_event');
 
         Route::get('/vehicles-track/{id?}','TrackerController@vehicles_track');
         Route::get('/track/{id?}','TrackerController@track');
@@ -189,6 +190,14 @@ Route::namespace ('Admin')->group(function () {
         Route::get('reports/expense', 'ReportsController@expense');
         Route::post('reports/expense', 'ReportsController@expense_post');
         Route::post('print-expense', 'ReportsController@expense_print');
+
+        Route::get('reports/thirdparty_income', 'ReportsController@thirdparty_income');
+        Route::post('reports/thirdparty_income', 'ReportsController@thirdparty_income_post');
+        Route::post('print-thirdparty-income', 'ReportsController@thirdparty_income_print');
+
+        Route::get('reports/thirdparty_expense', 'ReportsController@thirdparty_expense');
+        Route::post('reports/thirdparty_expense', 'ReportsController@thirdparty_expense_post');
+        Route::post('print-thirdparty-expense', 'ReportsController@thirdparty_expense_print');
 
         Route::get('work_order/logs', 'WorkOrdersController@logs');
         Route::resource('parts-category', 'PartsCategoryController');

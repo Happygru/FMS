@@ -28,7 +28,7 @@
 
       @if($row->status==1)
       @if($row->payment==0 && Auth::user()->user_type !="C")
-      <a class="dropdown-item" href="{{ url('admin/bookings/payment/'.$row->id)}}"><span aria-hidden="true" class="fa fa-credit-card" style="color: #5cb85c;"></span> @lang('fleet.make_payment')
+      <a class="dropdown-item make_payment" data-toggle="modal" data-email="{{$row->user->email}}" data-target="#makePaymentModal" data-price="{{$row->tax_total}}" data-redirect="{{ url('admin/bookings/payment/'.$row->id)}}"><span aria-hidden="true" class="fa fa-credit-card" style="color: #5cb85c;"></span> @lang('fleet.make_payment')
       </a>
       @elseif($row->payment==1)
       <a class="dropdown-item text-muted" class="disabled"><span aria-hidden="true" class="fa fa-credit-card" style="color: #5cb85c;"></span> @lang('fleet.paid')

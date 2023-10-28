@@ -77,16 +77,34 @@
         </div>
         <div class="row">
           <div class="col-md-3" style="margin-top: 5px;">
-            <div class="form-group">
-              {!! Form::label('revenue', __('fleet.amount'), ['class' => 'col-xs-5 control-label']) !!}
-              <div class="col-xs-6">
-            <div class="input-group">
-              <div class="input-group-prepend">
-              <span class="input-group-text">{{$currency}}</span></div>
-              <input required="required" name="revenue" type="number" step="0.01" id="revenue" class="form-control">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  {!! Form::label('revenue', __('fleet.amount'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">{{$currency}}</span>
+                      </div>
+                      <input required="required" name="revenue" type="number" step="0.01" id="revenue" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  {!! Form::label('thirdparty_percent', __('fleet.percent'), ['class' => 'col-xs-5 control-label']) !!}
+                  <div class="col-xs-6">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">%</span>
+                      </div>
+                      <input required="required" name="thirdparty_percent" type="number" min="0" max="100" step="0.01" id="thirdparty_percent" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
           </div>
           <div class="col-md-3" style="margin-top: 5px;">
             @php($tax_percent=0)
@@ -164,8 +182,8 @@
                   {!! Form::text('date1', $date1,['class' => 'form-control','placeholder'=>__('fleet.start_date'),'required']) !!}
                 </div>
               </div>
+              {!! Form::label('date2','To') !!}
               <div class="form-group" style="margin-right: 10px">
-                {!! Form::label('date2','To') !!}
                 <div class="input-group date">
                   <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"></i></span></div>
                   {!! Form::text('date2', $date2,['class' => 'form-control','placeholder'=>__('fleet.end_date'),'required']) !!}
@@ -190,12 +208,14 @@
                   <input type="checkbox" id="chk_all">
                 @endif
               </th>
+              <th>@lang('fleet.partner') @lang('fleet.name')</th>
               <th>@lang('fleet.make')</th>
               <th>@lang('fleet.model')</th>
               <th>@lang('fleet.licensePlate')</th>
               <th>@lang('fleet.incomeType')</th>
               <th>@lang('fleet.date')</th>
               <th>@lang('fleet.amount')</th>
+              <th>@lang('fleet.earning_amount')</th>
               <th>@lang('fleet.mileage') ({{Hyvikk::get('dis_format')}})</th>
               <th>@lang('fleet.delete')</th>
             </tr>
@@ -205,6 +225,11 @@
             <tr>
               <td>
                 <input type="checkbox" name="ids[]" value="{{ $row->id }}" class="checkbox" id="chk{{ $row->id }}" onclick='checkcheckbox();'>
+              </td>
+              <td>
+              @if($row->vehicle_id !=null )
+              {{$row->partner_name}}
+              @endif
               </td>
               <td>
               @if($row->vehicle_id != null)
@@ -224,6 +249,7 @@
               <td>{{$row->category->name}}</td>
               <td>{{date($date_format_setting,strtotime($row->date))}}</td>
               <td>{{$currency}} {{$row->amount}}</td>
+              <td>{{$currency}} {{$row->thirdparty_amount}}</td>
               <td>{{$row->mileage}}</td>
               <td>
               {!! Form::open(['url' => 'admin/income/'.$row->id,'method'=>'DELETE','class'=>'form-horizontal','id'=>'form_'.$row->id]) !!}
@@ -241,12 +267,14 @@
                 @can('Transactions delete')<button class="btn btn-danger" id="bulk_delete" data-toggle="modal" data-target="#bulkModal" disabled title="@lang('fleet.delete')" ><i class="fa fa-trash"></i></button>@endcan
                 @endif
               </th>
+              <th>@lang('fleet.partner') @lang('fleet.name')</th>
               <th>@lang('fleet.make')</th>
               <th>@lang('fleet.model')</th>
               <th>@lang('fleet.licensePlate')</th>
               <th>@lang('fleet.incomeType')</th>
               <th>@lang('fleet.date')</th>
               <th>@lang('fleet.amount')</th>
+              <th>@lang('fleet.earning_amount')</th>
               <th>@lang('fleet.mileage') ({{Hyvikk::get('dis_format')}})</th>
               <th>@lang('fleet.delete')</th>
             </tr>
