@@ -49,7 +49,7 @@ class BookingServicesController extends Controller {
     }
     public function fetch_data_condition(Request $request) {
         $type = $request->get('service_type');
-        $data = BookingServicesModel::where('type', $type)->get();
+        $data = BookingServicesModel::all();
         return response()->json([ 'success' => true, 'data' => $data]);
     }
 
