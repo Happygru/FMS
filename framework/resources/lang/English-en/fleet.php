@@ -164,6 +164,9 @@ return [
     'thirdparty_owner' => 'Thirdparty Owner',
     'earning_amount' => 'Earning Amount',
     'confirm_payment' => 'Are you sure to pay for this?',
+    'info' => 'Info',
+    'manage_vehicle_make' => 'Manage Vehicle Make',
+    'manage_vehicle_model' => 'Manage Vehicle Model',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

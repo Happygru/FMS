@@ -63,4 +63,9 @@ class BranchesController extends Controller {
     BranchModel::where('id', $request->id)->update($request->all());
     return response()->json(['success' => true, 'code' => 200]);
   }
+
+  public function branch_delete(Request $request) {
+    BranchModel::destroy($request->id);
+    return response()->json(['success' => true, 'code' => 200]);
+  }
 }

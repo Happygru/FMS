@@ -176,6 +176,7 @@ Route::namespace ('Admin')->group(function () {
         Route::resource('branches', 'BranchesController');
         Route::post('/branch-create', 'BranchesController@branch_create');
         Route::post('/branch-update', 'BranchesController@branch_update');
+        Route::post('/branch-delete', 'BranchesController@branch_delete')->name('branches.delete');
 
         Route::resource('addon', 'AddonController');
         Route::post('/addon-create', 'AddonController@addon_create');
@@ -206,6 +207,20 @@ Route::namespace ('Admin')->group(function () {
         Route::get('driver-logs', 'VehiclesController@driver_logs');
         Route::post('/vehicle-types-fetch', 'VehicleTypeController@fetch_data');
         Route::resource('/vehicle-types', 'VehicleTypeController');
+
+        Route::get('/vehicle-makes', 'VehiclesController@manage_vehicle_maker');
+        Route::get('/vehicle-makes/edit/{id}', 'VehiclesController@edit_vehicle_make');
+        Route::get('/vehicle-makes/create', 'VehiclesController@create_vehicle_make');
+        Route::post('/vehicle-makes/save', 'VehiclesController@save_vehicle_make');
+        Route::post('/vehicle-makes/store', 'VehiclesController@store_vehicle_make');
+        Route::post('/vehicle-makes/delete', 'VehiclesController@delete_vehicle_make');
+
+        Route::get('/vehicle-model', 'VehiclesController@manage_vehicle_model');
+        Route::get('/vehicle-model/edit/{id}', 'VehiclesController@edit_vehicle_model');
+        Route::get('/vehicle-model/create', 'VehiclesController@create_vehicle_model');
+        Route::post('/vehicle-model/save', 'VehiclesController@save_vehicle_model');
+        Route::post('/vehicle-model/store', 'VehiclesController@store_vehicle_model');
+        Route::post('/vehicle-model/delete', 'VehiclesController@delete_vehicle_model');
 
         Route::post('vehicle-reviews-fetch', 'VehiclesController@vehicle_review_fetch_data');
         Route::get('vehicle-reviews', 'VehiclesController@vehicle_review_index')->name('vehicle_reviews');

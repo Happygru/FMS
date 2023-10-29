@@ -20,6 +20,7 @@ use App\Model\Log;
 use App\Model\VehicleModel;
 use DataTables;
 use Auth;
+use DB;
 
 class ThirdManagersController extends Controller {
 
@@ -209,6 +210,12 @@ class ThirdManagersController extends Controller {
 	public function view_event(Request $request) {
 		$data['user_info'] = User::find($request->id);
 		$data['vehicles'] = VehicleModel::leftJoin('vehicle_types', 'vehicle_types.id', '=', 'type_id')->where('user_id', $request->id)->get();
+		$data['incomes'] = DB::table("income as i")
+						->leftJoin('vehicles as v', 'i.vehicle_id', '=', 'v.id')
+						->leftJoin('users as u', 'v.user_id', '=', 'u.id')
+						->where('u.id', $request->id)
+						->select("i.*", "v.*")
+						->get();
 		return view('thirdmanagers.view_event', $data);
 	}
 }

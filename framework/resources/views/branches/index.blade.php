@@ -39,10 +39,12 @@
 									<td>{{ $branch->commission }}</td>
 									<td>{{ $branch->username }}</td>
 									<td>
-										<button class="btn btn-success" onclick="edit_branch({{ $branch->id }})">
-												<i class="fa fa-edit"></i>
-												Edit
-										</button>
+										<a class="btn btn-success btn-sm" onclick="edit_branch({{ $branch->id }})">
+											<i class="fa fa-edit"></i>
+										</a>
+										<a class="btn btn-danger btn-sm" data-target="#bulkModal" data-toggle="modal" onclick="confirm_delete({{ $branch->id }})">
+											<i class="fa fa-trash"></i>
+										</a>
 									</td>
 								</tr>
 							@endforeach
@@ -53,9 +55,30 @@
         </div>
     </div>
 </div>
+
+<div id="bulkModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">@lang('fleet.delete')</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				<p>@lang('fleet.confirm_bulk_delete')</p>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-danger" onclick="delete_branch()">@lang('fleet.delete')</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">@lang('fleet.close')</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 @endsection
 @section("script")
 <script type="text/javascript">
+var branch_id;
 $(document).ready(function() {
     $("#branch_list").DataTable({
         width: "100%"
@@ -64,6 +87,22 @@ $(document).ready(function() {
 
 function edit_branch(id) {
 	window.location.href = "{{ route('branches.edit', ':id') }}".replace(':id', id);
+}
+
+function confirm_delete(id) {
+	branch_id = id;
+	console.log(id);
+}
+
+function delete_branch() {
+	$.post("{{ route('branches.delete') }}", { id: branch_id }, function (res) {
+		new PNotify({
+			title: 'Success!',
+			text: "@lang('fleet.deleted')",
+			type: 'success'
+		});
+		setTimeout(function(){ window.location.reload() }, 1000);
+	})
 }
 </script>
 @endsection

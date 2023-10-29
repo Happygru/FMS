@@ -118,7 +118,7 @@
                     <select name="make_name" class="form-control" required id="make_name">
                       <option></option>
                       @foreach($makes as $make)
-                      <option value="{{$make}}" @if(old('make_name')==$make) selected @endif>{{$make}}</option>
+                      <option value="{{$make->name}}" @if(old('make_name')==$make->name) selected @endif>{{$make->name}}</option>
                       @endforeach
                     </select>
                   </div>
@@ -131,7 +131,7 @@
                     <select name="model_name" class="form-control" required id="model_name">
                       <option></option>
                       @foreach ($models as $model)   
-                      <option value="{{$model}}" @if(old('model_name')==$model) selected @endif>{{$model}}</option>
+                      <option value="{{$model->name}}" @if(old('model_name')==$model->name) selected @endif>{{$model->name}}</option>
                       @endforeach
                     </select>
                   </div>
@@ -401,37 +401,12 @@
     $(document).ready(function() {
       $('#group_id').select2({placeholder: "@lang('fleet.selectGroup')"});
       $('#type_id').select2({placeholder:"@lang('fleet.type')"});
-      $('#make_name').select2({placeholder:"@lang('fleet.SelectVehicleMake')",tags:true});
-      $('#model_name').select2({placeholder:"@lang('fleet.SelectVehicleModel')",tags:true});
+      $('#make_name').select2({placeholder:"@lang('fleet.SelectVehicleMake')"});
+      $('#model_name').select2({placeholder:"@lang('fleet.SelectVehicleModel')"});
       $('#color_name').select2({placeholder:"@lang('fleet.SelectVehicleColor')",tags:true});
       $('#model_name').on('select2:select',()=>{
       selectionMade = true;
-     
     });
-    $('#make_name').on('select2:select',()=>{
-      selectionMade = true;
-     
-    });
-      $('#make_name').on('change',function(){
-        // alert($(this).val());
-        $.ajax({
-          type: "GET",
-          url: "{{url('admin/get-models')}}/"+$(this).val(),
-          success: function(data){
-            var models =  $.parseJSON(data);
-              $('#model_name').empty();
-              $('#model_name').append('<option value=""></option>');
-              $.each( models, function( key, value ) {
-                $('#model_name').append('<option value='+value.id+'>'+value.text+'</option>');
-                $('#model_name').select2({placeholder:"@lang('fleet.SelectVehicleModel')",tags:true});
-              });
-          },
-          dataType: "html"
-    
-
-        });
-       
-      });
       $('#start_date').datepicker({
           autoclose: true,
           format: 'yyyy-mm-dd'

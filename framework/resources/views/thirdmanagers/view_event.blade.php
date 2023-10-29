@@ -12,6 +12,9 @@
         <li class="nav-item">
             <a href="#vehicle-tab" data-toggle="tab" class="nav-link custom_padding">@lang('fleet.vehicles')@lang('fleet.third')</a>
         </li>
+        <li class="nav-item">
+            <a href="#earning-tab" data-toggle="tab" class="nav-link custom_padding">@lang('fleet.earning_amount')</a>
+        </li>
     </ul>
 
 	<div class="tab-content">
@@ -76,6 +79,30 @@
                             <td>{{ $vehicle->year }}</td>
                             <td>{{ $vehicle->engine_type }}</td>
                             <td>{{ $vehicle->reg_exp_date }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="earning-tab">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>@lang('fleet.make')</th>
+                        <th>@lang('fleet.model')</th>
+                        <th>@lang('fleet.licensePlate')</th>
+                        <th>@lang('fleet.amount')</th>
+                        <th>@lang('fleet.earning_amount')</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($incomes as $income)
+                        <tr>
+                            <td>{{ $income->make_name }}</td>
+                            <td>{{ $income->model_name }}</td>
+                            <td>{{ $income->license_plate }}</td>
+                            <td>{{ $income->amount }}</td>
+                            <td>{{ $income->thirdparty_amount }}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -30,6 +30,8 @@ use App\Model\VehicleGroupModel;
 use App\Model\VehicleModel;
 use App\Model\VehicleReviewModel;
 use App\Model\VehicleTypeModel;
+use App\Model\VehicleMakeModel;
+use App\Model\VehicleModeModel;
 use Auth;
 use Carbon\Carbon;
 use DataTables;
@@ -244,8 +246,8 @@ class VehiclesController extends Controller {
 		}
 		// $index['types'] = VehicleTypeModel::all();
 		$index['types'] = VehicleTypeModel::where('isenable', 1)->get();
-		$index['makes'] = VehicleModel::groupBy('make_name')->get()->pluck('make_name')->toArray();
-		$index['models'] = VehicleModel::groupBy('model_name')->get()->pluck('model_name')->toArray();
+		$index['makes'] = VehicleMakeModel::all();
+		$index['models'] = VehicleModeModel::all();
 		$index['colors'] = VehicleModel::groupBy('color_name')->get()->pluck('color_name')->toArray();
 		return view("vehicles.create", $index);
 	}
@@ -295,8 +297,8 @@ class VehiclesController extends Controller {
 		$vehicle->load('drivers');
 		$udfs = unserialize($vehicle->getMeta('udf'));
 
-		$makes = VehicleModel::groupBy('make_name')->get()->pluck('make_name')->toArray();
-		$models = VehicleModel::groupBy('model_name')->get()->pluck('model_name')->toArray();
+		$makes = VehicleMakeModel::all();
+		$models = VehicleModeModel::all();
 		// dd($makes,$models);
 
 		$colors = VehicleModel::groupBy('color_name')->get()->pluck('color_name')->toArray();
@@ -915,5 +917,71 @@ class VehiclesController extends Controller {
 		$index['models'] = VehicleModel::groupBy('model_name')->get()->pluck('model_name')->toArray();
 		$index['colors'] = VehicleModel::groupBy('color_name')->get()->pluck('color_name')->toArray();
 		return view("thirdvehicles.create", $index);		
+	}
+
+	public function manage_vehicle_maker(Request $request) {
+		$data['vehicle_makes'] = VehicleMakeModel::all();
+		return view('vehicle_makes.index', $data);
+	}
+
+	public function edit_vehicle_make($id) {
+		$data['vehicle_make'] = VehicleMakeModel::find($id);
+		return view('vehicle_makes.edit', $data);
+	}
+
+	public function save_vehicle_make(Request $request) {
+		$vehicle_make = VehicleMakeModel::find($request->id);
+		$vehicle_make->name = $request->name;
+		$vehicle_make->save();
+		return response()->json(['success' => true]);
+	}
+
+	public function create_vehicle_make() {
+		return view('vehicle_makes.create');
+	}
+
+	public function store_vehicle_make(Request $request) {
+		$vehicle_make = new VehicleMakeModel;
+		$vehicle_make->name = $request->name;
+		$vehicle_make->save();
+		return response()->json(['success' => true]);
+	}
+
+	public function delete_vehicle_make(Request $request) {
+		VehicleMakeModel::destroy($request->id);
+		return response()->json(['success' => true]);
+	}
+
+	public function manage_vehicle_model(Request $request) {
+		$data['vehicle_models'] = VehicleModeModel::all();
+		return view('vehicle_model.index', $data);
+	}
+
+	public function edit_vehicle_model($id) {
+		$data['vehicle_model'] = VehicleModeModel::find($id);
+		return view('vehicle_model.edit', $data);
+	}
+
+	public function save_vehicle_model(Request $request) {
+		$vehicle_model = VehicleModeModel::find($request->id);
+		$vehicle_model->name = $request->name;
+		$vehicle_model->save();
+		return response()->json(['success' => true]);
+	}
+
+	public function create_vehicle_model() {
+		return view('vehicle_model.create');
+	}
+
+	public function store_vehicle_model(Request $request) {
+		$vehicle_model = new VehicleModeModel;
+		$vehicle_model->name = $request->name;
+		$vehicle_model->save();
+		return response()->json(['success' => true]);
+	}
+
+	public function delete_vehicle_model(Request $request) {
+		VehicleModeModel::destroy($request->id);
+		return response()->json(['success' => true]);
 	}
 }

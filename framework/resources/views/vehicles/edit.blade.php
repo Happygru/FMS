@@ -138,7 +138,7 @@
                     <select name="make_name" class="form-control" required id="make_name">
                       <option></option>
                       @foreach($makes as $make)
-                      <option value="{{$make}}" @if($make == $vehicle->make_name) selected @endif>{{$make}}
+                      <option value="{{$make->name}}" @if($make->name == $vehicle->make_name) selected @endif>{{$make->name}}
                       </option>
                       @endforeach
                     </select>
@@ -154,8 +154,8 @@
                   <div class="col-xs-6">
                     <select name="model_name" class="form-control" required id="model_name">
                       @foreach($models as $model)
-                      <option value="{{ $model }}" @if($model == $vehicle->model_name) selected @endif>{{
-                        $model }}</option>
+                      <option value="{{ $model->name }}" @if($model->name == $vehicle->model_name) selected @endif>{{
+                        $model->name }}</option>
                       @endforeach
                     </select>
                   </div>

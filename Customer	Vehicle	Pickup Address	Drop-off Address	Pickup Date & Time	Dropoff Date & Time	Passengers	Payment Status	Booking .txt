@@ -1,0 +1,5 @@
+Customer	Vehicle	Pickup Address	Drop-off Address	Pickup Date & Time	Dropoff Date & Time	Passengers	Payment Status	Booking Status	Amount	From	Action
+	Customer One	Maruti-Suzuki-1245ab	Kumasi
+Ghana	Accra
+Ghana	15-10-2023 01:54 PM	15-10-2023 01:54 PM	2	Pending		GH₵ 19.44	FMS System	
+	Customer One	Tata-Punch-9191bh

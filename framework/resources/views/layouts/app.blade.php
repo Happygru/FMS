@@ -833,6 +833,20 @@ input:checked + .slider:before {
                     </a>
                   </li>
                   @endcan
+                  <li class="nav-item">
+                    <a href="{{ url('admin/vehicle-makes/')}}"
+                      class="nav-link @if(Request::is('admin/vehicle-makes*')) active @endif">
+                      <i class="fa fa-th-list nav-icon"></i>
+                      <p>@lang('fleet.manage_vehicle_make')</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ url('admin/vehicle-model/')}}"
+                      class="nav-link @if(Request::is('admin/vehicle-model*')) active @endif">
+                      <i class="fa fa-th-list nav-icon"></i>
+                      <p>@lang('fleet.manage_vehicle_model')</p>
+                    </a>
+                  </li>
                   {{-- @can('Vehicles list')
                   <li class="nav-item">
                     <a href="{{ url('admin/driver-logs')}}"
