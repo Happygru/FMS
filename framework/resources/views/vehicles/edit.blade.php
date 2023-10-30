@@ -358,7 +358,7 @@
                 </div>
 
                 <div class="form-group">
-                  {!! Form::label('seaters', __('fleet.seaters'), ['class' => 'col-xs-5 control-label']) !!}
+                  {!! Form::label('seaters', __('fleet.passengers'), ['class' => 'col-xs-5 control-label']) !!}
                   <div class="col-xs-6">
                     {!! Form::number('seaters', $vehicle->seaters,['class' => 'form-control','required']) !!}
                   </div>

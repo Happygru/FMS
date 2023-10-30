@@ -71,14 +71,7 @@
               <input required="required" name="revenue" type="number" step="0.01" id="revenue" class="form-control">
             </div>
           </div>
-          <div class="col-md-2" style="margin-top: 5px;">
-            <div class="input-group">
-              <div class="input-group-prepend">
-              <span class="input-group-text">%</span></div>
-              <input required="required" name="thirdparty_percent" type="number" min="0" max="100"  step="0.01" id="thirdparty_percent" class="form-control">
-            </div>
-          </div>
-          <div class="col-md-4" style="margin-top: 10px;">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="input-group">
               <input  name="comment" type="text" id="comment" class="form-control" placeholder=" @lang('fleet.note')" style="width: 250px">
             </div>
@@ -153,7 +146,6 @@
               <th>@lang('fleet.vendor')</th>
               <th>@lang('fleet.date')</th>
               <th>@lang('fleet.amount')</th>
-              <th>@lang('fleet.amount')@lang('fleet.third')</th>
               <th>@lang('fleet.note')</th>
               <th>@lang('fleet.delete')</th>
             </tr>
@@ -184,7 +176,6 @@
               <td>
               {{ $currency }}
               {{$row->amount}}</td>
-              <td>{{ $currency }} {{$row->thirdparty_amount}}</td>
               <td>{{$row->comment}}</td>
               <td>
               {!! Form::open(['url' => 'admin/expense/'.$row->id,'method'=>'DELETE','class'=>'form-horizontal del_form','id'=>'form_'.$row->id]) !!}

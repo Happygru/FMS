@@ -348,8 +348,6 @@ class VehiclesController extends Controller {
 
 		$form_data = $request->all();
 		// dd($form_data);
-		var_dump($form_data);
-		return;
 		unset($form_data['vehicle_image']);
 		unset($form_data['documents']);
 		unset($form_data['udf']);
@@ -370,6 +368,11 @@ class VehiclesController extends Controller {
 		$vehicle->reg_exp_date = $request->get('reg_exp_date');
 		$vehicle->udf = serialize($request->get('udf'));
 		$vehicle->average = $request->average;
+		$vehicle->seaters = $request->seaters;
+		$vehicle->luggage = $request->luggages;
+		$vehicle->doors = $request->doors;
+		$vehicle->aircondition = $request->aircondition;
+		$vehicle->transmission_type = $request->transmission_type;
 		$vehicle->save();
 
 		$to = \Carbon\Carbon::now();

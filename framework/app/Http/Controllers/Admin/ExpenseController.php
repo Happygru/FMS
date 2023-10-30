@@ -65,10 +65,10 @@ class ExpenseController extends Controller {
 	}
 
 	public function store(ExpRequest $request) {
-		$thirdparty_amount = null;
-		if($request->get("thirdparty_percent")) {
-			$thirdparty_amount = ($request->get('thirdparty_percent') * $request->get('revenue')) / 100;
-		}
+		// $thirdparty_amount = null;
+		// if($request->get("thirdparty_percent")) {
+		// 	$thirdparty_amount = ($request->get('thirdparty_percent') * $request->get('revenue')) / 100;
+		// }
 		$result = explode('_', $request->get("expense_type"));
 		Expense::create([
 			"vehicle_id" => $request->get("vehicle_id"),
@@ -79,7 +79,7 @@ class ExpenseController extends Controller {
 			"expense_type" => $result[1],
 			"type" => $result[0],
 			"vendor_id" => $request->get('vendor_id'),
-			"thirdparty_amount" => $thirdparty_amount
+			// "thirdparty_amount" => $thirdparty_amount
 		]);
 
 		return redirect()->route("expense.index");

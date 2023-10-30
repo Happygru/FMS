@@ -173,9 +173,10 @@ class IncomeController extends Controller {
 						->leftJoin('vehicles', 'vehicles.id', '=', 'income.vehicle_id')
 						->leftJoin('users', 'users.id', '=', 'vehicles.user_id')
 						->whereIn('income.vehicle_id', $vehicle_ids)
-						->whereBetween('income.date', [$request->get('date1'), $request->get('date2')])
+						->whereDate('date', DB::raw('CURDATE()'))
+						->select("*", "users.name as partner_name")
 						->get();
-		$data['today'] = $income->get();
+		// $data['today'] = $income->get();
 		$data['total'] = $income->sum('amount');
 		return view("income.thirdparty", $data);
 	}
@@ -218,7 +219,6 @@ class IncomeController extends Controller {
 						->select("*", "users.name as partner_name")
 						->get();
 		$data['total'] = IncomeModel::whereIn('vehicle_id', $vehicle_ids)->whereDate('date', DB::raw('CURDATE()'))->sum('amount');
-
 		return view("income.thirdparty", $data);		
 	}
 }

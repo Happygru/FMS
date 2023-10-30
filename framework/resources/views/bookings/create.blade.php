@@ -380,12 +380,11 @@
               </div>
               <div class="form-group">
                 <label class="form-label">@lang('fleet.addon')</label>
-                <select id="addon_list" class="form-control">
+                <select id="addon_list" class="form-control select2" multiple="multiple">
                 </select>
               </div>
-              <div class="form-group">
-                <label class="form-label">@lang('fleet.quantity')</label>
-                <input type="number" id="addon_quantity" class="form-control" value="1" min="1" />
+              <div class="form-group" id="quantity_list">
+                
               </div>
             </div>
             <div class="col-md-4">
@@ -479,8 +478,10 @@
     let tax_charge;
     let selected_price;
     let addon_amount;
+    let quantity_list;
 
     $(document).ready(function() {
+      $("#addon_list").select2().css('width', '100%');
       set_datetime();
       get_reservation_list();
       setInterval(set_datetime, 60000);
@@ -560,9 +561,9 @@
         get_vehicle_list($(this).val());
       })
 
-      $("#addon_quantity").change(function() {
-        set_tour_price(selected_price, $(this).val());
-      })
+      // $("#addon_quantity").change(function() {
+      //   set_tour_price(selected_price, $(this).val());
+      // })
     })
 
     function get_vehicle_list(id) {
@@ -599,11 +600,14 @@
           str += `<option value="${item.id}" price="${item.price}">${item.name}</option>`
         })
         $("#addon_list").html(str);
-        set_tour_price(addon_list[0].price, $("#addon_quantity").val());
+        // set_tour_price(addon_list[0].price, $("#addon_quantity").val());
         selected_price = addon_list[0].price;
         $("#addon_list").change(function() {
-          selected_price = $(this).attr('price');
-          set_tour_price(selected_price, $("#addon_quantity").val());
+          // selected_price = $(this).attr('price');
+          // set_tour_price(selected_price, $("#addon_quantity").val());
+          quantity_list = $(this).val();
+          $("#quantity_list").html('');
+          quantity_list.map(item => $("#quantity_list").append(`<div><label class="form-label">@lang('fleet.quantity')(${addon_list.find(addon => addon.id == item).name})</label><input type="number" class="form-control" value="1" min="1" /></div>`));
         })
         $("#addon_img").attr("src", "{{asset('uploads/addons')}}" + "/" + addon_list[0].image);
         $("#addon_description").text(addon_list[0].description);
@@ -747,13 +751,16 @@
           return;
         }
 
-        if($("#destination_outside").val() == '' && ($("#reservation_list").val() != 1 || $("#final_destination") == 'Y')) {
-          new PNotify({
-            title: 'Error',
-            text: "@lang('fleet.destination_outside_accra_not_empty')",
-            type: 'error'
-          });
-          return;
+        if($("#reservation_list").val() != 1) {
+          console.log("fsdfds");
+          if($("#destination_outside").val() == '' && $("#final_destination").val() == 'Y') {
+            new PNotify({
+              title: 'Error',
+              text: "@lang('fleet.destination_outside_accra_not_empty')",
+              type: 'error'
+            });
+            return;
+          }
         }
         var id = $("#vehicle_list").val();
         var data = vehicle_list.filter(function(item){
@@ -841,7 +848,7 @@
       postData.append('reservation_type', $("#reservation_list").val());
       postData.append('service_type', $("#service").val());
       postData.append('addon_id', $("#addon_list").val());
-      postData.append('addon_quantity', $("#addon_quantity").val());
+      // postData.append('addon_quantity', $("#addon_quantity").val());
       if($("#service").val() == "C")
         postData.append('driver_id', $("#driver_list select").val());
       postData.append('pickup', $("#pickup_date").val());
