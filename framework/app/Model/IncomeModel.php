@@ -19,7 +19,7 @@ class IncomeModel extends Model {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
 	protected $fillable = [
-		'vehicle_id', 'user_id', 'amount', 'driver_amount', 'income_cat', 'mileage', 'date', 'income_id', 'tax_percent', 'tax_charge_rs',
+		'vehicle_id', 'user_id', 'amount', 'driver_amount', 'thirdparty_amount', 'income_cat', 'mileage', 'date', 'income_id', 'tax_percent', 'tax_charge_rs',
 	];
 	protected $table = "income";
 

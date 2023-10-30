@@ -80,7 +80,7 @@ class IncomeController extends Controller {
 
 		$v->mileage = $request->get("mileage");
 		$v->save();
-		return redirect()->route("income.index");
+		return redirect()->route("income.thirdparty");
 	}
 
 	public function destroy(Request $request) {

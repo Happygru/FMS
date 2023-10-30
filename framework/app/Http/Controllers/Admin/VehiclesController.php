@@ -348,6 +348,8 @@ class VehiclesController extends Controller {
 
 		$form_data = $request->all();
 		// dd($form_data);
+		var_dump($form_data);
+		return;
 		unset($form_data['vehicle_image']);
 		unset($form_data['documents']);
 		unset($form_data['udf']);
