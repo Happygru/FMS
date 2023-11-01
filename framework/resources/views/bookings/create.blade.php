@@ -256,8 +256,11 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                   <div class="form-group">
-                    <label class="form-label">@lang('fleet.dropoff_addr')</label>
-                    <input type="text" name="" id="dropoff_addr" class="form-control">
+                    <label class="form-label">Dropoff Location Same as Pickup?</label>
+                    <select id="dropoff_pickup_show" class="form-control">
+                      <option value="Y">Yes</option>
+                      <option value="N">No</option>
+                    </select>
                   </div>
                 </div>
                 <div class="col-md-6 col-sm-12 airport">
@@ -280,9 +283,19 @@
               </div>
             </div>
             <div class="col-md-6 col-sm-12">
-              <div class="form-group">
-                <label class="form-label">@lang('fleet.note')</label>
-                <textarea id="note" rows="5" class="form-control" placeholder="Enter Note for this booking"></textarea>
+              <div class="row">
+                <div class="col-md-6 col-sm-12">
+                  <div class="form-group">
+                    <label class="form-label">@lang('fleet.dropoff_addr')</label>
+                    <input type="text" name="" id="dropoff_addr" class="form-control">
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                  <div class="form-group">
+                    <label class="form-label">@lang('fleet.note')</label>
+                    <textarea id="note" rows="5" class="form-control" placeholder="Enter Note for this booking"></textarea>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -455,6 +468,9 @@
       var dropoff_addr = document.getElementById('dropoff_addr');
       new google.maps.places.Autocomplete(dropoff_addr);
 
+      var destination_outside = document.getElementById('destination_outside');
+      new google.maps.places.Autocomplete(destination_outside);
+
       // autocomplete.addListener('place_changed', function() {
       //     var place = autocomplete.getPlace();
       //     document.getElementById('pickup_addr').innerHTML = place.formatted_address;
@@ -470,7 +486,7 @@
 
     let vehicle_list;
     let addon_list;
-    let distance_between_two_points = 200;
+    let distance_between_two_points = 0;
     let settings;
     let tax;
     let vehicle_amount;
@@ -522,6 +538,13 @@
         } else {
           $(".airport").hide();
         }
+      })
+
+      $("#dropoff_pickup_show").change(function() {
+        if($(this).val() == 'Y')
+          $("#dropoff_addr").parent().parent().show();
+        else
+          $("#dropoff_addr").parent().parent().hide();
       })
 
       $(".set-datetime > .form-group > .radio  input").change(function() {
@@ -733,7 +756,7 @@
           return;
         }
 
-        if($("#dropoff_addr").val() == ""){
+        if($("#dropoff_addr").val() == "" && $("#dropoff_pickup_show").val() == 'Y'){
           new PNotify({
             title: 'Error',
             text: "@lang('fleet.dropoff_address_not_empty')",
@@ -752,7 +775,6 @@
         }
 
         if($("#reservation_list").val() != 1) {
-          console.log("fsdfds");
           if($("#destination_outside").val() == '' && $("#final_destination").val() == 'Y') {
             new PNotify({
               title: 'Error',
@@ -768,31 +790,33 @@
         })[0];
         set_vehicle_detail(data);
 
-        // Get distance 
-        var origin = $("#pickup_addr").val();
-        var destination = $("#dropoff_addr").val();
-        var token = "{{ csrf_token() }}";
+        if($("#dropoff_pickup_show").val() == "Y") {
+          // Get distance 
+          var origin = $("#pickup_addr").val();
+          var destination = $("#dropoff_addr").val();
+          var token = "{{ csrf_token() }}";
 
-        let response = await fetch("{{url('admin/get-distance')}}", {
-          method: 'POST', 
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': token
-          },
-          body: JSON.stringify({origin, destination})
-        });
-        let res = await response.json();
-       
-        if (res.success) {
-          distance_between_two_points = (res.distance * 1.60934).toFixed(2);
-        } else {
-          distance_between_two_points = 0;
-          new PNotify({
-              title: 'Error',
-              text: "@lang('fleet.address_invalid')",
-              type: 'error'
+          let response = await fetch("{{url('admin/get-distance')}}", {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({origin, destination})
           });
-          return;
+          let res = await response.json();
+          
+          if (res.success) {
+            distance_between_two_points = (res.distance * 1.60934).toFixed(2);
+          } else {
+            distance_between_two_points = 0;
+            new PNotify({
+                title: 'Error',
+                text: "@lang('fleet.address_invalid')",
+                type: 'error'
+            });
+            return;
+          }
         }
       }
 

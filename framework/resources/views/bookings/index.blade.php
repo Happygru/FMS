@@ -369,15 +369,17 @@
   $(document).on("click", ".make_payment", function() {
     amount = $(this).data('price');
     email = $(this).data('email');
+    redirect_url = $(this).data('redirect');
   })
 
   function payWithPaystack(){
     let handler = PaystackPop.setup({
-      key: 'sk_live_8ef7396297ca6c9065fefc80ad0af52ead2aee8a', // Replace with your public key
+      key: 'pk_test_a70c20fc7e2c5f4cb8cba81dca71522d6edcd422', // Replace with your public key
       email: email,
-      amount: amount,
+      amount: parseInt(amount * 100),
       ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
       // label: "Optional string that replaces customer email"
+      currency: "GHS",
       onClose: function(){
         alert('Window closed.');
       },

@@ -251,7 +251,7 @@
                 <div class="form-group">
                   {!! Form::label('vehicle_image', __('fleet.vehicleImage'), ['class' => 'col-xs-5 control-label']) !!}
                   @if($vehicle->vehicle_image != null)
-                  <a href="{{ asset('uploads/'.$vehicle->vehicle_image) }}" target="_blank"
+                  <a href="{{ asset('uploads/vehicles/'.$vehicle->vehicle_image) }}" target="_blank"
                     class="col-xs-3 control-label">View</a>
                   @endif
                   <br>

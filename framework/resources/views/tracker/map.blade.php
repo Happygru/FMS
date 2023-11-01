@@ -96,10 +96,10 @@ align-items: center;
                                 };
                                     //intial map
                                     // Set the initial center of the map
-                                    var myLatlng = new google.maps.LatLng(20.593683,78.962883); // San Francisco
+                                    var myLatlng = new google.maps.LatLng(7.9465,-1.0232); // Ghana
                                     // Map options
                                     var mapOptions = {
-                                        zoom: 9,
+                                        zoom: 6,
                                         center: myLatlng
                                     };
                                  map = new google.maps.Map(document.getElementById("map"), mapOptions);
