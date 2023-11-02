@@ -167,6 +167,8 @@ return [
     'info' => 'Info',
     'manage_vehicle_make' => 'Manage Vehicle Make',
     'manage_vehicle_model' => 'Manage Vehicle Model',
+    'dropoff_location_sameas_pickup' => 'Dropoff Location Same as Pickup?',
+    'empty_vehicle' => 'Select a vehicle',
     ////////////////////////////////////////////////////////////////
     'chat' => 'Chat',
     'pusher_app_id' => 'Pusher App ID',

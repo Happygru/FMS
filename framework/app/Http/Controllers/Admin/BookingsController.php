@@ -22,6 +22,7 @@ use App\Model\Address;
 use App\Model\BookingIncome;
 use App\Model\BookingPaymentsModel;
 use App\Model\Bookings;
+use App\Model\BookingServicesModel;
 use App\Model\BranchModel;
 use App\Model\Hyvikk;
 use App\Model\IncCats;
@@ -596,8 +597,8 @@ class BookingsController extends Controller {
 		$data['vehicle_types'] = DB::table('vehicle_types')->where('isenable', 1)->whereNull('deleted_at')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
 		$data['settings'] = Settings::all();
+		$data['reservations'] = BookingServicesModel::all();
 		return view("bookings.create", $data);
-		//dd($data['vehicles']);
 	}
 
 	public function edit($id) {
