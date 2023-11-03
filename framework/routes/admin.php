@@ -121,6 +121,7 @@ Route::namespace ('Admin')->group(function () {
         Route::post('booking-quotation-fetch', 'BookingQuotationController@fetch_data');
         Route::resource('booking-quotation', 'BookingQuotationController');
         Route::post('add-booking', 'BookingQuotationController@add_booking');
+        Route::post('/booking-quotation-update', 'BookingQuotationController@ajax_update');
         Route::get('booking-quotation/invoice/{id}', 'BookingQuotationController@invoice');
         Route::get('print-quote/{id}', 'BookingQuotationController@print');
         Route::get('booking-quotation/approve/{id}', 'BookingQuotationController@approve');

@@ -792,7 +792,8 @@
   var vehicle_amount = 0, vehicle_tax_amount = 0;
   var addon_amount = 0;
   var estimated_amount, distance_extra, cost_per_km, allowance_distance, base_rate, insurance_rate = 0;
-
+  var diff_days;
+  var track_time = new Date();
   $(document).ready(function() {
     $("#full_loader").hide();
     get_vehicles($("#vehicle_types").val());
@@ -1007,8 +1008,8 @@
     var date2 = new Date(dropoff_date); // replace with your second date
 
     var diffTime = Math.abs(date2 - date1);
-    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-    $("#review_duration").text(diffDays + "Day(s)");
+    diff_days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    $("#review_duration").text(diff_days + "Day(s)");
     $("#review_base_rate").text(base_rate + "GH₵");
     $("#review_pickup_location").text(pickup_addr);
     $("#review_dropoff_location").text(dropoff_addr);
@@ -1259,34 +1260,34 @@
   }
 
   function save_booking() {
-    alert('Save feature will be completed soon!');
-    return;
+    addon_ids = active_addons.map(item => item.id);
+    addon_ids = addon_ids.join(',');
     const postData = new FormData();
     postData.append('customer_id', customer);
     postData.append('user_id', "{{Auth::user()->id}}");
-    postData.append('vehicle_id', vehicle);
+    postData.append('vehicle_id', $("#vehicles").val());
     postData.append('branch_id', branch);
     postData.append('reservation_type', reservation);
     postData.append('service_type', service);
-    postData.append('addon_id', $("#addon_list").val());
+    postData.append('addon_id', JSON.stringify(active_addons));
     // postData.append('addon_quantity', $("#addon_quantity").val());
     if($("#service").val() == "C")
-      postData.append('driver_id', $("#driver_list select").val());
-    postData.append('pickup', $("#pickup_date").val());
-    postData.append('dropoff', $("#dropoff_date").val());
-    postData.append('duration', get_difference_days($("#pickup_date").val(), $("#dropoff_date").val()) * 24 * 60);
-    postData.append('pickup_addr', $("#pickup_addr").val());
-    postData.append('dest_addr', $("#dropoff_addr").val());
-    postData.append('note', $("#note").val());
-    postData.append('travellers', $("#traveller_count").val());
-    postData.append('airport_pickup', $("#airport_pickup").val());
-    postData.append('airport_pickup_details', $("#airport_detail").val());
-    postData.append('airport_date', $("#airport_date").val());
-    postData.append('hours', $("#number_hours").val());
-    postData.append('final_destination', $("#final_destination").val());
-    postData.append('destination_outside', $("#destination_outside").val());
-    postData.append('tax_charge', tax_charge);
-    postData.append('tax_total', vehicle_amount + addon_amount);
+      postData.append('driver_id', $("#driver select").val());
+    postData.append('pickup', pickup_date);
+    postData.append('dropoff', dropoff_date);
+    postData.append('duration', diff_days);
+    postData.append('pickup_addr', pickup_addr);
+    postData.append('dest_addr', dropoff_addr);
+    postData.append('note', note);
+    postData.append('travellers', children);
+    postData.append('airport_pickup', is_airport);
+    postData.append('airport_pickup_details', airport_detail);
+    postData.append('airport_date', airport_date);
+    postData.append('hours', hours);
+    postData.append('final_destination', is_outside);
+    postData.append('destination_outside', destination_outside);
+    postData.append('tax_charge', vehicle_tax_amount);
+    postData.append('tax_total', vehicle_amount + vehicle_tax_amount + addon_amount);
     postData.append('track_time', track_time);
     postData.append('tax_percent', tax)
     postData.append('status', 0);

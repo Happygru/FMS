@@ -579,11 +579,6 @@ class BookingsController extends Controller {
 
 		}
 		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		// if ($user == null) {
-		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
-		// } else {
-		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
-		// }
 		$query = DB::table('vehicles as v')
 				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
 				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
@@ -601,38 +596,8 @@ class BookingsController extends Controller {
 		return view("bookings.create", $data);
 	}
 
-	public function edit($id) {
-		// $booking = Bookings::whereId($id)->get()->first();
-		// // dd($booking->vehicle_typeid);
-		// if ($booking->vehicle_typeid != null) {
-		// 	$condition = " and type_id = '" . $booking->vehicle_typeid . "'";
-		// } else {
-		// 	$condition = "";
-		// }
-		// $q = "select id,name,deleted_at from users where user_type='D' and deleted_at is null and id not in (select user_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
-		// // $drivers = collect(DB::select(DB::raw($q)));
-		// if (Auth::user()->group_id == null || Auth::user()->user_type == "S") {
-		// 	$q1 = "select * from vehicles where in_service=1" . $condition . " and deleted_at is null and id not in (select vehicle_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "'  or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
-		// } else {
-		// 	$q1 = "select * from vehicles where in_service=1" . $condition . " and deleted_at is null and group_id=" . Auth::user()->group_id . " and id not in (select vehicle_id from bookings where status=0 and  id!=" . $id . " and deleted_at is null and  (DATE_SUB(pickup, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "' or DATE_ADD(dropoff, INTERVAL 15 MINUTE) between '" . $booking->pickup . "' and '" . $booking->dropoff . "'  or dropoff between '" . $booking->pickup . "' and '" . $booking->dropoff . "'))";
-		// }
+	public function edit($id) {	
 
-		// $v_ids = array();
-		// $vehicles_data = collect(DB::select(DB::raw($q1)));
-		// foreach ($vehicles_data as $v) {
-		// 	$v_ids[] = $v->id;
-		// }
-		// $vehicles = VehicleModel::whereIn('id', $v_ids)->get();
-		// $index['drivers'] = [];
-		// $drivers = User::whereUser_type("D")->get();
-		// foreach ($drivers as $d) {
-		// 	if ($d->getMeta('is_active') == 1) {
-		// 		$index['drivers'][] = $d;
-		// 	}
-		// }
-		// $index['vehicles'] = $vehicles;
-		// $index['data'] = $booking;
-		// $index['udfs'] = unserialize($booking->getMeta('udf'));
 		$user = Auth::user()->group_id;
 		$data['customers'] = User::where('user_type', 'C')->get();
 		$drivers = User::whereUser_type("D")->get();
@@ -642,20 +607,12 @@ class BookingsController extends Controller {
 			if ($d->getMeta('is_active') == 1) {
 				$data['drivers'][] = $d;
 			}
-
 		}
 		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		// if ($user == null) {
-		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
-		// } else {
-		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
-		// }
-
 		$data['booking_detail'] = DB::table('bookings as b')
 								->leftJoin('vehicles as v', 'b.vehicle_id','=', 'v.id')
 								->where('b.id', $id)
 								->select("b.*", "v.type_id as vehicle_type")->first();
-		$data['addon_detail'] = AddonModel::find($data['booking_detail']->addon_id);
 		$query = DB::table('vehicles as v')
 				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
 				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
@@ -669,6 +626,7 @@ class BookingsController extends Controller {
 		$data['vehicle_types'] = DB::table('vehicle_types')->where('isenable', 1)->whereNull('deleted_at')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
 		$data['settings'] = Settings::all();
+		$data['reservations'] = BookingServicesModel::all();
 		return view("bookings.edit", $data);
 	}
 
@@ -991,7 +949,6 @@ class BookingsController extends Controller {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		$response = curl_exec($ch);
 		curl_close($ch);
-	
 		$data = json_decode($response);
 		if(!empty($data->rows[0]->elements[0]->distance)) {
 			$distance = $data->rows[0]->elements[0]->distance->text;

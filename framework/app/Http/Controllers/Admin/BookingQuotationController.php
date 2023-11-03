@@ -28,6 +28,7 @@ use App\Model\IncCats;
 use App\Model\IncomeModel;
 use App\Model\User;
 use App\Model\VehicleModel;
+use App\Model\BookingServicesModel;
 use Carbon\Carbon;
 use DataTables;
 use Edujugon\PushNotification\PushNotification;
@@ -184,11 +185,6 @@ class BookingQuotationController extends Controller {
 
 		}
 		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		// if ($user == null) {
-		// 	$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
-		// } else {
-		// 	$data['vehicles'] = VehicleModel::where([['group_id', $user], ['in_service', '1']])->get();
-		// }
 		$query = DB::table('vehicles as v')
 				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
 				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
@@ -199,8 +195,10 @@ class BookingQuotationController extends Controller {
 		}
 
 		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['vehicle_types'] = DB::table('vehicle_types')->where('isenable', 1)->whereNull('deleted_at')->get();
 		$data['branches'] = BranchModel::where('deleted', 0)->get();
 		$data['settings'] = Settings::all();
+		$data['reservations'] = BookingServicesModel::all();
 		return view('booking_quotation.create', $data);
 	}
 
@@ -223,37 +221,51 @@ class BookingQuotationController extends Controller {
 	}
 
 	public function edit($id) {
-		$group_id = Auth::user()->group_id;
+		$user = Auth::user()->group_id;
 		$data['customers'] = User::where('user_type', 'C')->get();
-
-		$data['drivers'] = [];
 		$drivers = User::whereUser_type("D")->get();
+		$data['drivers'] = [];
+
 		foreach ($drivers as $d) {
 			if ($d->getMeta('is_active') == 1) {
 				$data['drivers'][] = $d;
 			}
 		}
 		$data['addresses'] = Address::where('customer_id', Auth::user()->id)->get();
-		if ($group_id == null || Auth::user()->user_type == "S") {
-			$data['vehicles'] = VehicleModel::whereIn_service("1")->get();
-		} else {
-			$data['vehicles'] = VehicleModel::where([['group_id', $group_id], ['in_service', '1']])->get();
+		$data['booking_detail'] = DB::table('booking_quotation as b')
+								->leftJoin('vehicles as v', 'b.vehicle_id','=', 'v.id')
+								->where('b.id', $id)
+								->select("b.*", "v.type_id as vehicle_type")->first();
+		$query = DB::table('vehicles as v')
+				->leftJoin('vehicle_types as vt', 'v.type_id', '=', 'vt.id')
+				->leftJoin('rate as r', 'r.category', '=', 'vt.id')
+				->where('v.in_service', '1');
+
+		if ($user !== null) {
+			$query = $query->where('v.group_id', $user);
 		}
-		$data['data'] = BookingQuotationModel::find($id);
+
+		$data['vehicles'] = $query->select('v.id as vehicle_id','v.*', 'r.id as rate_id', 'r.*', 'vt.seats as seats')->get();
+		$data['vehicle_types'] = DB::table('vehicle_types')->where('isenable', 1)->whereNull('deleted_at')->get();
+		$data['branches'] = BranchModel::where('deleted', 0)->get();
+		$data['settings'] = Settings::all();
+		$data['reservations'] = BookingServicesModel::all();
 		return view('booking_quotation.edit', $data);
 	}
 
 	public function update(BookingQuotationRequest $request) {
-		// dd($request->all());
-		$form_data = $request->all();
-		unset($form_data['_method']);
-		unset($form_data['_token']);
+		
+	}
+
+	public function ajax_update(Request $request) {
 		$xx = $this->check_booking($request->get("pickup"), $request->get("dropoff"), $request->get("vehicle_id"));
 		if ($xx) {
-			BookingQuotationModel::where('id', $request->id)->update($form_data);
-			return redirect('admin/booking-quotation');
+			$id = $request->get("id");
+			$booking = BookingQuotationModel::find($id);
+			$booking->save();
+			return response()->json(['success' => true]);
 		} else {
-			return back()->withErrors(["error" => "Selected Vehicle is not Available in Given Timeframe"])->withInput();
+			return response()->json(['success' => false]);
 		}
 	}
 
