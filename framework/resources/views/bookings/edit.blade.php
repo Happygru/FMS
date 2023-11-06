@@ -343,7 +343,136 @@
         </div>
         <div class="step step-2">
           <h3>@lang('fleet.booking_detail') <span class="wholeday_component">(@lang('fleet.whole_day_service'))</span><span class="hourly_component">(@lang('fleet.hourly_service'))</span></h3>
-          
+          <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.select_customer')</label>
+                <select id="customer" class="form-control">
+                  @foreach($customers as $customer)
+                    <option value="{{$customer->id}}" @if($booking_detail->customer_id == $customer->id) selected @endif>{{$customer->name}}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.pickup')</label>
+                <div class='input-group mb-3 date'>
+                  <div class="input-group-prepend">
+                      <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
+                  </div>
+                  <input type="text" id="pickup_date" class="form-control datetimepicker"  value="{{ $booking_detail->pickup }}">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.dropoff')</label>
+                <div class='input-group mb-3 date'>
+                  <div class="input-group-prepend">
+                      <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
+                  </div>
+                  <input type="text" id="dropoff_date" class="form-control datetimepicker" value="{{ $booking_detail->dropoff }}">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 hourly_component">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.number_of_hours')</label>
+                <select id="number_hours" class="form-control">
+                  @for($i = 0; $i <  4; $i++)
+                    <option value="{{$i + 1}}" @if($booking_detail->hours == ($i + 1)) selected @endif>{{$i + 1}}</option>
+                  @endfor
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.selectDriver')</label>
+                <select class="form-control" id="driver">
+                  @foreach($drivers as $driver)
+                    <option value="{{$driver->id}}" @if($booking_detail->driver_id == $driver->id) selected @endif>{{$driver->name}}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.no_travellers')</label>
+                <input type="number" id="traveller_count" class="form-control" min="1" value="1" value="{{$booking_detail->travellers}}">
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 wholeday_component">
+              <div class="form-group">
+                <label class="form-label">
+                  @lang('fleet.final_destination_outside_accra')?
+                </label>
+                <select id="final_destination" class="form-control">
+                  <option value="Y" @if($booking_detail->final_destination == 'Y') selected @endif>Yes</option>
+                  <option value="N" @if($booking_detail->final_destination == 'N') selected @endif>No</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 wholeday_component">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.destination_outside_accra')</label>
+                <input type="text" id="destination_outside" class="form-control" value="{{$booking_detail->destination_outside}}" />
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.pickup_addr')</label>
+                <input type="text" class="form-control" name="" id="pickup_addr"  value="{{$booking_detail->pickup_addr}}"  />
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">Dropoff Location Same as Pickup?</label>
+                <select id="dropoff_pickup_show" class="form-control">
+                  <option value="Y" @if($booking_detail->dest_addr != '') selected @endif>Yes</option>
+                  <option value="N" @if($booking_detail->dest_addr == '') selected @endif>No</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.dropoff_addr')</label>
+                <input type="text" name="" id="dropoff_addr" class="form-control"  value="{{$booking_detail->dest_addr}}">
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.airport_pickup')?</label>
+                <select id="airport_pickup" class="form-control">
+                  <option value="Y" @if($booking_detail->airport_pickup == 'Y') selected @endif>Yes</option>
+                  <option value="N" @if($booking_detail->airport_pickup == 'N') selected @endif>No</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 airport_component">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.airport_arrival_datetime')</label>
+                <div class='input-group mb-3 date'>
+                  <div class="input-group-prepend">
+                      <span class="input-group-text"> <span class="fa fa-calendar"></span></span>
+                  </div>
+                  <input type="text" id="airport_date" class="form-control datetimepicker" value="{{$booking_detail->airport_date}}">
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12 airport_component">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.airport_pickup_flight_details')</label>
+                <input type="text" class="form-control" id="airport_detail"  value="{{$booking_detail->airport_pickup_details}}">
+              </div>
+            </div>
+            <!-- <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.note')</label>
+                <textarea id="note" class="form-control"></textarea>
+              </div>
+            </div> -->
+          </div>
           <div class="row step_button_group">
             <button class="btn btn-info" onclick="gostep(1, 'prev')"> <i class="fa fa-angle-left"></i> @lang('fleet.prev')</button>
             <button class="btn btn-info" onclick="gostep(3, 'next')"> @lang('fleet.next') <i class="fa fa-angle-right"></i></button>
@@ -647,7 +776,8 @@
   src="https://maps.googleapis.com/maps/api/js?key={{ Hyvikk::api('api_key') }}&libraries=places&callback=initMap"
   async defer></script>
 @endif
-
+<script src="{{ asset('assets/js/moment.js') }}"></script>
+<script src="{{ asset('assets/js/datetimepicker.js') }}"></script>
 <script>
 
   var branch, service, reservation; //general information
@@ -666,6 +796,16 @@
   var diff_days;
   var track_time = new Date();
   $(document).ready(function() {
+    $('.datetimepicker').datetimepicker({
+      format: 'YYYY-MM-DD HH:mm:ss',
+      sideBySide: true,
+      icons: {
+          previous: 'fa fa-arrow-left',
+          next: 'fa fa-arrow-right',
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+      }
+    });
     $("#full_loader").hide();
     get_vehicles($("#vehicle_types").val());
     get_addons($("#addon_types").val());
