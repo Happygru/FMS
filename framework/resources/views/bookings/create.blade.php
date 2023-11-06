@@ -2,7 +2,7 @@
 @section('extra_css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css') }}">
 <style>
-
+  
   #reviewModal table,
   #reviewModal thead,
   #reviewModal tbody {
@@ -771,6 +771,8 @@
   async defer></script>
 @endif
 
+<script src="{{ asset('assets/js/moment.js') }}"></script>
+<script src="{{ asset('assets/js/datetimepicker.js') }}"></script>
 <script>
 
   var branch, service, reservation; //general information
@@ -789,6 +791,18 @@
   var diff_days;
   var track_time = new Date();
   $(document).ready(function() {
+
+    $('.datetimepicker').datetimepicker({
+      format: 'YYYY-MM-DD HH:mm:ss',
+      sideBySide: true,
+      icons: {
+          previous: 'fa fa-arrow-left',
+          next: 'fa fa-arrow-right',
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+      }
+    });
+
     $("#full_loader").hide();
     get_vehicles($("#vehicle_types").val());
     get_addons($("#addon_types").val());
