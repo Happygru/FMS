@@ -226,14 +226,25 @@ class BookingsController extends Controller {
 		$data['id'] = $id;
 		$data['i'] = $book = BookingIncome::whereBooking_id($id)->first();
 		// $data['info'] = IncomeModel::whereId($book['income_id'])->first();
-		$data['booking'] = Bookings::find($id);
+		$data['booking'] = Bookings::leftJoin('users', 'bookings.customer_id', '=', 'users.id')
+									->leftJoin('booking_service', 'booking_service.id', '=', 'bookings.reservation_type')
+									->leftJoin('vehicles', 'vehicles.id', '=', 'bookings.vehicle_id')
+									->leftJoin('vehicle_types', 'vehicles.type_id', '=', 'vehicle_types.id')
+									->select('bookings.*', 'booking_service.name as reservation_name', 'users.name as user_name', 'vehicles.make_name', 'vehicles.model_name', 'vehicle_types.vehicletype')
+									->first();
 		return view("bookings.receipt", $data);
 	}
 
 	function print($id) {
+		$data['id'] = $id;
 		$data['i'] = $book = BookingIncome::whereBooking_id($id)->first();
 		// $data['info'] = IncomeModel::whereId($book['income_id'])->first();
-		$data['booking'] = Bookings::whereId($id)->get()->first();
+		$data['booking'] = Bookings::leftJoin('users', 'bookings.customer_id', '=', 'users.id')
+									->leftJoin('booking_service', 'booking_service.id', '=', 'bookings.reservation_type')
+									->leftJoin('vehicles', 'vehicles.id', '=', 'bookings.vehicle_id')
+									->leftJoin('vehicle_types', 'vehicles.type_id', '=', 'vehicle_types.id')
+									->select('bookings.*', 'booking_service.name as reservation_name', 'users.name as user_name', 'vehicles.make_name', 'vehicles.model_name', 'vehicle_types.vehicletype')
+									->first();
 		return view("bookings.print", $data);
 	}
 

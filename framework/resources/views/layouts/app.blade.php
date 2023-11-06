@@ -1039,7 +1039,7 @@ input:checked + .slider:before {
                     </a>
                   </li>
                   @endcan
-                  @can('BookingQuotations list')
+                  <!-- @can('BookingQuotations list')
                   <li class="nav-item">
                     <a href="{{ route('booking-quotation.index')}}"
                       class="nav-link @if(Request::is('admin/booking-quotation*')) active @endif">
@@ -1048,7 +1048,7 @@ input:checked + .slider:before {
                         @lang('fleet.booking_quotes')</p>
                     </a>
                   </li>
-                  @endcan
+                  @endcan -->
                   @can('Bookings list')
                   <li class="nav-item">
                     <a href="{{ route('bookings.calendar')}}"

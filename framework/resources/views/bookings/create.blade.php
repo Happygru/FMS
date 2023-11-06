@@ -376,17 +376,6 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 wholeday_component">
-              <div class="form-group">
-                <label class="form-label">
-                  @lang('fleet.final_destination_outside_accra')?
-                </label>
-                <select id="final_destination" class="form-control">
-                  <option value="Y">Yes</option>
-                  <option value="N">No</option>
-                </select>
-              </div>
-            </div>
             <div class="col-lg-3 col-md-6 col-sm-12 hourly_component">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.number_of_hours')</label>
@@ -414,10 +403,12 @@
                 <input type="number" id="traveller_count" class="form-control" min="1" value="1">
               </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12 wholeday_component">
               <div class="form-group">
-                <label class="form-label">@lang('fleet.airport_pickup')?</label>
-                <select id="airport_pickup" class="form-control">
+                <label class="form-label">
+                  @lang('fleet.final_destination_outside_accra')?
+                </label>
+                <select id="final_destination" class="form-control">
                   <option value="Y">Yes</option>
                   <option value="N">No</option>
                 </select>
@@ -431,23 +422,32 @@
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="form-group">
-                <label class="form-label">Dropoff Location Same as Pickup?</label>
-                <select id="dropoff_pickup_show" class="form-control">
-                  <option value="Y">Yes</option>
-                  <option value="N">No</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
-              <div class="form-group">
                 <label class="form-label">@lang('fleet.pickup_addr')</label>
                 <input type="text" class="form-control" name="" id="pickup_addr" />
               </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="form-group">
+                <label class="form-label">Dropoff Location Same as Pickup?</label>
+                <select id="dropoff_pickup_show" class="form-control">
+                  <option value="Y">Yes</option>
+                  <option value="N" selected>No</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
                 <label class="form-label">@lang('fleet.dropoff_addr')</label>
                 <input type="text" name="" id="dropoff_addr" class="form-control">
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-label">@lang('fleet.airport_pickup')?</label>
+                <select id="airport_pickup" class="form-control">
+                  <option value="Y">Yes</option>
+                  <option value="N">No</option>
+                </select>
               </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12 airport_component">
@@ -467,12 +467,12 @@
                 <input type="text" class="form-control" id="airport_detail">
               </div>
             </div>
-            <div class="col-lg-3 col-md-6 col-sm-12">
+            <!-- <div class="col-lg-3 col-md-6 col-sm-12">
               <div class="form-group">
                 <label class="form-label">@lang('fleet.note')</label>
                 <textarea id="note" class="form-control"></textarea>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="row step_button_group">
             <button class="btn btn-info" onclick="gostep(1, 'prev')"> <i class="fa fa-angle-left"></i> @lang('fleet.prev')</button>
@@ -533,7 +533,7 @@
                   <span>@lang('fleet.cost_per_extra_km')</span>
                 </div>
                 <div class="col-md-6">
-                  <p id="daily_extra_per_cost">{{$vehicles[0]->wdwa_dkr}}GH₵</p>
+                  <p id="daily_extra_per_cost">GH₵{{$vehicles[0]->wdwa_dkr}}</p>
                 </div>
                 <div class="col-md-6">
                   @lang('fleet.extra_km_payable')
@@ -541,7 +541,7 @@
                 <div class="col-md-6 vehicle">
                   <p>@lang('fleet.estimated_km_to_from_acc'): <span id="estimated_km_to">60</span>km</p>
                   <hr />
-                  <p>@lang('fleet.estimated_amount'): <span id="estimated_amount"></span>GH₵</p>
+                  <p>@lang('fleet.estimated_amount'): GH₵<span id="estimated_amount"></span></p>
                 </div>
               </div>
             </div>
@@ -690,12 +690,6 @@
           <div style="width: 100%; height: 49px; background: #dedede;"></div>
           <div style="width: 100%; margin-top: 30px">
             <table class="table">
-              <thead>
-                <tr>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </thead>
               <tbody id="tax_table">
 
               </tbody>
@@ -708,7 +702,7 @@
             </div>
           </div>
         </div>
-        <div class="px">
+        <!-- <div class="px">
           <div style="width: 100%; height: 49px; background: #dedede;"></div>
           <div class="row">
             <div class="col-md-2 col-sm-12"></div>
@@ -720,10 +714,10 @@
             </div>
             <div class="col-md-2 col-sm-12"></div>
           </div>
-        </div>
+        </div> -->
         <div class="px" style="padding-top: 30px;">
-          <div class="cost_bar">
-            <span>Total</span>
+          <div class="cost_bar" style="justify-content: center;">
+            <span>Grant Total</span>
             <div class="total_cost total_amount">
               2023
             </div>
@@ -837,7 +831,7 @@
 
     $("#dropoff_pickup_show").change(function() {
       $("#dropoff_addr").val('');
-      if($(this).val() == 'Y') {
+      if($(this).val() == 'N') {
         $("#dropoff_addr").parent().parent().show();
       } else {
         $("#dropoff_addr").parent().parent().hide();
@@ -946,7 +940,7 @@
         return;
       }
 
-      if(is_dropoff == 'Y' && dropoff_addr == '') {
+      if(is_dropoff == 'N' && dropoff_addr == '') {
         new PNotify({
           title: 'Error',
           text: "@lang('fleet.dropoff_address_not_empty')",
@@ -1010,7 +1004,7 @@
     var diffTime = Math.abs(date2 - date1);
     diff_days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
     $("#review_duration").text(diff_days + "Day(s)");
-    $("#review_base_rate").text(base_rate + "GH₵");
+    $("#review_base_rate").text("GH₵" + base_rate);
     $("#review_pickup_location").text(pickup_addr);
     $("#review_dropoff_location").text(dropoff_addr);
     $("#review_vehicle_category").text($("#vehicles :selected").text());
@@ -1035,10 +1029,10 @@
       addon_amount = 0;
     }
     $("#addon_table").html(str);
-    $(".addon_total_cost").text(addon_amount + "GH₵");
-    $("#vehicle_reservation_amount").text(vehicle_amount);
+    $(".addon_total_cost").text("GH₵" + addon_amount);
+    $("#vehicle_reservation_amount").text("GH₵" + vehicle_amount);
 
-    $(".vehicle_amount").text(vehicle_amount + "GH₵");
+    $(".vehicle_amount").text("GH₵" + vehicle_amount);
 
     var tax_keys = Object.keys(tax_array);
     var str = "";
@@ -1056,10 +1050,10 @@
             </tr>`;
     $("#tax_table").html(str);
     vehicle_tax_amount += insurance_rate;
-    $(".vehicle_tax_amount").text(vehicle_tax_amount + "GH₵");
+    $(".vehicle_tax_amount").text("GH₵" + vehicle_tax_amount);
     $("#review_note").val(note);
 
-    $(".total_amount").text((vehicle_amount + vehicle_tax_amount + addon_amount).toFixed(2) + "GH₵");
+    $(".total_amount").text("GH₵" + (vehicle_amount + vehicle_tax_amount + addon_amount).toFixed(2));
   }
 
   // set current datetime
@@ -1172,7 +1166,7 @@
     }
     vehicle_tax_amount = vehicle_amount * tax / 100;
     insurance_rate = data.ins_1_2;
-    $("#total_amount").text((vehicle_amount + vehicle_tax_amount) + "GH₵");
+    $("#total_amount").text("GH₵" + (vehicle_amount + vehicle_tax_amount));
   }
 
   function get_addons(type) {
@@ -1193,7 +1187,7 @@
                   <div>
                     <img src="{{url('uploads/addons')}}/${item.image}" />
                     <div class="description">
-                      <p class="price">${item.price}GH₵</p>
+                      <p class="price">GH₵${item.price}</p>
                       <p>${item.description}</p>
                       <input class="form-control select_btn addon_check" data-name="${item.name}" data-type="${item.type}" data-id="${item.id}" data-price="${item.price}" ${ checked ? 'checked' : '' } type="checkbox"/>
                       <div class="form-group">
@@ -1278,7 +1272,7 @@
     postData.append('duration', diff_days);
     postData.append('pickup_addr', pickup_addr);
     postData.append('dest_addr', dropoff_addr);
-    postData.append('note', note);
+    // postData.append('note', note);
     postData.append('travellers', children);
     postData.append('airport_pickup', is_airport);
     postData.append('airport_pickup_details', airport_detail);
@@ -1290,6 +1284,9 @@
     postData.append('tax_total', vehicle_amount + vehicle_tax_amount + addon_amount);
     postData.append('track_time', track_time);
     postData.append('tax_percent', tax)
+    postData.append('base_rate', base_rate);
+    postData.append('insurance_rate', insurance_rate);
+    postData.append('vehicle_amount', vehicle_amount);
     postData.append('status', 0);
     postData.append('payment', 0);
 

@@ -32,11 +32,11 @@
 
         {!! Form::open(['route' => 'settings.store','files'=>true,'method'=>'post']) !!}
         <div class="row">
-          <div class="form-group col-md-4">
+          <!-- <div class="form-group col-md-4">
             {!! Form::label('app_name',__('fleet.app_name'),['class'=>"form-label"]) !!}
             {!! Form::text('name[app_name]',
             Hyvikk::get('app_name'),['class'=>"form-control",'required']) !!}
-          </div>
+          </div> -->
 
           <div class="form-group col-md-4">
             {!! Form::label('email',__('fleet.email'),['class'=>"form-label"]) !!}

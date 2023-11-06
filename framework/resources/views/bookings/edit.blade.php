@@ -1160,6 +1160,9 @@
     postData.append('destination_outside', destination_outside);
     postData.append('tax_charge', vehicle_tax_amount);
     postData.append('tax_total', vehicle_amount + vehicle_tax_amount + addon_amount);
+    postData.append('base_rate', base_rate);
+    postData.append('insurance_rate', insurance_rate);
+    postData.append('vehicle_amount', vehicle_amount);
     postData.append('track_time', track_time);
     postData.append('tax_percent', tax)
 

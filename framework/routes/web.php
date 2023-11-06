@@ -2,7 +2,10 @@
 
 Route::group(['middleware' => ['IsInstalled', 'lang_check_user', 'front_enable']], function () {
     // define all routes here
-    Route::get('/', 'FrontEnd\HomeController@index')->name('frontend.home');
+    // Route::get('/', 'FrontEnd\HomeController@index')->name('frontend.home');
+    Route::get('/', function() {
+        return redirect('/admin/login');
+    });
     Route::get('edit_profile', 'FrontEnd\HomeController@edit_profile')->middleware('auth_user')->name('frontend.edit_profile');
     Route::post('edit_profile', 'FrontEnd\HomeController@edit_profile_post')->middleware('auth_user');
     Route::get('contact', 'FrontEnd\HomeController@contact')->name('frontend.contact');

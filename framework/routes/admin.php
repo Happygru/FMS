@@ -291,7 +291,7 @@ Route::namespace ('Admin')->group(function () {
         Route::post('/booking-create', 'BookingsController@create_booking');
         Route::post('/booking-update', 'BookingsController@update_booking');
         Route::post('/prev-address', 'BookingsController@prev_address');
-        Route::get('print/{id}', 'BookingsController@print');
+        Route::get('f{id}', 'BookingsController@print');
         Route::resource('/acquisition', 'AcquisitionController');
         Route::resource('/income', 'IncomeController');
         Route::get('/thirdparty_income', 'IncomeController@thirdparty')->name('income.thirdparty');
