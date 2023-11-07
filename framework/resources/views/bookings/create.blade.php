@@ -967,7 +967,7 @@
       $("#full_loader").show();
       if(reservation != 1) {
         if(is_outside == 'Y') {
-          let obj_distance = await get_distance(dropoff_addr, destination_outside);
+          let obj_distance = await get_distance(pickup_addr, destination_outside);
           distance = obj_distance.distance;
           calculate_success = obj_distance.success
         } else {
@@ -1180,7 +1180,7 @@
     }
     vehicle_tax_amount = vehicle_amount * tax / 100;
     insurance_rate = data.ins_1_2;
-    $("#total_amount").text("GH₵" + (vehicle_amount + vehicle_tax_amount));
+    $("#total_amount").text("GH₵" + (vehicle_amount));
   }
 
   function get_addons(type) {
