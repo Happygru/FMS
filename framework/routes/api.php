@@ -2,18 +2,20 @@
 
 use Illuminate\Http\Request;
 Route::namespace ('Api')->middleware(['throttle'])->group(function () {
-	Route::post('/login', 'Auth@login');
-	Route::post('/user-registration', 'UsersApi@user_registration');
-	Route::post('/user-login', 'UsersApi@user_login'); //without social media connected
-	Route::post('/user-login-sm', 'UsersApi@login_with_sm'); //login through social media
-	Route::post('/forgot-password', 'UsersApi@forgot_password');
-	Route::post('/get-settings', 'DriversApi@get_settings');
-	Route::get('/codes', 'DriversApi@get_code');
-
+	Route::post('/auth/login', 'AuthApi@login');
+	Route::post('/auth/register', 'AuthApi@register');
+	// Route::post('/user-registration', 'UsersApi@user_registration');
+	// Route::post('/user-login', 'UsersApi@user_login'); //without social media connected
+	// Route::post('/user-login-sm', 'UsersApi@login_with_sm'); //login through social media
+	// Route::post('/forgot-password', 'UsersApi@forgot_password');
+	// Route::post('/get-settings', 'DriversApi@get_settings');
+	// Route::get('/codes', 'DriversApi@get_code');
 });
 
-
-Route::namespace ('Api')->middleware(['throttle', 'auth:api'])->group(function () {
+Route::namespace ('Api')->middleware(['throttle'])->group(function () {
+	Route::get('/bookings/get_addon_list', 'BookingApi@get_addon_list');
+	Route::post('/bookings/create', 'BookingApi@create_booking');
+	Route::get('/bookings/get_vehicle_list', 'BookingApi@get_vehicle_list');
 	Route::post('map-details', 'UsersApi@map_api');
 	Route::post('/edit-user-profile', 'UsersApi@edit_profile');
 	Route::post('/change-password', 'UsersApi@change_password');
